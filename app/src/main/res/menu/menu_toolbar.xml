@@ -7,4 +7,5 @@
         android:title="@string/menu_text_settings"
         android:icon="@drawable/icon_settings"
         app:showAsAction="ifRoom"/>
+
 </menu>

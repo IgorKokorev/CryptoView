@@ -1,4 +1,4 @@
-package dev.kokorev.cryptoview
+package dev.kokorev.cryptoview.viewModel
 
 import androidx.lifecycle.ViewModel
 
