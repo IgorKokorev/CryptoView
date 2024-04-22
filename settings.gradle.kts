@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "CryptoView"
 include(":app")
+include(":binance_api")
  

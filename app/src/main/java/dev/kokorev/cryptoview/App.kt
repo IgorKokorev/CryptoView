@@ -2,7 +2,10 @@ package dev.kokorev.cryptoview
 
 import android.app.Application
 import android.util.Log
+import dev.kokorev.binance_api.DaggerBinanceComponent
 import dev.kokorev.cryptoview.di.AppComponent
+import dev.kokorev.cryptoview.di.DaggerAppComponent
+import dev.kokorev.cryptoview.di.modules.DomainModule
 
 class App : Application() {
     lateinit var dagger: AppComponent
@@ -10,14 +13,12 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
         // Creating dagger component
-/*
         dagger = DaggerAppComponent.builder()
-            .remoteProvider(DaggerRemoteComponent.create())
-            .databaseModule(DatabaseModule())
+            .binanceProvider(DaggerBinanceComponent.create())
             .domainModule(DomainModule(this))
             .build()
-*/
 
     }
 
