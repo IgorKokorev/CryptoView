@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+cmc_api.key
+/app/src/main/java/dev/kokorev/cryptoview/CmcApiKey.kt
