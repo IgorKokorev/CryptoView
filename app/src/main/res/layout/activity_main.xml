@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient"
-    tools:context=".MainActivity">
+    tools:context=".views.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title="@string/page_title"
-            app:navigationIcon="@drawable/icon_menu"
             app:menu="@menu/menu_toolbar"
             android:background="@color/dark"
             style="@style/Widget.MaterialComponents.Toolbar.Primary" />
@@ -39,7 +38,7 @@
         android:layout_height="wrap_content"
         android:background="@color/dark"
         app:itemTextColor="@android:color/white"
-        app:itemIconTint="@android:color/white"
+        app:itemIconTint="@drawable/navigation_view_colored"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/menu_navigation" />

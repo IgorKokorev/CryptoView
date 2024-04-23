@@ -13,6 +13,18 @@ legacySupportV4 = "1.0.0"
 lifecycleLivedataKtx = "2.7.0"
 lifecycleViewmodelKtx = "2.7.0"
 fragmentKtx = "1.6.2"
+jetbrainsKotlinJvm = "1.9.0"
+
+room_version = "2.6.1"
+okhttp_version = "4.12.0"
+dagger_version = "2.51"
+retrofit_version = "2.9.0"
+coroutines_version = "1.8.0"
+glide_version = "4.16.0"
+work_version = "2.9.0"
+rxandroid_version = "3.0.0"
+rxjava_version = "3.1.8"
+retrofit_adapter_rxjava3_version = "3.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,7 +40,38 @@ androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecy
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
+room_ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room_version" }
+room_rxjava3 = { group = "androidx.room", name = "room-rxjava3", version.ref = "room_version" }
+
+dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger_version" }
+daggerCompiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger_version" }
+
+work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work_version" }
+work_rxjava2 = { group = "androidx.work", name = "work-rxjava2", version.ref = "work_version" }
+
+rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rxandroid_version" }
+rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjava_version" }
+
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp_version" }
+logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp_version" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit_version" }
+retrofit_adapter_rxjava2 = { group = "com.squareup.retrofit2", name = "adapter-rxjava2", version.ref = "retrofit_version" }
+retrofit_converter_gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit_version" }
+retrofit_adapter_rxjava = { group = "com.squareup.retrofit2", name = "adapter-rxjava", version.ref = "retrofit_version" }
+retrofit_adapter_rxjava3 = { group = "com.github.akarnokd", name = "rxjava3-retrofit-adapter", version.ref = "retrofit_adapter_rxjava3_version" }
+
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide_version" }
+glide_annotation_processor = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide_version" }
+
+coroutines_core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines_version" }
+coroutines_android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines_version" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
 

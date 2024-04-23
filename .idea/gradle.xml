@@ -10,6 +10,7 @@
           <set>
             <option value="$USER_HOME$/Library/CloudStorage/Dropbox/Coding/Skillfactory/CryptoView" />
             <option value="$USER_HOME$/Library/CloudStorage/Dropbox/Coding/Skillfactory/CryptoView/app" />
+            <option value="$USER_HOME$/Library/CloudStorage/Dropbox/Coding/Skillfactory/CryptoView/binance_api" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
