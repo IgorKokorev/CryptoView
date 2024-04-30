@@ -2,6 +2,8 @@ package dev.kokorev.cryptoview.di
 
 import dagger.Component
 import dev.kokorev.binance_api.BinanceProvider
+import dev.kokorev.cmc_api.CmcProvider
+import dev.kokorev.coin_paprika_api.CoinPaprikaProvider
 import dev.kokorev.cryptoview.di.modules.DomainModule
 import dev.kokorev.cryptoview.viewModel.ChartViewModel
 import dev.kokorev.cryptoview.viewModel.FavoritesViewModel
@@ -12,7 +14,11 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(
-    dependencies = [BinanceProvider::class],
+    dependencies = [
+        BinanceProvider::class,
+        CoinPaprikaProvider::class,
+        CmcProvider::class
+    ],
     modules = [DomainModule::class]
 )
 interface AppComponent {

@@ -14,4 +14,5 @@
 .cxx
 local.properties
 cmc_api.key
-/app/src/main/java/dev/kokorev/cryptoview/CmcApiKey.kt
+/cmc_api/src/main/java/dev/kokorev/cmc_api/CmcApiKey.kt
+/cmc_api/src/main/java/dev/kokorev/coin_paprika_api/CoinPaprikaApiKey.kt

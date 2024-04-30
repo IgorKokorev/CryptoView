@@ -20,5 +20,9 @@
         android:icon="@drawable/icon_chart"
         android:title="@string/menu_text_chart"
         app:showAsAction="withText"/>
-
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/icon_settings"
+        android:title="@string/menu_text_settings"
+        app:showAsAction="ifRoom"/>
 </menu>

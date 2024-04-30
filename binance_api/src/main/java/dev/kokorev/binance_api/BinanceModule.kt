@@ -1,6 +1,5 @@
 package dev.kokorev.binance_api
 
-//import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
@@ -10,7 +9,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import dev.kokorev.binance_api.BuildConfig
 
 @Module
 class BinanceModule {
@@ -37,5 +35,5 @@ class BinanceModule {
 
     @Provides
     @Singleton
-    fun provideTmdbApi(retrofit: Retrofit): BinanceApi = retrofit.create(BinanceApi::class.java)
+    fun provideBinanceApi(retrofit: Retrofit): BinanceApi = retrofit.create(BinanceApi::class.java)
 }

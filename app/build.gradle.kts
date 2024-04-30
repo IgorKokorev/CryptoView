@@ -50,6 +50,8 @@ android {
 
 dependencies {
     implementation(project(":binance_api"))
+    implementation(project(":cmc_api"))
+    implementation(project(":coin_paprika_api"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -60,6 +62,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
+
+    implementation(libs.glide)
+    kapt(libs.glide.annotation.processor)
 
     implementation(libs.dagger)
     kapt(libs.daggerCompiler)

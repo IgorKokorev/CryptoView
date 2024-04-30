@@ -8,25 +8,44 @@ import android.view.View
 import android.view.ViewGroup
 import dev.kokorev.cryptoview.viewModel.FavoritesViewModel
 import dev.kokorev.cryptoview.R
+import dev.kokorev.cryptoview.databinding.FragmentFavoritesBinding
+import dev.kokorev.cryptoview.databinding.FragmentMainBinding
+import dev.kokorev.cryptoview.utils.AutoDisposable
+import dev.kokorev.cryptoview.utils.addTo
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class FavoritesFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = FavoritesFragment()
-    }
-
+    private lateinit var binding: FragmentFavoritesBinding
+    private val autoDisposable = AutoDisposable()
     private val viewModel: FavoritesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // TODO: Use the ViewModel
+        autoDisposable.bindTo(lifecycle)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_favorites, container, false)
+        binding = FragmentFavoritesBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupDataFromViewModel("ETC")
+    }
+
+    private fun setupDataFromViewModel(symbol: String) {
+        viewModel.interactor.getCmcMetadata(symbol)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { dto ->
+                binding.text.text = "Symbol: $symbol\nDescription: " + dto.data.get(symbol)?.get(0)?.description
+            }
+            .addTo(autoDisposable)
     }
 }

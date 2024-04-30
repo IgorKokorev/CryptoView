@@ -41,23 +41,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initMenuButtons() {
-        binding.topAppBar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.settings -> {
-                    val tag = "settings"
-                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_placeholder, fragment, tag)
-                        .addToBackStack(Constants.FRAGMENT_TAG)
-                        .commit()
-                    Toast.makeText(this, R.string.settings_toast, Toast.LENGTH_SHORT).show()
-                    true
-                }
-
-                else -> false
-            }
-        }
+//        binding.topAppBar.setOnMenuItemClickListener {
+//            when (it.itemId) {
+//                R.id.settings -> {
+//                    val tag = "settings"
+//                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
+//                    supportFragmentManager
+//                        .beginTransaction()
+//                        .replace(R.id.fragment_placeholder, fragment, tag)
+//                        .addToBackStack(Constants.FRAGMENT_TAG)
+//                        .commit()
+//                    Toast.makeText(this, R.string.settings_toast, Toast.LENGTH_SHORT).show()
+//                    true
+//                }
+//
+//                else -> false
+//            }
+//        }
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -101,9 +101,34 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+                R.id.settings -> {
+                    val tag = "settings"
+                    val fragment =
+                        supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_placeholder, fragment, tag)
+                        .addToBackStack(Constants.FRAGMENT_TAG)
+                        .commit()
+                    Toast.makeText(this, R.string.settings_toast, Toast.LENGTH_SHORT).show()
+                    true
+                }
 
                 else -> false
             }
         }
+    }
+
+    fun launchInfoFragment(symbol: String) {
+        val bundle = Bundle()
+        bundle.putString(Constants.SYMBOL, symbol)
+        val fragment = InfoFragment()
+        fragment.arguments = bundle
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_placeholder, fragment)
+            .addToBackStack(Constants.FRAGMENT_TAG)
+            .commit()
     }
 }
