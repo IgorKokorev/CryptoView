@@ -6,6 +6,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import dev.kokorev.cryptoview.views.fragments.ChartFragment
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.views.fragments.FavoritesFragment
@@ -14,6 +16,7 @@ import dev.kokorev.cryptoview.views.fragments.MainFragment
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.views.fragments.SettingsFragment
 import dev.kokorev.cryptoview.databinding.ActivityMainBinding
+import dev.kokorev.cryptoview.views.fragments.SearchFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -41,23 +44,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initMenuButtons() {
-//        binding.topAppBar.setOnMenuItemClickListener {
-//            when (it.itemId) {
-//                R.id.settings -> {
-//                    val tag = "settings"
-//                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
-//                    supportFragmentManager
-//                        .beginTransaction()
-//                        .replace(R.id.fragment_placeholder, fragment, tag)
-//                        .addToBackStack(Constants.FRAGMENT_TAG)
-//                        .commit()
-//                    Toast.makeText(this, R.string.settings_toast, Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//
-//                else -> false
-//            }
-//        }
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -81,19 +67,10 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
-                R.id.info -> {
-                    val tag = "info"
-                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: InfoFragment()
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_placeholder, fragment, tag)
-                        .addToBackStack(Constants.FRAGMENT_TAG)
-                        .commit()
-                    true
-                }
-                R.id.chart -> {
-                    val tag = "chart"
-                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: ChartFragment()
+
+                R.id.search -> {
+                    val tag = "search"
+                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: SearchFragment()
                     supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.fragment_placeholder, fragment, tag)
@@ -119,10 +96,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun launchInfoFragment(symbol: String) {
+    fun launchInfoFragment(id: String, symbol: String) {
         val bundle = Bundle()
+        bundle.putString(Constants.ID, id)
         bundle.putString(Constants.SYMBOL, symbol)
         val fragment = InfoFragment()
+        fragment.arguments = bundle
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_placeholder, fragment)
+            .addToBackStack(Constants.FRAGMENT_TAG)
+            .commit()
+    }
+
+    fun launchChartFragment(symbol: String) {
+        val bundle = Bundle()
+        bundle.putString(Constants.ID, symbol)
+        val fragment = ChartFragment()
         fragment.arguments = bundle
 
         supportFragmentManager

@@ -28,7 +28,9 @@ class MainItemViewHolder(val binding: MainCoinItemBinding) : RecyclerView.ViewHo
         binding.coinChange.text = change
 
         if (moverEntity.percentChange < 0) {
-            binding.card.setBackgroundResource(R.color.darkAccent)
+            binding.coinChange.setTextColor(ContextCompat.getColor(binding.root.context, R.color.lightAccent))
+        } else {
+            binding.coinChange.setTextColor(ContextCompat.getColor(binding.root.context, R.color.light))
         }
 
         binding.root.setOnClickListener {

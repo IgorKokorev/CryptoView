@@ -6,12 +6,16 @@ import com.coinpaprika.apiclient.entity.EventEntity
 import com.coinpaprika.apiclient.entity.ExchangeEntity
 import com.coinpaprika.apiclient.entity.GlobalStatsEntity
 import com.coinpaprika.apiclient.entity.MarketEntity
+import com.coinpaprika.apiclient.entity.TickerEntity
 import com.coinpaprika.apiclient.entity.TopMoversEntity
 import com.coinpaprika.apiclient.entity.TweetEntity
+import dev.kokorev.coin_paprika_api.entity.TickerTickEntity
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
+import java.time.Instant
 
 interface CoinPaprikaApi {
     @GET("global")
@@ -58,4 +62,25 @@ interface CoinPaprikaApi {
         @Query("results_number") results: Int = 10,
         @Query("marketcap_limit") range: String? = null
     ): Observable<TopMoversEntity>
+
+    @GET("tickers/{id}/")
+    fun getTicker(
+        @Path("id") id: String,
+        @Query("quotes") quotes: String? = null,
+        @QueryMap options: Map<String, String> = emptyMap()
+    ): Observable<TickerEntity>
+
+    @GET("tickers")
+    fun getTickers(
+        @Query("quotes") quotes: String,
+        @Query("page") page: Int? = null,
+        @QueryMap options: Map<String, String> = emptyMap()
+    ): Observable<List<TickerEntity>>
+
+    @GET("tickers/{id}/historical")
+    fun getTickerHistoricalTicks(
+        @Path("id") id: String,
+        @Query("interval") interval: String = "24h",
+        @Query("start") start: Long = Instant.now().toEpochMilli() / 1000 - 60*60*24*364L
+    ): Observable<List<TickerTickEntity>>
 }

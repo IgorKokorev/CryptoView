@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.cli.common.incrementalCompilationIsEnabled
-import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.isIncrementalKapt
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -70,6 +68,8 @@ dependencies {
     kapt(libs.daggerCompiler)
 
     implementation(libs.rxandroid)
+
+    implementation(libs.highcharts)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

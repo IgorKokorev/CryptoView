@@ -2,6 +2,7 @@ package dev.kokorev.cryptoview.views.fragments
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -60,7 +61,10 @@ class MainFragment : Fragment() {
                 position: Int,
                 binding: MainCoinItemBinding
             ) {
-                (requireActivity() as MainActivity).launchInfoFragment(moverEntity.id)
+                (requireActivity() as MainActivity).launchInfoFragment(
+                    moverEntity.id,
+                    moverEntity.symbol
+                )
             }
         })
         mainAdapter.addItems(cmcListingLatest)
@@ -72,10 +76,14 @@ class MainFragment : Fragment() {
         viewModel.interactor.getCoinPaprikaTop10Movers()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { dto ->
-                cmcListingLatest = dto.gainers + dto.losers
-                binding.mainRecycler.scheduleLayoutAnimation()
-            }
+            .subscribe(
+                { dto ->
+                    cmcListingLatest = dto.gainers + dto.losers
+                    binding.mainRecycler.scheduleLayoutAnimation()
+                },
+                {
+                    Log.d("MainFragment", "Error getting data from CoinPaparikaTop10Movers", it)
+                })
             .addTo(autoDisposable)
     }
 }

@@ -4,6 +4,7 @@
     <option name="MigrateToGradleLocalJavaHome">
       <set>
         <option value="$USER_HOME$/Library/CloudStorage/Dropbox/Coding/Skillfactory/CryptoView" />
+        <option value="$PROJECT_DIR$" />
       </set>
     </option>
   </component>

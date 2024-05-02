@@ -7,4 +7,8 @@
     <string name="menu_text_settings">Settings</string>
     <string name="menu_text_chart">Chart</string>
     <string name="settings_toast">Settings are not ready yet, please check it out later!</string>
+    <string name="tags">Tags:</string>
+    <string name="links">Links:</string>
+    <string name="team">Team:</string>
+    <string name="menu_text_search">Search</string>
 </resources>
