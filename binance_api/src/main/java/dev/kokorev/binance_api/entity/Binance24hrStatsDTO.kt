@@ -2,7 +2,7 @@ package dev.kokorev.binance_api.entity
 
 import com.google.gson.annotations.SerializedName
 
-class Binance24hrStats(
+class Binance24hrStatsDTO(
     @SerializedName("symbol") val symbol: String,
     @SerializedName("priceChange") val priceChange: String?,
     @SerializedName("priceChangePercent") val priceChangePercent: String?,

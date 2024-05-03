@@ -1,6 +1,6 @@
 package dev.kokorev.binance_api
 
-import dev.kokorev.binance_api.entity.Binance24hrStats
+import dev.kokorev.binance_api.entity.Binance24hrStatsDTO
 import dev.kokorev.binance_api.entity.Binance24hrStatsType
 import dev.kokorev.binance_api.entity.BinanceAvgPriceDTO
 import dev.kokorev.binance_api.entity.BinanceExchangeInfoDTO
@@ -32,11 +32,11 @@ interface BinanceApi {
     fun get24hrStats(
         @Query("symbol") symbol: String,
         @Query("type") type: Binance24hrStatsType = Binance24hrStatsType.FULL
-    ) : Observable<Binance24hrStats>
+    ) : Observable<Binance24hrStatsDTO>
 
     @GET("/api/v3/ticker/24hr")
     fun get24hrStatsAll(
         @Query("type") type: Binance24hrStatsType = Binance24hrStatsType.MINI
-    ) : Observable<List<Binance24hrStats>>
+    ) : Observable<List<Binance24hrStatsDTO>>
 
 }

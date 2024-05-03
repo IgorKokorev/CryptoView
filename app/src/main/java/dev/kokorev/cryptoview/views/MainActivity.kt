@@ -6,17 +6,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
-import dev.kokorev.cryptoview.views.fragments.ChartFragment
 import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cryptoview.R
+import dev.kokorev.cryptoview.databinding.ActivityMainBinding
+import dev.kokorev.cryptoview.views.fragments.ChartFragment
 import dev.kokorev.cryptoview.views.fragments.FavoritesFragment
 import dev.kokorev.cryptoview.views.fragments.InfoFragment
 import dev.kokorev.cryptoview.views.fragments.MainFragment
-import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.views.fragments.SettingsFragment
-import dev.kokorev.cryptoview.databinding.ActivityMainBinding
 import dev.kokorev.cryptoview.views.fragments.SearchFragment
+import dev.kokorev.cryptoview.views.fragments.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -96,9 +94,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun launchInfoFragment(id: String, symbol: String) {
+    fun launchInfoFragment(coinPaprikaId: String, symbol: String) {
         val bundle = Bundle()
-        bundle.putString(Constants.ID, id)
+        bundle.putString(Constants.ID, coinPaprikaId)
         bundle.putString(Constants.SYMBOL, symbol)
         val fragment = InfoFragment()
         fragment.arguments = bundle
@@ -110,9 +108,10 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    fun launchChartFragment(symbol: String) {
+    fun launchChartFragment(coinPaprikaId:  String, symbol: String) {
         val bundle = Bundle()
-        bundle.putString(Constants.ID, symbol)
+        bundle.putString(Constants.ID, coinPaprikaId)
+        bundle.putString(Constants.SYMBOL, symbol)
         val fragment = ChartFragment()
         fragment.arguments = bundle
 

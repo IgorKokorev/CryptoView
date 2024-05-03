@@ -18,7 +18,7 @@ data class BinanceSymbolDTO(
     @SerializedName("cancelReplaceAllowed") var cancelReplaceAllowed: Boolean,
     @SerializedName("isSpotTradingAllowed") var isSpotTradingAllowed: Boolean,
     @SerializedName("isMarginTradingAllowed") var isMarginTradingAllowed: Boolean,
-    @SerializedName("filters") var filters: ArrayList<String>,
+    @SerializedName("filters") var filters: ArrayList<Any>,
     @SerializedName("permissions") var permissions: ArrayList<String>,
     @SerializedName("permissionSets") var permissionSets: ArrayList<ArrayList<String>>,
     @SerializedName("defaultSelfTradePreventionMode") var defaultSelfTradePreventionMode: String,

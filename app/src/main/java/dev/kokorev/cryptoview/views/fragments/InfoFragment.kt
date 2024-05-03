@@ -1,24 +1,23 @@
 package dev.kokorev.cryptoview.views.fragments
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import dev.kokorev.cryptoview.Constants
-import dev.kokorev.cryptoview.viewModel.InfoViewModel
 import dev.kokorev.cryptoview.databinding.FragmentInfoBinding
 import dev.kokorev.cryptoview.databinding.TwoColumnItemViewBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
+import dev.kokorev.cryptoview.viewModel.InfoViewModel
 import dev.kokorev.cryptoview.views.MainActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.stream.Collectors.toList
 import kotlin.jvm.optionals.getOrNull
 
 class InfoFragment : Fragment() {
@@ -36,13 +35,13 @@ class InfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInfoBinding.inflate(layoutInflater)
-        val id = arguments?.getString(Constants.ID) ?: return binding.root
+        val coinPaprikaId = arguments?.getString(Constants.ID) ?: return binding.root
         val symbol = arguments?.getString(Constants.SYMBOL) ?: return binding.root
 
         // two calls are made to 2 apis and then all the info is used combined
         Observable.zip(
-            viewModel.interactor.getCoinPaprikaCoinInfo(id),
-            viewModel.interactor.getCmcMetadata(symbol)
+            viewModel.remoteApi.getCoinPaprikaCoinInfo(coinPaprikaId),
+            viewModel.remoteApi.getCmcMetadata(symbol)
         ) { cpInfo, cmcInfo ->
             cpInfo to cmcInfo
         }
@@ -64,10 +63,14 @@ class InfoFragment : Fragment() {
                     binding.name.text = nameAndSymbol
 
                     binding.chartLink.setOnClickListener {
-                        (requireActivity() as MainActivity).launchChartFragment(cpInfo.id)
+                        (requireActivity() as MainActivity).launchChartFragment(coinPaprikaId, symbol)
                     }
                     // Coin description from both APIs
-                    val description = cmcInfo?.description + "\n\n" + cpInfo.description
+                    val description = if (cpInfo.description == null) {
+                            cmcInfo?.description ?: "No description"
+                        } else {
+                        cpInfo.description + "\n\n" + cmcInfo?.description
+                    }
                     binding.description.text = description
 
                     val tags = cpInfo.tags

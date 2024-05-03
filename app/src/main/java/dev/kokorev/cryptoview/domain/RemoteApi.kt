@@ -3,7 +3,7 @@ package dev.kokorev.cryptoview.domain
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.TopMoversEntity
 import dev.kokorev.binance_api.BinanceApi
-import dev.kokorev.binance_api.entity.Binance24hrStats
+import dev.kokorev.binance_api.entity.Binance24hrStatsDTO
 import dev.kokorev.binance_api.entity.Binance24hrStatsType
 import dev.kokorev.binance_api.entity.BinanceAvgPriceDTO
 import dev.kokorev.binance_api.entity.BinanceExchangeInfoDTO
@@ -13,16 +13,17 @@ import dev.kokorev.cmc_api.entity.cmc_metadata.CmcMetadataDTO
 import dev.kokorev.coin_paprika_api.CoinPaprikaApi
 import io.reactivex.rxjava3.core.Observable
 
-class Interactor(val binanceApi: BinanceApi, val cmcApi: CmcApi, val coinPaprikaApi: CoinPaprikaApi) {
+// Interactor to communicate with remote apis
+class RemoteApi(val binanceApi: BinanceApi, val cmcApi: CmcApi, val coinPaprikaApi: CoinPaprikaApi) {
 
     // Binance API info
     fun getBinanceInfo() : Observable<BinanceExchangeInfoDTO> = binanceApi.getExchangeInfo()
 
     fun getBinanceCurrentAvgPrice(symbol: String) : Observable<BinanceAvgPriceDTO> = binanceApi.getCurrentAvgPrice(symbol)
 
-    fun getBinance24hrstats(symbol: String, type: Binance24hrStatsType = Binance24hrStatsType.FULL) : Observable<Binance24hrStats> = binanceApi.get24hrStats(symbol, type)
+    fun getBinance24hrstats(symbol: String, type: Binance24hrStatsType = Binance24hrStatsType.FULL) : Observable<Binance24hrStatsDTO> = binanceApi.get24hrStats(symbol, type)
 
-    fun getBinance24hrstatsAll(type: Binance24hrStatsType = Binance24hrStatsType.MINI) : Observable<List<Binance24hrStats>> = binanceApi.get24hrStatsAll(type)
+    fun getBinance24hrstatsAll(type: Binance24hrStatsType = Binance24hrStatsType.MINI) : Observable<List<Binance24hrStatsDTO>> = binanceApi.get24hrStatsAll(type)
 
 
     // CoinMarketCap API info

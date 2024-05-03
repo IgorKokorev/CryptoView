@@ -65,9 +65,10 @@
     </LinearLayout>
 
     <com.highsoft.highcharts.core.HIChartView
-        android:id="@+id/plot"
+        android:id="@+id/chart_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/price_stat" />
 

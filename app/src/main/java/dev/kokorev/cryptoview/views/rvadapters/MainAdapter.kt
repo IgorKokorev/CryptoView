@@ -1,25 +1,20 @@
 package dev.kokorev.cryptoview.views.rvadapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.coinpaprika.apiclient.entity.MoverEntity
-import dev.kokorev.cmc_api.entity.cmc_listing.CmcListingData
-import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.MainCoinItemBinding
 import dev.kokorev.cryptoview.views.rvviewholders.MainItemViewHolder
+import dev.kokorev.room_db.core_api.entity.TopMover
 
 
 class MainAdapter(private val clickListener: OnItemClickListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        private val data = mutableListOf<MoverEntity>()
+        private val data = mutableListOf<TopMover>()
 
     interface OnItemClickListener {
-        fun click(moverEntity: MoverEntity, position: Int, binding: MainCoinItemBinding)
+        fun click(topMover: TopMover, position: Int, binding: MainCoinItemBinding)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -39,7 +34,7 @@ class MainAdapter(private val clickListener: OnItemClickListener) :
         }
     }
 
-    fun addItems(newList: List<MoverEntity>) {
+    fun addItems(newList: List<TopMover>) {
         val numbersDiff = MainDiff(data, newList)
         val diffResult = DiffUtil.calculateDiff(numbersDiff)
         data.clear()

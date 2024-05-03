@@ -7,9 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dev.kokorev.cryptoview.viewModel.FavoritesViewModel
-import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentFavoritesBinding
-import dev.kokorev.cryptoview.databinding.FragmentMainBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -40,7 +38,7 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun setupDataFromViewModel(symbol: String) {
-        viewModel.interactor.getCmcMetadata(symbol)
+        viewModel.remoteApi.getCmcMetadata(symbol)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { dto ->

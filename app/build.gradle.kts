@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":binance_api"))
     implementation(project(":cmc_api"))
     implementation(project(":coin_paprika_api"))
+    implementation(project(":room_db"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
