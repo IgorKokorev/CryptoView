@@ -5,6 +5,7 @@ import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
+import dev.kokorev.room_db.core_api.CoinPaprikaTickerDao
 import dev.kokorev.room_db.core_api.TopMoverDao
 import dev.kokorev.room_db.core_api.db.DbContract
 import javax.inject.Singleton
@@ -23,6 +24,12 @@ class DatabaseModule {
     @Singleton
     fun provideTopMoverDao(databaseContract: DbContract): TopMoverDao {
         return databaseContract.topMoverDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCoinPaprikaTickerDao(databaseContract: DbContract): CoinPaprikaTickerDao {
+        return databaseContract.coinPaprikaTickerDao()
     }
 
     @Provides

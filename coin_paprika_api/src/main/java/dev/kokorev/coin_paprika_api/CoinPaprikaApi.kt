@@ -2,6 +2,7 @@ package dev.kokorev.coin_paprika_api
 
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.CoinEntity
+import com.coinpaprika.apiclient.entity.CoinType
 import com.coinpaprika.apiclient.entity.EventEntity
 import com.coinpaprika.apiclient.entity.ExchangeEntity
 import com.coinpaprika.apiclient.entity.GlobalStatsEntity
@@ -54,12 +55,12 @@ interface CoinPaprikaApi {
 
     @GET("rankings/top10movers/")
     fun getTop10Movers(
-        @Query("type") type: String? = null
+        @Query("type") type: CoinType? = null
     ): Observable<TopMoversEntity>
 
     @GET("rankings/top-movers/")
     fun getMovers(
-        @Query("results_number") results: Int = 10,
+        @Query("results_number") results: Int = 20,
         @Query("marketcap_limit") range: String? = null
     ): Observable<TopMoversEntity>
 
@@ -72,7 +73,7 @@ interface CoinPaprikaApi {
 
     @GET("tickers")
     fun getTickers(
-        @Query("quotes") quotes: String,
+        @Query("quotes") quotes: String? =null,
         @Query("page") page: Int? = null,
         @QueryMap options: Map<String, String> = emptyMap()
     ): Observable<List<TickerEntity>>

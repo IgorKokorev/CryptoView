@@ -17,7 +17,7 @@ class PreferenceProvider(context: Context) {
         }
     }
 
-    // Last time in millis when remote API was accessed
+    // Last time in millis when remote API was accessed to get Top Movers
     fun saveLastTopMoversCallTime() {
         val time = System.currentTimeMillis()
         preference.edit().putLong(KEY_LAST_TOP_MOVERS_CALL_TIME, time).apply()
@@ -26,10 +26,20 @@ class PreferenceProvider(context: Context) {
         return preference.getLong(KEY_LAST_TOP_MOVERS_CALL_TIME, 0L)
     }
 
+    // Last time in millis when remote API was accessed to get all CoinPaprika tickers
+    fun getLastCpTickersCallTime(): Long {
+        return preference.getLong(KEY_LAST_CP_TICKERS_CALL_TIME, 0L)
+    }
+    fun saveLastCpTickersCallTime() {
+        val time = System.currentTimeMillis()
+        preference.edit().putLong(KEY_LAST_CP_TICKERS_CALL_TIME, time).apply()
+    }
+
     // Constants
     companion object {
         private const val SETTINGS = "settings"
         private const val KEY_FIRST_LAUNCH = "first_launch"
         private const val KEY_LAST_TOP_MOVERS_CALL_TIME = "last_top_movers_time"
+        private const val KEY_LAST_CP_TICKERS_CALL_TIME = "last_cp_tickers_time"
     }
 }

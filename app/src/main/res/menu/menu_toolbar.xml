@@ -3,9 +3,28 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/icon_up_down"
+        app:showAsAction="always"
+        android:title="@string/menu_text_home"/>
+    <item
+        android:id="@+id/favorites"
+        android:enabled="true"
+        android:icon="@drawable/icon_favorite"
+        app:showAsAction="always"
+        android:title="@string/menu_text_favorites"/>
+    <item
+        android:id="@+id/search"
+        android:enabled="true"
+        android:icon="@drawable/icon_search"
+        app:showAsAction="always"
+        android:title="@string/menu_text_search"/>
+    <item
         android:id="@+id/settings"
-        android:title="@string/menu_text_settings"
+        android:enabled="true"
         android:icon="@drawable/icon_settings"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"
+        android:title="@string/menu_text_settings"/>
 
 </menu>

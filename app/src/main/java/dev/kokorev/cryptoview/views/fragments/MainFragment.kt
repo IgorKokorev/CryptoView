@@ -10,12 +10,10 @@ import androidx.fragment.app.viewModels
 import dev.kokorev.cryptoview.databinding.FragmentMainBinding
 import dev.kokorev.cryptoview.databinding.MainCoinItemBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
-import dev.kokorev.cryptoview.utils.ConvertData
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.views.MainActivity
 import dev.kokorev.cryptoview.views.rvadapters.MainAdapter
-import dev.kokorev.cryptoview.views.rvadapters.TopSpacingItemDecoration
 import dev.kokorev.room_db.core_api.entity.TopMover
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -25,6 +23,7 @@ class MainFragment : Fragment() {
     private val autoDisposable = AutoDisposable()
     private val viewModel: MainViewModel by viewModels()
     private lateinit var mainAdapter: MainAdapter
+
     private var topMovers: List<TopMover> = listOf()
         set(value) {
             if (field == value) return
@@ -35,7 +34,6 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         autoDisposable.bindTo(lifecycle)
-        setupApp()
     }
 
     override fun onCreateView(
@@ -65,13 +63,16 @@ class MainFragment : Fragment() {
                     topMover.symbol
                 )
             }
-        })
-        mainAdapter.addItems(topMovers)
+        }).apply {
+            addItems(topMovers)
+        }
         binding.mainRecycler.adapter = mainAdapter
-        binding.mainRecycler.addItemDecoration(TopSpacingItemDecoration(0))
+        // Add item decoration if needed
+//        binding.mainRecycler.addItemDecoration(TopSpacingItemDecoration(0))
     }
 
     private fun setupDataFromViewModel() {
+        viewModel.loadTopMovers()
         viewModel.topMovers
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -86,16 +87,5 @@ class MainFragment : Fragment() {
             .addTo(autoDisposable)
     }
 
-    fun setupApp() {
-        viewModel.remoteApi.binanceApi.getExchangeInfo()
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .subscribe{
-                val symbols = it.binanceSymbolDTOS.asSequence()
-                    .map { dto -> ConvertData.dtoToBinanceSymbol(dto) }
-                    .toList()
-                viewModel.repository.addBinanceSymbols(symbols)
-            }
-            .addTo(autoDisposable)
-    }
+
 }

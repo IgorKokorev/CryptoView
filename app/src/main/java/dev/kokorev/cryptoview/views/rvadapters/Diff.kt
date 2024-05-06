@@ -1,10 +1,9 @@
 package dev.kokorev.cryptoview.views.rvadapters
 
 import androidx.recyclerview.widget.DiffUtil
-import dev.kokorev.room_db.core_api.entity.TopMover
 
 // Calculates difference between 2 film lists for DiffUtil
-class MainDiff(val oldList: MutableList<TopMover>, val newList: List<TopMover>) :
+class Diff<T: Any>(val oldList: MutableList<T>, val newList: List<T>) :
     DiffUtil.Callback() {
 
     override fun getOldListSize(): Int {

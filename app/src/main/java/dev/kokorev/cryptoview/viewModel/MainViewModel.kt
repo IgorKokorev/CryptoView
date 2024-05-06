@@ -28,7 +28,7 @@ class MainViewModel : ViewModel() {
         loadTopMovers()
     }
 
-    private fun loadTopMovers() {
+    fun loadTopMovers() {
         val lastTime = repository.getLastTopMoversCallTime()
         // If enough time pasts call the API
         if (System.currentTimeMillis() > (lastTime + Constants.TOP_MOVERS_CALL_INTERVAL)) {
@@ -42,8 +42,5 @@ class MainViewModel : ViewModel() {
                     repository.saveTopMovers(result)
                 }
         }
-
     }
-
-
 }

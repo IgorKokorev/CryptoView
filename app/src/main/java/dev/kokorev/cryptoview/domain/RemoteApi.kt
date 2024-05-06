@@ -14,7 +14,11 @@ import dev.kokorev.coin_paprika_api.CoinPaprikaApi
 import io.reactivex.rxjava3.core.Observable
 
 // Interactor to communicate with remote apis
-class RemoteApi(val binanceApi: BinanceApi, val cmcApi: CmcApi, val coinPaprikaApi: CoinPaprikaApi) {
+class RemoteApi(
+    private val binanceApi: BinanceApi,
+    private val cmcApi: CmcApi,
+    private val coinPaprikaApi: CoinPaprikaApi
+) {
 
     // Binance API info
     fun getBinanceInfo() : Observable<BinanceExchangeInfoDTO> = binanceApi.getExchangeInfo()
@@ -33,11 +37,14 @@ class RemoteApi(val binanceApi: BinanceApi, val cmcApi: CmcApi, val coinPaprikaA
 
 
     // CoinPaprika API info
+    fun getCoinPaprikaAllCoins() = coinPaprikaApi.getCoins()
     fun getCoinPaprikaTop10Movers() : Observable<TopMoversEntity> = coinPaprikaApi.getTop10Movers()
 
     fun getCoinPaprikaCoinInfo(id: String): Observable<CoinDetailsEntity> = coinPaprikaApi.getCoin(id)
 
     fun getCoinPaprikaTicker(id: String) = coinPaprikaApi.getTicker(id)
+
+    fun getCoinPaprikaTickers() = coinPaprikaApi.getTickers()
 
     fun getCoinPaprikaTickerHistorical(id: String) = coinPaprikaApi.getTickerHistoricalTicks(id)
 }

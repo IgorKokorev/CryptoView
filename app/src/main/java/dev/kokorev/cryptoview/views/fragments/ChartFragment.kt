@@ -1,6 +1,7 @@
 package dev.kokorev.cryptoview.views.fragments
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -39,10 +40,12 @@ class ChartFragment : Fragment() {
     private lateinit var binding: FragmentChartBinding
     private val autoDisposable = AutoDisposable()
     private val viewModel: ChartViewModel by viewModels()
+
     // Chart data
     private lateinit var hiChartView: HIChartView
     private lateinit var options: HIOptions
     private lateinit var hiChart: HIChart
+
     // Used colors on chart
     private val transparentColor = HIColor.initWithRGBA(0, 0, 0, 0.0)
     private val semitransparentBlackColor = HIColor.initWithRGBA(0, 0, 0, 0.2)
@@ -51,11 +54,12 @@ class ChartFragment : Fragment() {
     private val whiteColorString = "FFFFFF"
     private val whiteColor = HIColor.initWithHexValue(whiteColorString)
     private val whiteTextStyle = HICSSObject().apply {
-        color =  "#" + whiteColorString
+        color = "#" + whiteColorString
         fontSize = "8pt"
     }
     private lateinit var coinPaprikaId: String
-    private lateinit var symbol:  String
+    private lateinit var symbol: String
+    private var ticks: List<TickerTickEntity> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +67,8 @@ class ChartFragment : Fragment() {
         coinPaprikaId = arguments?.getString(Constants.ID) ?: ""
         symbol = arguments?.getString(Constants.SYMBOL) ?: ""
 
-        initChartView()
         autoDisposable.bindTo(lifecycle)
+        initChartView()
     }
 
     override fun onCreateView(
@@ -93,7 +97,10 @@ class ChartFragment : Fragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                updateChart(it)
+                Log.d("ChartFragment", "${it.size} ticks received for the chart")
+                ticks = it
+                updateChart()
+                Log.d("ChartFragment", "Finished updating the chart")
             },
                 {
                     Log.d(
@@ -103,6 +110,13 @@ class ChartFragment : Fragment() {
                     )
                 })
             .addTo(autoDisposable)
+
+        // Refresh chart with delay, otherwise sometimes it isn't drawn.
+        Handler().postDelayed({
+            updateChart()
+            Log.d("ChartFragment",
+                "Chart refreshed")
+        }, 500)
 
         return binding.root
     }
@@ -144,6 +158,7 @@ class ChartFragment : Fragment() {
             gridLineWidth = 1
             gridLineDashStyle = "Dot"
             tickColor = whiteColor
+            opposite = true
         }
 
         val xLabels = HILabels().apply {
@@ -191,7 +206,8 @@ class ChartFragment : Fragment() {
             shared = true
             useHTML = true
             headerFormat = "<table><tr><th colspan=\"2\">{point.key}</th></tr>"
-            pointFormat = "<tr><td style=\"{series.color}\">{series.name}</td><td style=\"text-align: right\"><b>{point.y}</b></td></tr>"
+            pointFormat =
+                "<tr><td style=\"{series.color}\">{series.name}</td><td style=\"text-align: right\"><b>{point.y}</b></td></tr>"
             footerFormat = "</table>"
             backgroundColor = semitransparentBlackColor
             style = whiteTextStyle
@@ -206,17 +222,16 @@ class ChartFragment : Fragment() {
             yAxis = arrayListOf(hiyAxis)
             chart = hiChart
             title = chartTitle
-            series = arrayListOf(emptySeries)
+//            series = arrayListOf(emptySeries)
             tooltip = hiTooltip
         }
 
         // setting all the options
         hiChartView.options = options
-        hiChartView.isFocusable = true
-        hiChartView.redraw()
+        updateChart()
     }
 
-    private fun updateChart(ticks: List<TickerTickEntity>) {
+    private fun updateChart() {
         // defining data to show on the chart
         val newSeries = HILine().apply {
             data = ArrayList(
@@ -227,20 +242,24 @@ class ChartFragment : Fragment() {
             color = lightColor
             name = symbol
         }
-        options.series = arrayListOf(newSeries)
+
+        hiChartView.options.series = arrayListOf(newSeries)
+        hiChartView.redraw()
 
         // setting x-axis labels
-        options.xAxis.get(0).categories = ArrayList(
+        hiChartView.options.xAxis.get(0).categories = ArrayList(
             ticks.asSequence()
-            .map { tick ->
-                convertDate(tick.timestamp) //.substring(5, 10)
-            }
-            .toList()
+                .map { tick ->
+                    convertDate(tick.timestamp) //.substring(5, 10)
+                }
+                .toList()
         )
+
         hiChartView.update(options)
+        hiChartView.redraw()
     }
 
-    private fun convertDate(timestamp: String) : String {
+    private fun convertDate(timestamp: String): String {
         val year = timestamp.substring(0, 4).toInt()
         val month = timestamp.substring(5, 7).toInt()
         val dayWithHiph = timestamp.substring(8, 10)
