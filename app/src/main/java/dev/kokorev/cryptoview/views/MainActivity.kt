@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
         setupApp()
         initMenuButtons()
-        replaceFragment(MainFragment())
+        replaceFragment(MainFragment(), "main")
 
     }
 
@@ -54,46 +54,33 @@ class MainActivity : AppCompatActivity() {
 
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.home -> {
-                    val tag = "home"
+                R.id.main -> {
+                    val tag = "main"
                     val fragment = supportFragmentManager.findFragmentByTag(tag) ?: MainFragment()
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_placeholder, fragment, tag)
-                        .addToBackStack(Constants.FRAGMENT_TAG)
-                        .commit()
+                    replaceFragment(fragment, tag)
                     true
                 }
+
                 R.id.favorites -> {
                     val tag = "favorites"
-                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: FavoritesFragment()
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_placeholder, fragment, tag)
-                        .addToBackStack(Constants.FRAGMENT_TAG)
-                        .commit()
+                    val fragment =
+                        supportFragmentManager.findFragmentByTag(tag) ?: FavoritesFragment()
+                    replaceFragment(fragment, tag)
                     true
                 }
 
                 R.id.search -> {
                     val tag = "search"
                     val fragment = supportFragmentManager.findFragmentByTag(tag) ?: SearchFragment()
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_placeholder, fragment, tag)
-                        .addToBackStack(Constants.FRAGMENT_TAG)
-                        .commit()
+                    replaceFragment(fragment, tag)
                     true
                 }
+
                 R.id.settings -> {
                     val tag = "settings"
                     val fragment =
                         supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_placeholder, fragment, tag)
-                        .addToBackStack(Constants.FRAGMENT_TAG)
-                        .commit()
+                    replaceFragment(fragment, tag)
                     Toast.makeText(this, R.string.settings_toast, Toast.LENGTH_SHORT).show()
                     true
                 }
@@ -109,51 +96,41 @@ class MainActivity : AppCompatActivity() {
         bundle.putString(Constants.SYMBOL, symbol)
         val fragment = InfoFragment()
         fragment.arguments = bundle
-        replaceFragment(fragment)
+        replaceFragment(fragment, "info")
     }
 
-    fun launchChartFragment(coinPaprikaId:  String, symbol: String) {
+    fun launchChartFragment(coinPaprikaId: String, symbol: String) {
         val bundle = Bundle()
         bundle.putString(Constants.ID, coinPaprikaId)
         bundle.putString(Constants.SYMBOL, symbol)
         val fragment = ChartFragment()
         fragment.arguments = bundle
-        replaceFragment(fragment)
+        replaceFragment(fragment, "chart")
     }
 
-    fun replaceFragment(fragment: Fragment) {
+    fun replaceFragment(fragment: Fragment, tag: String) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_placeholder, fragment)
+            .addToBackStack(tag)
+            .commit()
+    }
+
+    fun addFragment(fragment: Fragment, tag: String) {
         supportFragmentManager
             .beginTransaction()
             .add(R.id.fragment_placeholder, fragment)
-            .addToBackStack(Constants.FRAGMENT_TAG)
+            .addToBackStack(tag)
             .commit()
     }
 
     fun setupApp() {
-        viewModel.remoteApi.getBinanceInfo()
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .subscribe {
-                val symbols = it.binanceSymbolDTOS.asSequence()
-                    .map { dto -> ConvertData.dtoToBinanceSymbol(dto) }
-                    .toList()
-                viewModel.repository.addBinanceSymbols(symbols)
-                Log.d("MainActivity", "SetupApp: ${symbols.size} symbols were read from API and added to db")
-            }
-            .addTo(autoDisposable)
+        updateBinanceInfo()
+        updateCoinPaprikaTickers()
+        updateCoinPaprikaAllCoins()
+    }
 
-
-        viewModel.remoteApi.getCoinPaprikaTickers()
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .subscribe {
-                val tickers = it
-                    .map { dto -> ConvertData.dtoToCoinPaprikaTicker(dto) }
-                    .toList()
-                viewModel.repository.addCoinPaprikaTickers(tickers)
-            }
-            .addTo(autoDisposable)
-
+    private fun updateCoinPaprikaAllCoins() {
         viewModel.remoteApi.getCoinPaprikaAllCoins()
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
@@ -176,6 +153,36 @@ class MainActivity : AppCompatActivity() {
                         .size
                 }")
             }
-                .addTo(autoDisposable)
+            .addTo(autoDisposable)
+    }
+
+    fun updateCoinPaprikaTickers() {
+        viewModel.remoteApi.getCoinPaprikaTickers()
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe {
+                val tickers = it
+                    .map { dto -> ConvertData.dtoToCoinPaprikaTicker(dto) }
+                    .toList()
+                viewModel.repository.addCoinPaprikaTickers(tickers)
+            }
+            .addTo(autoDisposable)
+    }
+
+    private fun updateBinanceInfo() {
+        viewModel.remoteApi.getBinanceInfo()
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe {
+                val symbols = it.binanceSymbolDTOS.asSequence()
+                    .map { dto -> ConvertData.dtoToBinanceSymbol(dto) }
+                    .toList()
+                viewModel.repository.addBinanceSymbols(symbols)
+                Log.d(
+                    "MainActivity",
+                    "SetupApp: ${symbols.size} symbols were read from API and added to db"
+                )
+            }
+            .addTo(autoDisposable)
     }
 }

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:textSize="10sp"
-        android:layout_weight="10"
+        android:layout_weight="15"
         android:textAlignment="viewStart"
         android:padding="3dp"/>
 
@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:textSize="10sp"
-        android:layout_weight="10"
-        android:textAlignment="viewStart"
+        android:layout_weight="20"
+        android:textAlignment="viewEnd"
         android:padding="3dp" />
 
     <TextView
@@ -37,8 +37,8 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:textSize="10sp"
-        android:layout_weight="11"
-        android:textAlignment="viewEnd"
+        android:layout_weight="15"
+        android:textAlignment="viewStart"
         android:padding="3dp" />
 
     <TextView
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:textSize="10sp"
-        android:layout_weight="10"
+        android:layout_weight="20"
         android:textAlignment="viewStart"
         android:padding="3dp" />
 
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:textSize="10sp"
-        android:layout_weight="10"
+        android:layout_weight="20"
         android:textAlignment="viewEnd"
         android:padding="3dp" />
 
@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:textSize="10sp"
-        android:layout_weight="10"
+        android:layout_weight="20"
         android:textAlignment="viewEnd"
         android:padding="3dp" />
 

@@ -24,64 +24,70 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/coin_symbol"
+                android:id="@+id/header_symbol"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:layout_weight="1"
+                android:layout_weight="15"
                 android:text="Symbol"
                 android:textAlignment="viewStart"
-                android:padding="3dp"/>
+                android:autoSizeTextType="uniform"
+                android:padding="1dp"/>
 
             <TextView
-                android:id="@+id/coin_price"
+                android:id="@+id/header_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:layout_weight="1"
+                android:layout_weight="20"
                 android:text="Price"
-                android:textAlignment="viewStart"
-                android:padding="3dp" />
+                android:textAlignment="center"
+                android:autoSizeTextType="uniform"
+                android:padding="1dp" />
 
             <TextView
-                android:id="@+id/coin_change"
+                android:id="@+id/header_change"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:layout_weight="1"
+                android:layout_weight="15"
                 android:text="%24hr"
-                android:textAlignment="viewStart"
-                android:padding="3dp" />
+                android:textAlignment="center"
+                android:autoSizeTextType="uniform"
+                android:padding="1dp" />
 
             <TextView
-                android:id="@+id/coin_ath"
+                android:id="@+id/header_ath"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:layout_weight="1"
+                android:layout_weight="20"
                 android:text="ATH"
-                android:textAlignment="viewStart"
-                android:padding="3dp" />
+                android:textAlignment="center"
+                android:autoSizeTextType="uniform"
+                android:padding="1dp" />
 
             <TextView
-                android:id="@+id/coin_volume"
+                android:id="@+id/header_volume"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:layout_weight="1"
+                android:layout_weight="20"
                 android:text="Volume"
                 android:textAlignment="viewEnd"
-                android:padding="3dp" />
+                android:autoSizeTextType="uniform"
+                android:padding="1dp" />
 
             <TextView
-                android:id="@+id/coin_mcap"
+                android:id="@+id/header_mcap"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:layout_weight="1"
+                android:layout_weight="20"
                 android:text="MCap"
                 android:textAlignment="viewEnd"
-                android:padding="3dp" />
+                android:autoSizeTextType="uniform"
+                android:padding="1dp" />
 
         </LinearLayout>
 

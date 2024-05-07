@@ -21,44 +21,44 @@
 
         <TextView
             android:id="@+id/symbol"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_weight="20"
-            android:padding="6dp"
+            android:textAlignment="viewStart"
             android:textSize="@dimen/small_text" />
 
         <TextView
             android:id="@+id/price"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="20"
-            android:padding="6dp"
+            android:textAlignment="center"
+            android:paddingEnd="1dp"
             android:textSize="@dimen/small_text" />
 
         <TextView
             android:id="@+id/change"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="20"
-            android:padding="6dp"
+            android:layout_weight="10"
+            android:textAlignment="center"
             android:textSize="@dimen/small_text" />
 
         <TextView
             android:id="@+id/volume"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="20"
-            android:padding="6dp"
+            android:layout_weight="25"
+            android:textAlignment="viewEnd"
             android:textSize="@dimen/small_text" />
 
         <TextView
             android:id="@+id/mcap"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_weight="20"
-            android:padding="6dp"
+            android:layout_weight="25"
             android:textAlignment="viewEnd"
             android:textSize="@dimen/small_text" />
 

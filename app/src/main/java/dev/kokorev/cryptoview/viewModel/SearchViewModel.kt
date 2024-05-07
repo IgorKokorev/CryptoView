@@ -6,19 +6,22 @@ import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.ConvertData
+import dev.kokorev.cryptoview.views.fragments.LastSorting
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTicker
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class SearchViewModel : ViewModel() {
     @Inject
     lateinit var remoteApi: RemoteApi
-
     @Inject
     lateinit var repository: Repository
-
+    private val compositeDisposable = CompositeDisposable()
     val cpTickers: Observable<List<CoinPaprikaTicker>>
+    var sorting = LastSorting.VOLUME // field for RV sorting
+    var direction = 1 // sorting direction
 //    val showProgressBar: BehaviorSubject<Boolean>
 
     init {
@@ -33,7 +36,8 @@ class SearchViewModel : ViewModel() {
         // If enough time pasts call the API
         if (System.currentTimeMillis() > (lastTime + Constants.CP_TICKERS_CALL_INTERVAL)) {
             repository.saveLastCpTickersCallTime()
-            remoteApi.getCoinPaprikaTickers()
+
+            val disposable = remoteApi.getCoinPaprikaTickers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe {
@@ -42,6 +46,12 @@ class SearchViewModel : ViewModel() {
                         .toList()
                     repository.addCoinPaprikaTickers(tickers)
                 }
+            compositeDisposable.add(disposable)
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
     }
 }
