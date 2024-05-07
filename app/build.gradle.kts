@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.cli.common.incrementalCompilationIsEnabled
-import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.isIncrementalKapt
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -50,6 +48,9 @@ android {
 
 dependencies {
     implementation(project(":binance_api"))
+    implementation(project(":cmc_api"))
+    implementation(project(":coin_paprika_api"))
+    implementation(project(":room_db"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -61,10 +62,15 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
 
+    implementation(libs.glide)
+    kapt(libs.glide.annotation.processor)
+
     implementation(libs.dagger)
     kapt(libs.daggerCompiler)
 
     implementation(libs.rxandroid)
+
+    implementation(libs.highcharts)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

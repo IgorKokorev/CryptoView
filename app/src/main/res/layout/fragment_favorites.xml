@@ -9,14 +9,15 @@
     tools:context=".views.fragments.MainFragment">
 
     <TextView
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@color/light"
-        android:textSize="36dp"
+        android:textColor="@color/white"
+        android:textSize="24dp"
         android:text="FavoritesFragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

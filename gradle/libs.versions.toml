@@ -1,5 +1,5 @@
 [versions]
-agp = "8.3.2"
+agp = "8.4.0"
 kotlin = "1.9.0"
 coreKtx = "1.12.0"
 junit = "4.13.2"
@@ -25,6 +25,10 @@ work_version = "2.9.0"
 rxandroid_version = "3.0.0"
 rxjava_version = "3.1.8"
 retrofit_adapter_rxjava3_version = "3.0.0"
+
+anychart_version = "1.1.5"
+androidplot_version = "1.5.10"
+highcharts_version = "11.4.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -67,6 +71,10 @@ glide_annotation_processor = { group = "com.github.bumptech.glide", name = "comp
 
 coroutines_core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines_version" }
 coroutines_android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines_version" }
+
+anychart = { group = "com.github.AnyChart", name = "AnyChart-Android", version.ref = "anychart_version" }
+androidplot = { group = "com.androidplot", name = "androidplot-core" , version.ref = "androidplot_version" }
+highcharts = { group = "com.github.highcharts", name = "highcharts-android", version.ref = "highcharts_version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

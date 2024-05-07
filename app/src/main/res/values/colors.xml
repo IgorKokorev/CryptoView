@@ -2,11 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="dark">#003320</color>
+    <color name="dark">#001610</color>
+    <color name="dark_transparent">#20003320</color>
     <color name="darkAccent">#400000</color>
-    <color name="medium">#007147</color>
+    <color name="medium">#003823</color>
     <color name="mediumAccent">#800000</color>
     <color name="light">#00FFA0</color>
     <color name="lightAccent">#FFA0A0</color>
+
     <color name="menu_item_color">#FFFFFF</color>
 </resources>
