@@ -29,7 +29,7 @@ android {
         }
     }
 
-    compileOptions.incremental = false
+//    compileOptions.incremental = false
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
