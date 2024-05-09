@@ -20,15 +20,16 @@ import dev.kokorev.cryptoview.databinding.OneColumnItemViewBinding
 import dev.kokorev.cryptoview.databinding.TwoColumnItemViewBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
-import dev.kokorev.cryptoview.viewModel.InfoViewModel
-import dev.kokorev.cryptoview.views.MainActivity
+import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class InfoFragment : Fragment() {
     private lateinit var binding: FragmentInfoBinding
     private val autoDisposable = AutoDisposable()
-    private val viewModel: InfoViewModel by viewModels()
+    private val viewModel: CoinViewModel by viewModels<CoinViewModel>(
+        ownerProducer = { requireParentFragment() }
+    )
     private var cpDescription = ""
     private var cmcDescription = ""
 
@@ -45,14 +46,14 @@ class InfoFragment : Fragment() {
         val coinPaprikaId = arguments?.getString(Constants.ID) ?: return binding.root
         val symbol = arguments?.getString(Constants.SYMBOL) ?: return binding.root
 
-            viewModel.remoteApi.getCoinPaprikaCoinInfo(coinPaprikaId)
+        viewModel.remoteApi.getCoinPaprikaCoinInfo(coinPaprikaId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
                     setupCoinPaprikaData(it)
                 },
-                {t ->
+                { t ->
                     Log.d(
                         "InfoFragment",
                         "Error getting data from CoinPaparikaCoinInfo",
@@ -69,7 +70,7 @@ class InfoFragment : Fragment() {
                     val cmcInfo = it.data.get(symbol)?.get(0) // Coin Info from CoinMarketCap
                     if (cmcInfo != null) setupCmcData(cmcInfo!!)
                 },
-                {t ->
+                { t ->
                     Log.d(
                         "InfoFragment",
                         "Error getting data from CmcMetaData",
@@ -102,14 +103,6 @@ class InfoFragment : Fragment() {
         // Coin name and symbol
         val nameAndSymbol = cpInfo.name + " (" + cpInfo.symbol + ")"
         binding.name.text = nameAndSymbol
-
-        // Launch Chart fragment on click
-        binding.chartLink.setOnClickListener {
-            (requireActivity() as MainActivity).launchChartFragment(
-                coinPaprikaId,
-                symbol
-            )
-        }
 
         // Coin description from both APIs
         cpDescription = cpInfo.description ?: ""
@@ -185,7 +178,7 @@ class InfoFragment : Fragment() {
         if (cpInfo.openSource != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
             itemViewBinding.name.text = "Open source:"
-            itemViewBinding.value.text = if(cpInfo.openSource!!) "Yes" else "No"
+            itemViewBinding.value.text = if (cpInfo.openSource!!) "Yes" else "No"
             binding.infoList.addView(itemViewBinding.root)
         }
 

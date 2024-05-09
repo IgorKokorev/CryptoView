@@ -58,7 +58,7 @@ class MainFragment : Fragment() {
                 position: Int,
                 binding: MainCoinItemBinding
             ) {
-                (requireActivity() as MainActivity).launchInfoFragment(
+                (requireActivity() as MainActivity).launchCoinFragment(
                     topMover.coinPaprikaId,
                     topMover.symbol
                 )

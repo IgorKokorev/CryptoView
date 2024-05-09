@@ -5,11 +5,11 @@ import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.domain.RemoteApi
 import javax.inject.Inject
 
-class ChartViewModel : ViewModel() {
-/*    @Inject
+class CoinViewModel : ViewModel() {
+    @Inject
     lateinit var remoteApi: RemoteApi
 
     init {
         App.instance.dagger.inject(this)
-    }*/
+    }
 }

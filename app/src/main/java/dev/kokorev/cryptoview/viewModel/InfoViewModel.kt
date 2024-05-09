@@ -6,10 +6,10 @@ import dev.kokorev.cryptoview.domain.RemoteApi
 import javax.inject.Inject
 
 class InfoViewModel : ViewModel() {
-    @Inject
+/*    @Inject
     lateinit var remoteApi: RemoteApi
 
     init {
         App.instance.dagger.inject(this)
-    }
+    }*/
 }

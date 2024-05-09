@@ -2,6 +2,7 @@ package dev.kokorev.cryptoview.views.fragments
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +32,7 @@ import dev.kokorev.cryptoview.databinding.FragmentChartBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
-import dev.kokorev.cryptoview.viewModel.ChartViewModel
+import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
@@ -39,7 +40,9 @@ import java.text.DecimalFormat
 class ChartFragment : Fragment() {
     private lateinit var binding: FragmentChartBinding
     private val autoDisposable = AutoDisposable()
-    private val viewModel: ChartViewModel by viewModels()
+    private val viewModel: CoinViewModel by viewModels<CoinViewModel>(
+        ownerProducer = { requireParentFragment() }
+    )
 
     // Chart data
     private lateinit var hiChartView: HIChartView
@@ -112,7 +115,7 @@ class ChartFragment : Fragment() {
             .addTo(autoDisposable)
 
         // Refresh chart with delay, otherwise sometimes it isn't drawn.
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             updateChart()
             Log.d("ChartFragment",
                 "Chart refreshed")
@@ -197,11 +200,6 @@ class ChartFragment : Fragment() {
             style = whiteColorStyle
         }
 
-        // Setting empty serie to show nothing
-        val emptySeries = HILine().apply {
-            data = arrayListOf<Double>()
-        }
-
         val hiTooltip = HITooltip().apply {
             shared = true
             useHTML = true
@@ -260,7 +258,7 @@ class ChartFragment : Fragment() {
     }
 
     private fun convertDate(timestamp: String): String {
-        val year = timestamp.substring(0, 4).toInt()
+//        val year = timestamp.substring(0, 4).toInt()
         val month = timestamp.substring(5, 7).toInt()
         val dayWithHiph = timestamp.substring(8, 10)
         val monthString = when (month) {

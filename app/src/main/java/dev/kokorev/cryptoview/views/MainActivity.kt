@@ -17,9 +17,8 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.ConvertData
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
-import dev.kokorev.cryptoview.views.fragments.ChartFragment
+import dev.kokorev.cryptoview.views.fragments.CoinFragment
 import dev.kokorev.cryptoview.views.fragments.FavoritesFragment
-import dev.kokorev.cryptoview.views.fragments.InfoFragment
 import dev.kokorev.cryptoview.views.fragments.MainFragment
 import dev.kokorev.cryptoview.views.fragments.SearchFragment
 import dev.kokorev.cryptoview.views.fragments.SettingsFragment
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         }
         setupApp()
         initMenuButtons()
-        replaceFragment(MainFragment(), "main")
+        addFragment(MainFragment(), Constants.MAIN_FRAGMENT_TAG)
 
     }
 
@@ -55,14 +54,14 @@ class MainActivity : AppCompatActivity() {
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.main -> {
-                    val tag = "main"
+                    val tag = Constants.MAIN_FRAGMENT_TAG
                     val fragment = supportFragmentManager.findFragmentByTag(tag) ?: MainFragment()
                     replaceFragment(fragment, tag)
                     true
                 }
 
                 R.id.favorites -> {
-                    val tag = "favorites"
+                    val tag = Constants.FAVORITES_FRAGMENT_TAG
                     val fragment =
                         supportFragmentManager.findFragmentByTag(tag) ?: FavoritesFragment()
                     replaceFragment(fragment, tag)
@@ -70,14 +69,14 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.search -> {
-                    val tag = "search"
+                    val tag = Constants.SEARCH_FRAGMENT_TAG
                     val fragment = supportFragmentManager.findFragmentByTag(tag) ?: SearchFragment()
                     replaceFragment(fragment, tag)
                     true
                 }
 
                 R.id.settings -> {
-                    val tag = "settings"
+                    val tag = Constants.SETTINGS_FRAGMENT_TAG
                     val fragment =
                         supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
                     replaceFragment(fragment, tag)
@@ -90,22 +89,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun launchInfoFragment(coinPaprikaId: String, symbol: String) {
+    fun launchCoinFragment(coinPaprikaId: String, symbol: String) {
         val bundle = Bundle()
         bundle.putString(Constants.ID, coinPaprikaId)
         bundle.putString(Constants.SYMBOL, symbol)
-        val fragment = InfoFragment()
+        val fragment = CoinFragment()
         fragment.arguments = bundle
-        replaceFragment(fragment, "info")
-    }
-
-    fun launchChartFragment(coinPaprikaId: String, symbol: String) {
-        val bundle = Bundle()
-        bundle.putString(Constants.ID, coinPaprikaId)
-        bundle.putString(Constants.SYMBOL, symbol)
-        val fragment = ChartFragment()
-        fragment.arguments = bundle
-        replaceFragment(fragment, "chart")
+        replaceFragment(fragment, Constants.COIN_FRAGMENT_TAG)
     }
 
     fun replaceFragment(fragment: Fragment, tag: String) {

@@ -62,7 +62,7 @@ class SearchFragment : Fragment() {
                 position: Int,
                 binding: SearchCoinItemBinding
             ) {
-                (requireActivity() as MainActivity).launchInfoFragment(
+                (requireActivity() as MainActivity).launchCoinFragment(
                     coinPaprikaTicker.coinPaprikaId,
                     coinPaprikaTicker.symbol
                 )

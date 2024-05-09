@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.viewPager2)
 
     implementation(libs.glide)
     kapt(libs.glide.annotation.processor)
