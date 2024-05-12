@@ -49,6 +49,12 @@ class Repository(val preferenceProvider: PreferenceProvider) {
             favoriteCoinDao.insertFavoriteCoin(coin)
         }
     }
+    fun deleteFavorite(coinPaprikaId: String) {
+        Executors.newSingleThreadExecutor().execute {
+            favoriteCoinDao.deleteByCoinPaprikaId(coinPaprikaId)
+        }
+    }
+    fun findFavoriteCoinByCoinPaprikaId(coinPaprikaId: String) = favoriteCoinDao.findByCoinPaprikaId(coinPaprikaId)
 
     // Shared Preference interaction
     fun getLastTopMoversCallTime() = preferenceProvider.getLastTopMoversCallTime()

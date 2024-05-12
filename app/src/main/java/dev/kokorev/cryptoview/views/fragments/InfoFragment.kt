@@ -35,6 +35,7 @@ class InfoFragment : Fragment() {
     )
     private var cpDescription = ""
     private var cmcDescription = ""
+    private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +54,16 @@ class InfoFragment : Fragment() {
             viewModel.repository.findBinanceSymbolsByBaseAsset(symbol)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe({list ->
-                    Log.d("InfoFragment", "List of Binance tikers corresponding to BaseAsset: " + symbol + "(" + list.size + " pairs)")
+                .subscribe({ list ->
+                    Log.d(
+                        "InfoFragment",
+                        "List of Binance tikers corresponding to BaseAsset: " + symbol + "(" + list.size + " pairs)"
+                    )
                     list.forEach { bs ->
-                        Log.d("InfoFragment", "Tiker: " + bs.symbol + ", id: " + bs.id + ", status: " + bs.status)
+                        Log.d(
+                            "InfoFragment",
+                            "Tiker: " + bs.symbol + ", id: " + bs.id + ", status: " + bs.status
+                        )
                     }
                 },
                     { t ->
@@ -66,10 +73,16 @@ class InfoFragment : Fragment() {
             viewModel.repository.findBinanceSymbolsByQuoteAsset(symbol)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe({list ->
-                    Log.d("InfoFragment", "List of Binance tikers corresponding to QuoteAsset: " + symbol + "(" + list.size + " pairs)")
+                .subscribe({ list ->
+                    Log.d(
+                        "InfoFragment",
+                        "List of Binance tikers corresponding to QuoteAsset: " + symbol + "(" + list.size + " pairs)"
+                    )
                     list.forEach { bs ->
-                        Log.d("InfoFragment", "Tiker: " + bs.symbol + ", id: " + bs.id + ", status: " + bs.status)
+                        Log.d(
+                            "InfoFragment",
+                            "Tiker: " + bs.symbol + ", id: " + bs.id + ", status: " + bs.status
+                        )
                     }
                 },
                     { t ->
@@ -118,9 +131,23 @@ class InfoFragment : Fragment() {
 
     private fun setupFavoriteFab(coin: CoinDetailsEntity) {
         binding.favoriteFab.setOnClickListener {
-            val favoriteCoin: FavoriteCoin = Converter.CoinDetailsEntityToFavoriteCoin(coin)
-            viewModel.repository.addFavorite(favoriteCoin)
+            if (isFavorite) {
+                viewModel.repository.deleteFavorite(coin.id)
+            } else {
+                val favoriteCoin: FavoriteCoin = Converter.CoinDetailsEntityToFavoriteCoin(coin)
+                viewModel.repository.addFavorite(favoriteCoin)
+            }
+            isFavorite = !isFavorite
+            setFavoriteIcon()
         }
+    }
+
+    // set 'add to favorites' fab icon depending on status
+    private fun setFavoriteIcon() {
+        binding.favoriteFab.setImageResource(
+            if (isFavorite) R.drawable.icon_favorite_fill
+            else R.drawable.icon_favorite
+        )
     }
 
     private fun setupCmcData(cmcInfo: CmcCoinDataDTO) {
@@ -133,6 +160,19 @@ class InfoFragment : Fragment() {
     ) {
         val coinPaprikaId = cpInfo.id
         val symbol = cpInfo.symbol
+
+        viewModel.repository.findFavoriteCoinByCoinPaprikaId(coinPaprikaId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                isFavorite = true
+                setFavoriteIcon()
+            },
+                {
+                    isFavorite = false
+                    setFavoriteIcon()
+                })
+            .addTo(autoDisposable)
 
         // Coin logo
         Glide.with(binding.root)

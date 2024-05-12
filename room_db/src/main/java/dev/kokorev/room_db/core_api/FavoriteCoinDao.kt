@@ -23,4 +23,10 @@ interface FavoriteCoinDao {
 
     @Query("DELETE FROM favorite_coin WHERE id = :id")
     fun deleteById(id: Int)
+
+    @Query("DELETE FROM favorite_coin WHERE coin_paprika_id = :coinPaprikaId")
+    fun deleteByCoinPaprikaId(coinPaprikaId: String)
+
+    @Query("SELECT * FROM favorite_coin WHERE coin_paprika_id = :coinPaprikaId")
+    fun findByCoinPaprikaId(coinPaprikaId: String): Observable<FavoriteCoin>
 }
