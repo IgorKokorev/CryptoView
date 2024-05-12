@@ -11,14 +11,18 @@ import dev.kokorev.cmc_api.CmcApi
 import dev.kokorev.cmc_api.entity.cmc_listing.CmcListingDTO
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcMetadataDTO
 import dev.kokorev.coin_paprika_api.CoinPaprikaApi
+import dev.kokorev.token_metrics_api.TokenMetricsApi
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 // Interactor to communicate with remote apis
 class RemoteApi(
     private val binanceApi: BinanceApi,
     private val cmcApi: CmcApi,
-    private val coinPaprikaApi: CoinPaprikaApi
+    private val coinPaprikaApi: CoinPaprikaApi,
+    private val tokenMetricsApi: TokenMetricsApi
 ) {
+    var progressBarState: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     // Binance API info
     fun getBinanceInfo() : Observable<BinanceExchangeInfoDTO> = binanceApi.getExchangeInfo()
@@ -39,12 +43,11 @@ class RemoteApi(
     // CoinPaprika API info
     fun getCoinPaprikaAllCoins() = coinPaprikaApi.getCoins()
     fun getCoinPaprikaTop10Movers() : Observable<TopMoversEntity> = coinPaprikaApi.getTop10Movers()
-
     fun getCoinPaprikaCoinInfo(id: String): Observable<CoinDetailsEntity> = coinPaprikaApi.getCoin(id)
-
     fun getCoinPaprikaTicker(id: String) = coinPaprikaApi.getTicker(id)
-
     fun getCoinPaprikaTickers() = coinPaprikaApi.getTickers()
-
     fun getCoinPaprikaTickerHistorical(id: String) = coinPaprikaApi.getTickerHistoricalTicks(id)
+
+    // TokenMetrics API
+    fun getAIReport(symbol: String) = tokenMetricsApi.getAiReports(symbol = symbol)
 }

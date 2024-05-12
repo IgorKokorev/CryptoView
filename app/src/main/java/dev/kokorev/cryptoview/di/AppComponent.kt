@@ -11,6 +11,7 @@ import dev.kokorev.cryptoview.viewModel.FavoritesViewModel
 import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.viewModel.SearchViewModel
 import dev.kokorev.cryptoview.viewModel.SettingsViewModel
+import dev.kokorev.token_metrics_api.TokenMetricsProvider
 import javax.inject.Singleton
 
 @Singleton
@@ -18,7 +19,8 @@ import javax.inject.Singleton
     dependencies = [
         BinanceProvider::class,
         CoinPaprikaProvider::class,
-        CmcProvider::class
+        CmcProvider::class,
+        TokenMetricsProvider::class,
     ],
     modules = [DomainModule::class]
 )

@@ -1,14 +1,18 @@
 package dev.kokorev.cryptoview.views
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.coinpaprika.apiclient.entity.CoinType
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
@@ -34,19 +38,61 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge() // To check wth is this
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        autoDisposable.bindTo(lifecycle)
-
-        // To check wtf is this
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+
+
+        autoDisposable.bindTo(lifecycle)
+
+        setupOnBackPressed()
         setupApp()
         initMenuButtons()
+
         addFragment(MainFragment(), Constants.MAIN_FRAGMENT_TAG)
 
+    }
+
+    private fun setupOnBackPressed() {
+        val onBackPressedExitCallback = object : OnBackPressedCallback(enabled = false) {
+            override fun handleOnBackPressed() {
+                Log.d("MainActivity", "onBackPressedExitCallback")
+                finish()
+            }
+        }
+
+        val onBackPressedToastCallback = object : OnBackPressedCallback(enabled = false) {
+            override fun handleOnBackPressed() {
+                Toast.makeText(
+                    binding.root.context,
+                    getString(R.string.double_tap_toast),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                Log.d(
+                    "MainActivity",
+                    "onBackPressedToastCallback setting onBackPressedExitCallback.isEnabled = true"
+                )
+                onBackPressedExitCallback.isEnabled = true
+                Handler(Looper.getMainLooper()).postDelayed({
+                    Log.d(
+                        "MainActivity",
+                        "onBackPressedToastCallback setting onBackPressedExitCallback.isEnabled = false"
+                    )
+                    onBackPressedExitCallback.isEnabled = false
+                }, Constants.BACK_CLICK_TIME_INTERVAL)
+            }
+        }
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            onBackPressedToastCallback.isEnabled = supportFragmentManager.backStackEntryCount <= 1
+        }
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedToastCallback)
+        onBackPressedDispatcher.addCallback(this, onBackPressedExitCallback)
     }
 
     private fun initMenuButtons() {
@@ -89,10 +135,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun launchCoinFragment(coinPaprikaId: String, symbol: String) {
+    fun launchCoinFragment(coinPaprikaId: String, symbol: String, name: String) {
         val bundle = Bundle()
-        bundle.putString(Constants.ID, coinPaprikaId)
-        bundle.putString(Constants.SYMBOL, symbol)
+        bundle.putString(Constants.COIN_PAPRIKA_ID, coinPaprikaId)
+        bundle.putString(Constants.COIN_SYMBOL, symbol)
+        bundle.putString(Constants.COIN_NAME, name)
         val fragment = CoinFragment()
         fragment.arguments = bundle
         replaceFragment(fragment, Constants.COIN_FRAGMENT_TAG)
@@ -101,6 +148,7 @@ class MainActivity : AppCompatActivity() {
     fun replaceFragment(fragment: Fragment, tag: String) {
         supportFragmentManager
             .beginTransaction()
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .replace(R.id.fragment_placeholder, fragment)
             .addToBackStack(tag)
             .commit()
@@ -115,9 +163,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setupApp() {
-        updateBinanceInfo()
-        updateCoinPaprikaTickers()
-        updateCoinPaprikaAllCoins()
+        val lastAppUpdateTime = viewModel.repository.getLastAppUpdateTime()
+        val currentTime = System.currentTimeMillis()
+        if (lastAppUpdateTime + Constants.APP_UPDATE_INTERVAL < currentTime) {
+            Log.d(this.localClassName, "Setting Application data")
+            viewModel.repository.setLastAppUpdateTime()
+            updateBinanceInfo()
+            updateCoinPaprikaTickers()
+            updateCoinPaprikaAllCoins()
+        }
     }
 
     private fun updateCoinPaprikaAllCoins() {

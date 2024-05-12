@@ -8,15 +8,16 @@ import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.ConvertData
 import dev.kokorev.room_db.core_api.entity.TopMover
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class MainViewModel : ViewModel() {
     @Inject
     lateinit var remoteApi: RemoteApi
-
     @Inject
     lateinit var repository: Repository
+    private var disposable: Disposable? = null
 
     val topMovers: Observable<List<TopMover>>
 //    val showProgressBar: BehaviorSubject<Boolean>
@@ -32,15 +33,19 @@ class MainViewModel : ViewModel() {
         val lastTime = repository.getLastTopMoversCallTime()
         // If enough time pasts call the API
         if (System.currentTimeMillis() > (lastTime + Constants.TOP_MOVERS_CALL_INTERVAL)) {
-            repository.clearTopMovers()
-            repository.saveLastTopMoversCallTime()
-            remoteApi.getCoinPaprikaTop10Movers()
+            disposable = remoteApi.getCoinPaprikaTop10Movers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe {
+                    repository.saveLastTopMoversCallTime()
                     val result = (it.losers + it.gainers).map { dto -> ConvertData.dtoToTopMover(dto) }
                     repository.saveTopMovers(result)
                 }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposable?.dispose()
     }
 }

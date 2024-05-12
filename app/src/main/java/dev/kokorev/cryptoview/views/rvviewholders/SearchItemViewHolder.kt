@@ -1,5 +1,6 @@
 package dev.kokorev.cryptoview.views.rvviewholders
 
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import dev.kokorev.cryptoview.R
@@ -11,66 +12,66 @@ import java.text.DecimalFormat
 
 class SearchItemViewHolder(val binding: SearchCoinItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
+    private lateinit var ticker: CoinPaprikaTicker
 
     fun setData(
         coinPaprikaTicker: CoinPaprikaTicker,
         clickListener: SearchAdapter.OnItemClickListener,
         position: Int
     ) {
-        binding.coinSymbol.text = coinPaprikaTicker.symbol
+        ticker = coinPaprikaTicker
+        binding.coinSymbol.text = ticker.symbol
+        binding.coinName.text = ticker.name
+        binding.coinPrice.text = setPrice(ticker.price)
+        binding.coinAth.text = setPrice(ticker.athPrice)
+        setPriceChange(ticker.percentChange24h, binding.coinChange)
+        setPriceChange(ticker.percentFromPriceAth, binding.coinAthChange)
 
-        val priceStr = if (coinPaprikaTicker.price == null) "-"
+        val volume = NumbersUtils.formatBigNumber(ticker.dailyVolume ?: 0.0)
+        binding.coinVolume.text = volume
+
+        val mcap = NumbersUtils.formatBigNumber(ticker.marketCap ?: 0.0)
+        binding.coinMcap.text = mcap
+
+        binding.root.setOnClickListener {
+            clickListener.click(ticker, position, binding)
+        }
+    }
+
+    private fun setPrice(price: Double?): String {
+        return if (price == null) "-"
         else DecimalFormat("#,###.########").format(
             NumbersUtils.roundNumber(
-                coinPaprikaTicker.price!!,
+                price,
                 3
             )
         )
-        binding.coinPrice.text = priceStr
+    }
 
-        val percentChange = coinPaprikaTicker.percentChange24h ?: 0.0
-        val change = DecimalFormat("#,##0.0").format(
+    private fun setPriceChange(percentChange: Double?, view: TextView) {
+        val percentChange = percentChange ?: 0.0
+        var change = DecimalFormat("#,##0.0").format(
             NumbersUtils.roundNumber(
                 percentChange,
                 2
             )
         ) + "%"
-        binding.coinChange.text = change
-
-
-        val athStr = if (coinPaprikaTicker.athPrice == null) "-"
-        else DecimalFormat("#,###.########").format(
-            NumbersUtils.roundNumber(
-                coinPaprikaTicker.athPrice!!,
-                3
-            )
-        )
-        binding.coinAth.text = athStr
-
         if (percentChange < 0) {
-            binding.coinChange.setTextColor(
+            view.setTextColor(
                 ContextCompat.getColor(
                     binding.root.context,
                     R.color.lightAccent
                 )
             )
-        } else {
-            binding.coinChange.setTextColor(
+        } else if (percentChange > 0) {
+            change = '+' + change
+            view.setTextColor(
                 ContextCompat.getColor(
                     binding.root.context,
                     R.color.light
                 )
             )
         }
-
-        val volume = NumbersUtils.formatBigNumber(coinPaprikaTicker.dailyVolume ?: 0.0)
-        binding.coinVolume.text = volume
-
-        val mcap = NumbersUtils.formatBigNumber(coinPaprikaTicker.marketCap ?: 0.0)
-        binding.coinMcap.text = mcap
-
-        binding.root.setOnClickListener {
-            clickListener.click(coinPaprikaTicker, position, binding)
-        }
+        view.text = change
     }
 }

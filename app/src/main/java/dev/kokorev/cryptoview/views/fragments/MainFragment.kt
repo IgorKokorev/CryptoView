@@ -18,12 +18,16 @@ import dev.kokorev.room_db.core_api.entity.TopMover
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
+/**
+ * Main fragment which is started once app starts. Shows Global info about Crypto markets
+ */
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private val autoDisposable = AutoDisposable()
     private val viewModel: MainViewModel by viewModels()
     private lateinit var mainAdapter: MainAdapter
 
+    // Top movers - list of 10 gainers and losers for the last 24 hours
     private var topMovers: List<TopMover> = listOf()
         set(value) {
             if (field == value) return
@@ -57,10 +61,11 @@ class MainFragment : Fragment() {
                 topMover: TopMover,
                 position: Int,
                 binding: MainCoinItemBinding
-            ) {
+            ) { // On item click Coin fragment opens
                 (requireActivity() as MainActivity).launchCoinFragment(
                     topMover.coinPaprikaId,
-                    topMover.symbol
+                    topMover.symbol,
+                    topMover.name
                 )
             }
         }).apply {

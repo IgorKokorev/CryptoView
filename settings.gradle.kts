@@ -29,4 +29,4 @@ include(":binance_api")
 include(":cmc_api")
 include(":coin_paprika_api")
 include(":room_db")
- 
+include(":token_metrics_api")

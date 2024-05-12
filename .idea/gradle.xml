@@ -8,12 +8,13 @@
         <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
         <option name="modules">
           <set>
-            <option value="$USER_HOME$/Library/CloudStorage/Dropbox/Coding/Skillfactory/CryptoView" />
-            <option value="$USER_HOME$/Library/CloudStorage/Dropbox/Coding/Skillfactory/CryptoView/app" />
-            <option value="$USER_HOME$/Library/CloudStorage/Dropbox/Coding/Skillfactory/CryptoView/binance_api" />
-            <option value="$USER_HOME$/Library/CloudStorage/Dropbox/Coding/Skillfactory/CryptoView/cmc_api" />
-            <option value="$USER_HOME$/Library/CloudStorage/Dropbox/Coding/Skillfactory/CryptoView/coin_paprika_api" />
-            <option value="$USER_HOME$/Library/CloudStorage/Dropbox/Coding/Skillfactory/CryptoView/room_db" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/binance_api" />
+            <option value="$PROJECT_DIR$/cmc_api" />
+            <option value="$PROJECT_DIR$/coin_paprika_api" />
+            <option value="$PROJECT_DIR$/room_db" />
+            <option value="$PROJECT_DIR$/token_metrics_api" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

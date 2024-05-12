@@ -67,8 +67,8 @@ class ChartFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentChartBinding.inflate(layoutInflater)
-        coinPaprikaId = arguments?.getString(Constants.ID) ?: ""
-        symbol = arguments?.getString(Constants.SYMBOL) ?: ""
+        coinPaprikaId = arguments?.getString(Constants.COIN_PAPRIKA_ID) ?: ""
+        symbol = arguments?.getString(Constants.COIN_SYMBOL) ?: ""
 
         autoDisposable.bindTo(lifecycle)
         initChartView()

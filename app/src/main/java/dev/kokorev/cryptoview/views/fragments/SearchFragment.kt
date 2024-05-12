@@ -64,7 +64,8 @@ class SearchFragment : Fragment() {
             ) {
                 (requireActivity() as MainActivity).launchCoinFragment(
                     coinPaprikaTicker.coinPaprikaId,
-                    coinPaprikaTicker.symbol
+                    coinPaprikaTicker.symbol,
+                    coinPaprikaTicker.name
                 )
             }
         })

@@ -18,10 +18,17 @@ class Repository(val preferenceProvider: PreferenceProvider) {
     fun addBinanceSymbol(binanceSymbol: BinanceSymbol) = binanceSymbolDao.insertBinanceSymbol(binanceSymbol)
     fun addBinanceSymbols(list: List<BinanceSymbol>) = binanceSymbolDao.insertAll(list)
     fun getAllBinanceSymbols() = binanceSymbolDao.getBinanceSymbols()
+    fun findBinanceSymbolsByBaseAsset(symbol: String) = binanceSymbolDao.findByBaseAsset(symbol)
+    fun findBinanceSymbolsByQuoteAsset(symbol: String) = binanceSymbolDao.findByQuoteAsset(symbol)
 
     // TopMover table interaction
     fun getTopMovers() = topMoverDao.getAll()
-    fun saveTopMovers(list: List<TopMover>) = topMoverDao.insertAll(list)
+    fun saveTopMovers(list: List<TopMover>) {
+        Executors.newSingleThreadExecutor().execute {
+            topMoverDao.deleteAll()
+            topMoverDao.insertAll(list)
+        }
+    }
     fun clearTopMovers() {
         Executors.newSingleThreadExecutor().execute {
             topMoverDao.deleteAll()
@@ -39,6 +46,8 @@ class Repository(val preferenceProvider: PreferenceProvider) {
     fun saveLastTopMoversCallTime() = preferenceProvider.saveLastTopMoversCallTime()
     fun getLastCpTickersCallTime() = preferenceProvider.getLastCpTickersCallTime()
     fun saveLastCpTickersCallTime() = preferenceProvider.saveLastCpTickersCallTime()
+    fun setLastAppUpdateTime() = preferenceProvider.setLastAppUpdateTime()
+    fun getLastAppUpdateTime() = preferenceProvider.getLastAppUpdateTime()
 
 
 }

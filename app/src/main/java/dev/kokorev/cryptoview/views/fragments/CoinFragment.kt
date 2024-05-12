@@ -47,6 +47,9 @@ class CoinFragment : Fragment() {
 //                    tab.text = "Chart"
                     tab.icon = resources.getDrawable(R.drawable.icon_chart, null)
                 }
+                2 -> {
+                    tab.icon = resources.getDrawable(R.drawable.icon_analytics, null)
+                }
                 else -> {
 
                 }
@@ -57,11 +60,14 @@ class CoinFragment : Fragment() {
 }
 
 class CoinPagerAdapter(fragment: Fragment, val args: Bundle?): FragmentStateAdapter(fragment) {
-    override fun getItemCount(): Int = 2
+    override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {
-        val fragment = if (position == 1) ChartFragment()
-        else InfoFragment()
+        val fragment = when (position) {
+            1 -> ChartFragment()
+            2 -> AiFragment()
+            else -> InfoFragment()
+        }
         fragment.arguments = args
         return fragment
     }

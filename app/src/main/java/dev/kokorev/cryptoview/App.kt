@@ -11,7 +11,9 @@ import dev.kokorev.cryptoview.di.modules.DomainModule
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.CoinPaprikaTickerDao
 import dev.kokorev.room_db.core_api.TopMoverDao
+import dev.kokorev.token_metrics_api.DaggerTokenMetricsComponent
 import javax.inject.Inject
+
 
 class App : Application() {
     lateinit var dagger: AppComponent
@@ -31,6 +33,7 @@ class App : Application() {
             .binanceProvider(DaggerBinanceComponent.create())
             .cmcProvider(DaggerCmcComponent.create())
             .coinPaprikaProvider(DaggerCoinPaprikaComponent.create())
+            .tokenMetricsProvider(DaggerTokenMetricsComponent.create())
             .domainModule(DomainModule(this))
             .build()
 
