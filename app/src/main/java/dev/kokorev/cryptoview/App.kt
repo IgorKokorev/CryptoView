@@ -10,6 +10,7 @@ import dev.kokorev.cryptoview.di.DbFacadeComponent
 import dev.kokorev.cryptoview.di.modules.DomainModule
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.CoinPaprikaTickerDao
+import dev.kokorev.room_db.core_api.FavoriteCoinDao
 import dev.kokorev.room_db.core_api.TopMoverDao
 import dev.kokorev.token_metrics_api.DaggerTokenMetricsComponent
 import javax.inject.Inject
@@ -23,6 +24,8 @@ class App : Application() {
     lateinit var topMoverDao: TopMoverDao
     @Inject
     lateinit var coinPaprikaTickerDao: CoinPaprikaTickerDao
+    @Inject
+    lateinit var favoriteCoinDao: FavoriteCoinDao
 
     override fun onCreate() {
         super.onCreate()

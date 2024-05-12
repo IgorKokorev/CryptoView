@@ -41,17 +41,21 @@ class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         autoDisposable.bindTo(lifecycle)
-        binding = FragmentSearchBinding.inflate(layoutInflater)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding = FragmentSearchBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupDataFromViewModel()
         initRecycler()
         setupSorting()
-        return binding.root
     }
 
     // initializing RV
@@ -69,7 +73,7 @@ class SearchFragment : Fragment() {
                 )
             }
         })
-//        searchAdapter.addItems(tickers)
+        searchAdapter.addItems(tickers)
         binding.mainRecycler.adapter = searchAdapter
 //        binding.mainRecycler.addItemDecoration(TopSpacingItemDecoration(0))
     }
@@ -125,7 +129,7 @@ class SearchFragment : Fragment() {
                         (ticker.dailyVolume ?: 0.0) > Constants.MIN_VOLUME &&
                                 (ticker.marketCap ?: 0.0) > Constants.MIN_MCAP
                     }
-                        .sortedByDescending { it.dailyVolume }
+//                        .sortedByDescending { it.dailyVolume }
                 },
                 {
                     Log.d(

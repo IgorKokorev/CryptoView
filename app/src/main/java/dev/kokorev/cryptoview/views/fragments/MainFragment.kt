@@ -91,6 +91,4 @@ class MainFragment : Fragment() {
                 })
             .addTo(autoDisposable)
     }
-
-
 }

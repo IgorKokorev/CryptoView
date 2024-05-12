@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.CoinPaprikaTickerDao
+import dev.kokorev.room_db.core_api.FavoriteCoinDao
 import dev.kokorev.room_db.core_api.TopMoverDao
 import dev.kokorev.room_db.core_api.db.DbContract
 import javax.inject.Singleton
@@ -30,6 +31,12 @@ class DatabaseModule {
     @Singleton
     fun provideCoinPaprikaTickerDao(databaseContract: DbContract): CoinPaprikaTickerDao {
         return databaseContract.coinPaprikaTickerDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFavoriteCoinDao(databaseContract: DbContract): FavoriteCoinDao {
+        return databaseContract.favoriteCoinDao()
     }
 
     @Provides

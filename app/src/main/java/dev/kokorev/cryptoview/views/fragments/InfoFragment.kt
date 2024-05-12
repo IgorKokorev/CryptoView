@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
+import com.coinpaprika.apiclient.entity.FavoriteCoin
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcCoinDataDTO
 import dev.kokorev.cryptoview.BuildConfig
 import dev.kokorev.cryptoview.Constants
@@ -20,6 +21,7 @@ import dev.kokorev.cryptoview.databinding.FragmentInfoBinding
 import dev.kokorev.cryptoview.databinding.OneColumnItemViewBinding
 import dev.kokorev.cryptoview.databinding.TwoColumnItemViewBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
+import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -82,6 +84,7 @@ class InfoFragment : Fragment() {
             .subscribe(
                 {
                     setupCoinPaprikaData(it)
+                    setupFavoriteFab(it)
                 },
                 { t ->
                     Log.d(
@@ -98,7 +101,7 @@ class InfoFragment : Fragment() {
             .subscribe(
                 {
                     val cmcInfo = it.data.get(symbol)?.get(0) // Coin Info from CoinMarketCap
-                    if (cmcInfo != null) setupCmcData(cmcInfo!!)
+                    if (cmcInfo != null) setupCmcData(cmcInfo)
                 },
                 { t ->
                     Log.d(
@@ -111,6 +114,13 @@ class InfoFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    private fun setupFavoriteFab(coin: CoinDetailsEntity) {
+        binding.favoriteFab.setOnClickListener {
+            val favoriteCoin: FavoriteCoin = Converter.CoinDetailsEntityToFavoriteCoin(coin)
+            viewModel.repository.addFavorite(favoriteCoin)
+        }
     }
 
     private fun setupCmcData(cmcInfo: CmcCoinDataDTO) {

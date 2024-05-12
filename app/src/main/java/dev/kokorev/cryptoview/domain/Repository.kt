@@ -1,5 +1,6 @@
 package dev.kokorev.cryptoview.domain
 
+import com.coinpaprika.apiclient.entity.FavoriteCoin
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
@@ -13,6 +14,7 @@ class Repository(val preferenceProvider: PreferenceProvider) {
     val binanceSymbolDao: BinanceSymbolDao = App.instance.binanceSymbolDao
     val topMoverDao = App.instance.topMoverDao
     val coinPaprikaTickerDao = App.instance.coinPaprikaTickerDao
+    val favoriteCoinDao = App.instance.favoriteCoinDao
 
     // BinanceSymbol table interaction
     fun addBinanceSymbol(binanceSymbol: BinanceSymbol) = binanceSymbolDao.insertBinanceSymbol(binanceSymbol)
@@ -37,9 +39,16 @@ class Repository(val preferenceProvider: PreferenceProvider) {
 
     // CoinPaprikaTicker table interaction
     fun getAllCoinPaprikaTickers() = coinPaprikaTickerDao.getCoinPaprikaTickers()
-    fun addCoinPaprikaTickers( list: List<CoinPaprikaTicker>) = coinPaprikaTickerDao.insertAll(list)
+    fun addCoinPaprikaTickers(list: List<CoinPaprikaTicker>) = coinPaprikaTickerDao.insertAll(list)
     fun findCoinPaprikaTickerBySymbol(symbol: String) = coinPaprikaTickerDao.findBySymbol(symbol)
 
+    // FavoriteCoin table interaction
+    fun getFavoriteCoins() = favoriteCoinDao.getAll()
+    fun addFavorite(coin: FavoriteCoin) {
+        Executors.newSingleThreadExecutor().execute {
+            favoriteCoinDao.insertFavoriteCoin(coin)
+        }
+    }
 
     // Shared Preference interaction
     fun getLastTopMoversCallTime() = preferenceProvider.getLastTopMoversCallTime()

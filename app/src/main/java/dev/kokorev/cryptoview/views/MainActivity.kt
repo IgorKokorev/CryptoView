@@ -18,7 +18,7 @@ import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.ActivityMainBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
-import dev.kokorev.cryptoview.utils.ConvertData
+import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
 import dev.kokorev.cryptoview.views.fragments.CoinFragment
@@ -88,6 +88,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
+            Log.d("MainActivity",
+                "BackStackEntryCount = " + supportFragmentManager.backStackEntryCount + ". Fragments:")
+            supportFragmentManager.fragments.forEach {
+                Log.d("MainActivity", "Tag: " + it.tag + ", " + it.toString())
+            }
             onBackPressedToastCallback.isEnabled = supportFragmentManager.backStackEntryCount <= 1
         }
 
@@ -206,7 +211,7 @@ class MainActivity : AppCompatActivity() {
             .observeOn(Schedulers.io())
             .subscribe {
                 val tickers = it
-                    .map { dto -> ConvertData.dtoToCoinPaprikaTicker(dto) }
+                    .map { dto -> Converter.dtoToCoinPaprikaTicker(dto) }
                     .toList()
                 viewModel.repository.addCoinPaprikaTickers(tickers)
             }
@@ -219,7 +224,7 @@ class MainActivity : AppCompatActivity() {
             .observeOn(Schedulers.io())
             .subscribe {
                 val symbols = it.binanceSymbolDTOS.asSequence()
-                    .map { dto -> ConvertData.dtoToBinanceSymbol(dto) }
+                    .map { dto -> Converter.dtoToBinanceSymbol(dto) }
                     .toList()
                 viewModel.repository.addBinanceSymbols(symbols)
                 Log.d(

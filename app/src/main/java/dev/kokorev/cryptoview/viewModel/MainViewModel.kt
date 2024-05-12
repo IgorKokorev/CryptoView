@@ -5,7 +5,7 @@ import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
-import dev.kokorev.cryptoview.utils.ConvertData
+import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.room_db.core_api.entity.TopMover
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -38,7 +38,7 @@ class MainViewModel : ViewModel() {
                 .observeOn(Schedulers.io())
                 .subscribe {
                     repository.saveLastTopMoversCallTime()
-                    val result = (it.losers + it.gainers).map { dto -> ConvertData.dtoToTopMover(dto) }
+                    val result = (it.losers + it.gainers).map { dto -> Converter.dtoToTopMover(dto) }
                     repository.saveTopMovers(result)
                 }
         }
