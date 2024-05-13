@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "binance_symbol", indices = [Index(value = ["symbol"], unique = true)])
-data class BinanceSymbol(
+data class BinanceSymbolDB(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "symbol") var symbol: String,
     @ColumnInfo(name = "status") var status: String,

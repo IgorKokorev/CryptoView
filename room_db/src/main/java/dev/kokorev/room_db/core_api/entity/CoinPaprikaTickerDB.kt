@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "coin_paprika_ticker", indices = [Index(value = ["coin_paprika_id"], unique = true)])
-data class CoinPaprikaTicker(
+data class CoinPaprikaTickerDB(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "coin_paprika_id") var coinPaprikaId: String,
     @ColumnInfo(name = "name") var name: String,

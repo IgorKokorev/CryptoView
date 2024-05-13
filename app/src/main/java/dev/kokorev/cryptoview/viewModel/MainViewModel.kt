@@ -6,7 +6,7 @@ import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter
-import dev.kokorev.room_db.core_api.entity.TopMover
+import dev.kokorev.room_db.core_api.entity.TopMoverDB
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -19,13 +19,13 @@ class MainViewModel : ViewModel() {
     lateinit var repository: Repository
     private var disposable: Disposable? = null
 
-    val topMovers: Observable<List<TopMover>>
+    val topMoversDB: Observable<List<TopMoverDB>>
 //    val showProgressBar: BehaviorSubject<Boolean>
 
     init {
         App.instance.dagger.inject(this)
 //        showProgressBar = interactor.progressBarState
-        topMovers = repository.getTopMovers()
+        topMoversDB = repository.getTopMovers()
         loadTopMovers()
     }
 

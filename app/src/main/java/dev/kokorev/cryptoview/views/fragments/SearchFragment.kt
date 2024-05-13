@@ -22,7 +22,7 @@ import dev.kokorev.cryptoview.views.fragments.LastSorting.PRICE
 import dev.kokorev.cryptoview.views.fragments.LastSorting.SYMBOL
 import dev.kokorev.cryptoview.views.fragments.LastSorting.VOLUME
 import dev.kokorev.cryptoview.views.rvadapters.SearchAdapter
-import dev.kokorev.room_db.core_api.entity.CoinPaprikaTicker
+import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
@@ -31,7 +31,7 @@ class SearchFragment : Fragment() {
     private val autoDisposable = AutoDisposable()
     private val viewModel: SearchViewModel by viewModels()
     private lateinit var searchAdapter: SearchAdapter
-    private var tickers: List<CoinPaprikaTicker> = listOf()
+    private var tickers: List<CoinPaprikaTickerDB> = listOf()
         set(value) {
             if (field == value) return
             field = value.sort(viewModel.sorting, viewModel.direction)
@@ -62,14 +62,14 @@ class SearchFragment : Fragment() {
     private fun initRecycler() {
         searchAdapter = SearchAdapter(object : SearchAdapter.OnItemClickListener {
             override fun click(
-                coinPaprikaTicker: CoinPaprikaTicker,
+                coinPaprikaTickerDB: CoinPaprikaTickerDB,
                 position: Int,
                 binding: SearchCoinItemBinding
             ) {
                 (requireActivity() as MainActivity).launchCoinFragment(
-                    coinPaprikaTicker.coinPaprikaId,
-                    coinPaprikaTicker.symbol,
-                    coinPaprikaTicker.name
+                    coinPaprikaTickerDB.coinPaprikaId,
+                    coinPaprikaTickerDB.symbol,
+                    coinPaprikaTickerDB.name
                 )
             }
         })
@@ -144,10 +144,10 @@ class SearchFragment : Fragment() {
 
 }
 
-private fun List<CoinPaprikaTicker>.sort(
+private fun List<CoinPaprikaTickerDB>.sort(
     sorting: LastSorting,
     direction: Int
-): List<CoinPaprikaTicker> {
+): List<CoinPaprikaTickerDB> {
     return  if (direction > 0) {
         when (sorting) {
             MCAP -> this.sortedByDescending { it.marketCap }

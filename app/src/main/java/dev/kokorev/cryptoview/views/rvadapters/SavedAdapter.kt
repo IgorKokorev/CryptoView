@@ -4,21 +4,29 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import dev.kokorev.cryptoview.databinding.MainCoinItemBinding
-import dev.kokorev.cryptoview.views.rvviewholders.MainItemViewHolder
-import dev.kokorev.room_db.core_api.entity.TopMoverDB
+import dev.kokorev.cryptoview.data.entity.SavedCoin
+import dev.kokorev.cryptoview.databinding.SavedCoinItemBinding
+import dev.kokorev.cryptoview.views.rvviewholders.SavedItemViewHolder
 
 
-class MainAdapter(private val clickListener: OnItemClickListener) :
+class SavedAdapter(
+    private val clickListener: OnItemClickListener
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        private val data = mutableListOf<TopMoverDB>()
+    private val data = mutableListOf<SavedCoin>()
 
     interface OnItemClickListener {
-        fun click(topMoverDB: TopMoverDB, position: Int, binding: MainCoinItemBinding)
+        fun click(savedCoin: SavedCoin, position: Int, binding: SavedCoinItemBinding)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return MainItemViewHolder(MainCoinItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return SavedItemViewHolder(
+            SavedCoinItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemCount(): Int {
@@ -27,14 +35,14 @@ class MainAdapter(private val clickListener: OnItemClickListener) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is MainItemViewHolder -> {
-                val moverEntity = data[position]
-                holder.setData(moverEntity, clickListener, position)
+            is SavedItemViewHolder -> {
+                val savedCoin = data[position]
+                holder.setData(savedCoin, clickListener, position)
             }
         }
     }
 
-    fun addItems(newList: List<TopMoverDB>) {
+    fun addItems(newList: List<SavedCoin>) {
         val numbersDiff = Diff(data, newList)
         val diffResult = DiffUtil.calculateDiff(numbersDiff)
         data.clear()

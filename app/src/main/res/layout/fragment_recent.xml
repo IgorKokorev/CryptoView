@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient45"
-    tools:context=".views.fragments.FavoritesFragment">
+    tools:context=".views.fragments.RecentFragment">
+
 
     <include
         android:id="@+id/header"

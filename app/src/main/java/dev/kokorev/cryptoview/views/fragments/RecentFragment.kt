@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import dev.kokorev.cryptoview.data.entity.FavoriteCoin
+import dev.kokorev.cryptoview.data.entity.RecentCoin
 import dev.kokorev.cryptoview.data.entity.SavedCoin
-import dev.kokorev.cryptoview.databinding.FragmentFavoritesBinding
+import dev.kokorev.cryptoview.databinding.FragmentRecentBinding
 import dev.kokorev.cryptoview.databinding.SavedCoinItemBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
@@ -21,17 +21,17 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class FavoritesFragment : Fragment() {
-    private lateinit var binding: FragmentFavoritesBinding
+class RecentFragment : Fragment() {
+    private lateinit var binding: FragmentRecentBinding
     private val autoDisposable = AutoDisposable()
     private val viewModel: SavedViewModel by viewModels<SavedViewModel>(
         ownerProducer = { requireParentFragment() }
     )
     private lateinit var savedAdapter: SavedAdapter
-    private var recyclerData: List<FavoriteCoin> = listOf()
+    private var recyclerData: List<RecentCoin> = listOf()
         set(value) {
             if (field == value) return
-            field = value
+            field = value.sortedByDescending { coin -> coin.lastTime }
             savedAdapter.addItems(field)
         }
 
@@ -44,7 +44,7 @@ class FavoritesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentFavoritesBinding.inflate(layoutInflater)
+        binding = FragmentRecentBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -75,10 +75,10 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun setupDataFromViewModel() {
-        Observable.zip(viewModel.favorites, viewModel.tikers) { favorites, tikers ->
-            val ids = favorites.map { favorite -> favorite.coinPaprikaId }
+        Observable.zip(viewModel.recents, viewModel.tikers) { recents, tikers ->
+            val ids = recents.map { recent -> recent.coinPaprikaId }
             val filtered = tikers.filter { db -> ids.contains(db.coinPaprikaId) }
-            favorites.map { db -> Converter.favoriteCoinDBToFavoriteCoin(db, filtered) }
+            recents.map { db -> Converter.recentCoinDBToRecentCoin(db, filtered) }
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

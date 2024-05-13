@@ -7,8 +7,8 @@ import dev.kokorev.coin_paprika_api.CoinPaprikaProvider
 import dev.kokorev.cryptoview.di.modules.DomainModule
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
-import dev.kokorev.cryptoview.viewModel.FavoritesViewModel
 import dev.kokorev.cryptoview.viewModel.MainViewModel
+import dev.kokorev.cryptoview.viewModel.SavedViewModel
 import dev.kokorev.cryptoview.viewModel.SearchViewModel
 import dev.kokorev.cryptoview.viewModel.SettingsViewModel
 import dev.kokorev.token_metrics_api.TokenMetricsProvider
@@ -27,7 +27,7 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(activityViewModel: ActivityViewModel)
     fun inject(mainViewModel: MainViewModel)
-    fun inject(favoritesViewModel: FavoritesViewModel)
+    fun inject(savedViewModel: SavedViewModel)
     fun inject(settingsViewModel: SettingsViewModel)
     fun inject(searchViewModel: SearchViewModel)
     fun inject(coinViewModel: CoinViewModel)

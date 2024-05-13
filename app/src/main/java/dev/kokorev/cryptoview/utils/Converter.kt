@@ -1,25 +1,28 @@
 package dev.kokorev.cryptoview.utils
 
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
-import com.coinpaprika.apiclient.entity.FavoriteCoin
+import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import com.coinpaprika.apiclient.entity.MoverEntity
+import com.coinpaprika.apiclient.entity.RecentCoinDB
 import com.coinpaprika.apiclient.entity.TickerEntity
 import dev.kokorev.binance_api.entity.BinanceSymbolDTO
-import dev.kokorev.room_db.core_api.entity.BinanceSymbol
-import dev.kokorev.room_db.core_api.entity.CoinPaprikaTicker
-import dev.kokorev.room_db.core_api.entity.TopMover
+import dev.kokorev.cryptoview.data.entity.FavoriteCoin
+import dev.kokorev.cryptoview.data.entity.RecentCoin
+import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
+import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
+import dev.kokorev.room_db.core_api.entity.TopMoverDB
 
 object Converter {
-    fun dtoToBinanceSymbol(dto: BinanceSymbolDTO) : BinanceSymbol {
-        return BinanceSymbol(
+    fun dtoToBinanceSymbol(dto: BinanceSymbolDTO) : BinanceSymbolDB {
+        return BinanceSymbolDB(
             symbol = dto.symbol,
             status = dto.status,
             baseAsset = dto.baseAsset,
             quoteAsset = dto.quoteAsset)
     }
 
-    fun dtoToTopMover(dto: MoverEntity): TopMover {
-        return TopMover(
+    fun dtoToTopMover(dto: MoverEntity): TopMoverDB {
+        return TopMoverDB(
             symbol = dto.symbol,
             name = dto.name,
             coinPaprikaId = dto.id,
@@ -28,8 +31,8 @@ object Converter {
 
     }
 
-    fun dtoToCoinPaprikaTicker(dto: TickerEntity): CoinPaprikaTicker {
-        return CoinPaprikaTicker(
+    fun dtoToCoinPaprikaTicker(dto: TickerEntity): CoinPaprikaTickerDB {
+        return CoinPaprikaTickerDB(
             coinPaprikaId = dto.id,
             name = dto.name,
             symbol = dto.symbol,
@@ -49,8 +52,8 @@ object Converter {
 
     }
 
-    fun CoinDetailsEntityToFavoriteCoin(coin: CoinDetailsEntity): FavoriteCoin {
-        return FavoriteCoin(
+    fun CoinDetailsEntityToFavoriteCoinDB(coin: CoinDetailsEntity): FavoriteCoinDB {
+        return FavoriteCoinDB(
             coinPaprikaId = coin.id,
             name = coin.name,
             symbol = coin.symbol,
@@ -66,4 +69,52 @@ object Converter {
             algorithm = coin.algorithm
         )
     }
+
+    fun CoinDetailsEntityToRecentCoinDB(coin: CoinDetailsEntity): RecentCoinDB {
+        return RecentCoinDB(
+            coinPaprikaId = coin.id,
+            name = coin.name,
+            symbol = coin.symbol,
+            rank = coin.rank,
+            logo = coin.logo,
+            type = coin.type,
+            lastTime = System.currentTimeMillis()
+        )
+    }
+
+    fun favoriteCoinDBToFavoriteCoin(db: FavoriteCoinDB, tikers: List<CoinPaprikaTickerDB>) : FavoriteCoin {
+        val tiker = tikers.find { tiker -> tiker.coinPaprikaId == db.coinPaprikaId }
+        return FavoriteCoin(
+            id = db.id,
+            coinPaprikaId = db.coinPaprikaId,
+            name = db.name,
+            symbol = db.symbol,
+            rank = db.rank,
+            logo = db.logo,
+            type = db.type,
+            price = tiker?.price,
+            dailyVolume = tiker?.dailyVolume,
+            marketCap = tiker?.marketCap,
+            percentChange24h = tiker?.percentChange24h
+        )
+    }
+
+    fun recentCoinDBToRecentCoin(db: RecentCoinDB, tikers: List<CoinPaprikaTickerDB>) : RecentCoin {
+        val tiker = tikers.find { tiker -> tiker.coinPaprikaId == db.coinPaprikaId }
+        return RecentCoin(
+            id = db.id,
+            coinPaprikaId = db.coinPaprikaId,
+            name = db.name,
+            symbol = db.symbol,
+            rank = db.rank,
+            logo = db.logo,
+            type = db.type,
+            lastTime = db.lastTime,
+            price = tiker?.price,
+            dailyVolume = tiker?.dailyVolume,
+            marketCap = tiker?.marketCap,
+            percentChange24h = tiker?.percentChange24h
+        )
+    }
+
 }

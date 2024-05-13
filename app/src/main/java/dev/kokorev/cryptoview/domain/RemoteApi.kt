@@ -1,7 +1,6 @@
 package dev.kokorev.cryptoview.domain
 
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
-import com.coinpaprika.apiclient.entity.FavoriteCoin
 import com.coinpaprika.apiclient.entity.TopMoversEntity
 import dev.kokorev.binance_api.BinanceApi
 import dev.kokorev.binance_api.entity.Binance24hrStatsDTO

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient315"
     android:padding="12dp"
-    tools:context=".views.fragments.MainFragment">
+    tools:context=".views.fragments.ChartFragment">
 
     <LinearLayout
         android:id="@+id/price_stat"

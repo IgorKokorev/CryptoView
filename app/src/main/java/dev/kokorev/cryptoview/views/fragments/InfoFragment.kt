@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
-import com.coinpaprika.apiclient.entity.FavoriteCoin
+import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcCoinDataDTO
 import dev.kokorev.cryptoview.BuildConfig
 import dev.kokorev.cryptoview.Constants
@@ -97,6 +97,8 @@ class InfoFragment : Fragment() {
             .subscribe(
                 {
                     setupCoinPaprikaData(it)
+                    val recentCoinDB = Converter.CoinDetailsEntityToRecentCoinDB(it)
+                    viewModel.repository.addRecent(recentCoinDB)
                     setupFavoriteFab(it)
                 },
                 { t ->
@@ -134,8 +136,8 @@ class InfoFragment : Fragment() {
             if (isFavorite) {
                 viewModel.repository.deleteFavorite(coin.id)
             } else {
-                val favoriteCoin: FavoriteCoin = Converter.CoinDetailsEntityToFavoriteCoin(coin)
-                viewModel.repository.addFavorite(favoriteCoin)
+                val favoriteCoinDB: FavoriteCoinDB = Converter.CoinDetailsEntityToFavoriteCoinDB(coin)
+                viewModel.repository.addFavorite(favoriteCoinDB)
             }
             isFavorite = !isFavorite
             setFavoriteIcon()
@@ -155,9 +157,7 @@ class InfoFragment : Fragment() {
         setDescription()
     }
 
-    private fun setupCoinPaprikaData(
-        cpInfo: CoinDetailsEntity
-    ) {
+    private fun setupCoinPaprikaData(cpInfo: CoinDetailsEntity) {
         val coinPaprikaId = cpInfo.id
         val symbol = cpInfo.symbol
 
@@ -204,7 +204,7 @@ class InfoFragment : Fragment() {
                                 ?: "") + "</font>", 0
                         )
                     val alert =
-                        AlertDialog.Builder(binding.root.context, R.style.MyDialogTheme)
+                        AlertDialog.Builder(binding.root.context, R.style.DialogStyle)
                             .setTitle(tag.name)
                             .setMessage(message)
                             .setPositiveButton(

@@ -22,8 +22,8 @@ import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
 import dev.kokorev.cryptoview.views.fragments.CoinFragment
-import dev.kokorev.cryptoview.views.fragments.FavoritesFragment
 import dev.kokorev.cryptoview.views.fragments.MainFragment
+import dev.kokorev.cryptoview.views.fragments.SavedFragment
 import dev.kokorev.cryptoview.views.fragments.SearchFragment
 import dev.kokorev.cryptoview.views.fragments.SettingsFragment
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.favorites -> {
                     val tag = Constants.FAVORITES_FRAGMENT_TAG
                     val fragment =
-                        supportFragmentManager.findFragmentByTag(tag) ?: FavoritesFragment()
+                        supportFragmentManager.findFragmentByTag(tag) ?: SavedFragment()
                     replaceFragment(fragment, tag)
                     true
                 }

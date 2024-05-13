@@ -6,15 +6,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import dev.kokorev.cryptoview.databinding.SearchCoinItemBinding
 import dev.kokorev.cryptoview.views.rvviewholders.SearchItemViewHolder
-import dev.kokorev.room_db.core_api.entity.CoinPaprikaTicker
+import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 
 
 class SearchAdapter(private val clickListener: OnItemClickListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        private val data = mutableListOf<CoinPaprikaTicker>()
+        private val data = mutableListOf<CoinPaprikaTickerDB>()
 
     interface OnItemClickListener {
-        fun click(coinPaprikaTicker: CoinPaprikaTicker, position: Int, binding: SearchCoinItemBinding)
+        fun click(coinPaprikaTickerDB: CoinPaprikaTickerDB, position: Int, binding: SearchCoinItemBinding)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -34,7 +34,7 @@ class SearchAdapter(private val clickListener: OnItemClickListener) :
         }
     }
 
-    fun addItems(newList: List<CoinPaprikaTicker>) {
+    fun addItems(newList: List<CoinPaprikaTickerDB>) {
         val numbersDiff = Diff(data, newList)
         val diffResult = DiffUtil.calculateDiff(numbersDiff)
         data.clear()

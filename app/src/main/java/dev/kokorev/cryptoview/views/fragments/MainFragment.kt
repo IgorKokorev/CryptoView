@@ -14,7 +14,7 @@ import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.views.MainActivity
 import dev.kokorev.cryptoview.views.rvadapters.MainAdapter
-import dev.kokorev.room_db.core_api.entity.TopMover
+import dev.kokorev.room_db.core_api.entity.TopMoverDB
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
@@ -28,7 +28,7 @@ class MainFragment : Fragment() {
     private lateinit var mainAdapter: MainAdapter
 
     // Top movers - list of 10 gainers and losers for the last 24 hours
-    private var topMovers: List<TopMover> = listOf()
+    private var topMoverDBS: List<TopMoverDB> = listOf()
         set(value) {
             if (field == value) return
             field = value.sortedByDescending { it.percentChange }
@@ -58,18 +58,18 @@ class MainFragment : Fragment() {
     private fun initRecycler() {
         mainAdapter = MainAdapter(object : MainAdapter.OnItemClickListener {
             override fun click(
-                topMover: TopMover,
+                topMoverDB: TopMoverDB,
                 position: Int,
                 binding: MainCoinItemBinding
             ) { // On item click Coin fragment opens
                 (requireActivity() as MainActivity).launchCoinFragment(
-                    topMover.coinPaprikaId,
-                    topMover.symbol,
-                    topMover.name
+                    topMoverDB.coinPaprikaId,
+                    topMoverDB.symbol,
+                    topMoverDB.name
                 )
             }
         }).apply {
-            addItems(topMovers)
+            addItems(topMoverDBS)
         }
         binding.mainRecycler.adapter = mainAdapter
         // Add item decoration if needed
@@ -78,12 +78,12 @@ class MainFragment : Fragment() {
 
     private fun setupDataFromViewModel() {
         viewModel.loadTopMovers()
-        viewModel.topMovers
+        viewModel.topMoversDB
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { dto ->
-                    topMovers = dto
+                    topMoverDBS = dto
                     binding.mainRecycler.scheduleLayoutAnimation()
                 },
                 {
