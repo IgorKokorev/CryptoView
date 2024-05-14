@@ -19,6 +19,7 @@ import com.highsoft.highcharts.common.hichartsclasses.HIExporting
 import com.highsoft.highcharts.common.hichartsclasses.HILabels
 import com.highsoft.highcharts.common.hichartsclasses.HILegend
 import com.highsoft.highcharts.common.hichartsclasses.HILine
+import com.highsoft.highcharts.common.hichartsclasses.HIMarker
 import com.highsoft.highcharts.common.hichartsclasses.HIOptions
 import com.highsoft.highcharts.common.hichartsclasses.HITitle
 import com.highsoft.highcharts.common.hichartsclasses.HITooltip
@@ -26,7 +27,6 @@ import com.highsoft.highcharts.common.hichartsclasses.HIXAxis
 import com.highsoft.highcharts.common.hichartsclasses.HIYAxis
 import com.highsoft.highcharts.core.HIChartView
 import dev.kokorev.coin_paprika_api.entity.TickerTickEntity
-import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentChartBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
@@ -60,16 +60,11 @@ class ChartFragment : Fragment() {
         color = "#" + whiteColorString
         fontSize = "8pt"
     }
-    private lateinit var coinPaprikaId: String
-    private lateinit var symbol: String
     private var ticks: List<TickerTickEntity> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentChartBinding.inflate(layoutInflater)
-        coinPaprikaId = arguments?.getString(Constants.COIN_PAPRIKA_ID) ?: ""
-        symbol = arguments?.getString(Constants.COIN_SYMBOL) ?: ""
-
         autoDisposable.bindTo(lifecycle)
         initChartView()
     }
@@ -79,11 +74,13 @@ class ChartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        viewModel.remoteApi.getCoinPaprikaTicker(coinPaprikaId)
+        setupIntervalButtons()
+
+        viewModel.remoteApi.getCoinPaprikaTicker(viewModel.coinPaprikaId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                binding.symbol.text = symbol
+                binding.symbol.text = viewModel.symbol
                 val quotes = it.quotes?.get("USD")
                 if (quotes != null) showQuotes(quotes)
             },
@@ -96,13 +93,13 @@ class ChartFragment : Fragment() {
                 })
             .addTo(autoDisposable)
 
-        viewModel.remoteApi.getCoinPaprikaTickerHistorical(coinPaprikaId)
+        viewModel.remoteApi.getCoinPaprikaTickerHistorical(viewModel.coinPaprikaId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Log.d("ChartFragment", "${it.size} ticks received for the chart")
                 ticks = it
-                updateChart()
+                updateChart(MAX_INTERVAL)
                 Log.d("ChartFragment", "Finished updating the chart")
             },
                 {
@@ -116,12 +113,20 @@ class ChartFragment : Fragment() {
 
         // Refresh chart with delay, otherwise sometimes it isn't drawn.
         Handler(Looper.getMainLooper()).postDelayed({
-            updateChart()
+            updateChart(MAX_INTERVAL)
             Log.d("ChartFragment",
                 "Chart refreshed")
         }, 500)
 
         return binding.root
+    }
+
+    private fun setupIntervalButtons() {
+        binding.d7.setOnClickListener { updateChart(D7_INTERVAL) }
+        binding.m1.setOnClickListener { updateChart(M1_INTERVAL) }
+        binding.m3.setOnClickListener { updateChart(M3_INTERVAL) }
+        binding.m6.setOnClickListener { updateChart(M6_INTERVAL) }
+        binding.y1.setOnClickListener { updateChart(Y1_INTERVAL) }
     }
 
     private fun initChartView() {
@@ -180,7 +185,6 @@ class ChartFragment : Fragment() {
             lineColor = whiteColor
             lineWidth = 1
             tickColor = whiteColor
-//            tickInterval = 31
             tickWidth = 1
         }
 
@@ -216,29 +220,31 @@ class ChartFragment : Fragment() {
             exporting = hiExporting
             credits = hiCredits
             legend = hiLegend
+
             xAxis = arrayListOf(hixAxis)
             yAxis = arrayListOf(hiyAxis)
             chart = hiChart
             title = chartTitle
-//            series = arrayListOf(emptySeries)
             tooltip = hiTooltip
         }
 
         // setting all the options
         hiChartView.options = options
-        updateChart()
+        updateChart(D7_INTERVAL)
     }
 
-    private fun updateChart() {
+    private fun updateChart(interval: Int) {
         // defining data to show on the chart
         val newSeries = HILine().apply {
             data = ArrayList(
-                ticks.asSequence()
-                    .map { e -> e.price }
-                    .toList()
+                ticks.map { e -> e.price }
+                    .takeLast(interval)
             )
             color = lightColor
-            name = symbol
+            name = viewModel.symbol
+            marker = HIMarker().apply {
+                enabled = false
+            }
         }
 
         hiChartView.options.series = arrayListOf(newSeries)
@@ -246,11 +252,9 @@ class ChartFragment : Fragment() {
 
         // setting x-axis labels
         hiChartView.options.xAxis.get(0).categories = ArrayList(
-            ticks.asSequence()
-                .map { tick ->
+            ticks.map { tick ->
                     convertDate(tick.timestamp) //.substring(5, 10)
-                }
-                .toList()
+                }.takeLast(interval)
         )
 
         hiChartView.update(options)
@@ -309,5 +313,14 @@ class ChartFragment : Fragment() {
 
         val mcap = "MCap: " + NumbersUtils.formatBigNumber(quotes.marketCap)
         binding.mcap.text = mcap
+    }
+
+    companion object {
+        const val D7_INTERVAL = 7
+        const val M1_INTERVAL = 30
+        const val M3_INTERVAL = 91
+        const val M6_INTERVAL = 182
+        const val Y1_INTERVAL = 364
+        const val MAX_INTERVAL = 364
     }
 }

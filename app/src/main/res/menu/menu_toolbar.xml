@@ -21,6 +21,12 @@
         app:showAsAction="always"
         android:title="@string/menu_text_search"/>
     <item
+        android:id="@+id/chat"
+        android:enabled="true"
+        android:icon="@drawable/icon_chat"
+        app:showAsAction="always"
+        android:title="@string/menu_text_chat"/>
+    <item
         android:id="@+id/settings"
         android:enabled="true"
         android:icon="@drawable/icon_settings"

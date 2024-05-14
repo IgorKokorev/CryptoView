@@ -14,8 +14,6 @@ import com.bumptech.glide.Glide
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcCoinDataDTO
-import dev.kokorev.cryptoview.BuildConfig
-import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentInfoBinding
 import dev.kokorev.cryptoview.databinding.OneColumnItemViewBinding
@@ -47,51 +45,8 @@ class InfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInfoBinding.inflate(layoutInflater)
-        val coinPaprikaId = arguments?.getString(Constants.COIN_PAPRIKA_ID) ?: return binding.root
-        val symbol = arguments?.getString(Constants.COIN_SYMBOL) ?: return binding.root
 
-        if (BuildConfig.DEBUG) {
-            viewModel.repository.findBinanceSymbolsByBaseAsset(symbol)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe({ list ->
-                    Log.d(
-                        "InfoFragment",
-                        "List of Binance tikers corresponding to BaseAsset: " + symbol + "(" + list.size + " pairs)"
-                    )
-                    list.forEach { bs ->
-                        Log.d(
-                            "InfoFragment",
-                            "Tiker: " + bs.symbol + ", id: " + bs.id + ", status: " + bs.status
-                        )
-                    }
-                },
-                    { t ->
-
-                    })
-                .addTo(autoDisposable)
-            viewModel.repository.findBinanceSymbolsByQuoteAsset(symbol)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe({ list ->
-                    Log.d(
-                        "InfoFragment",
-                        "List of Binance tikers corresponding to QuoteAsset: " + symbol + "(" + list.size + " pairs)"
-                    )
-                    list.forEach { bs ->
-                        Log.d(
-                            "InfoFragment",
-                            "Tiker: " + bs.symbol + ", id: " + bs.id + ", status: " + bs.status
-                        )
-                    }
-                },
-                    { t ->
-
-                    })
-                .addTo(autoDisposable)
-        }
-
-        viewModel.remoteApi.getCoinPaprikaCoinInfo(coinPaprikaId)
+        viewModel.remoteApi.getCoinPaprikaCoinInfo(viewModel.coinPaprikaId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -110,12 +65,12 @@ class InfoFragment : Fragment() {
                 })
             .addTo(autoDisposable)
 
-        viewModel.remoteApi.getCmcMetadata(symbol)
+        viewModel.remoteApi.getCmcMetadata(viewModel.symbol)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    val cmcInfo = it.data.get(symbol)?.get(0) // Coin Info from CoinMarketCap
+                    val cmcInfo = it.data.get(viewModel.symbol)?.get(0) // Coin Info from CoinMarketCap
                     if (cmcInfo != null) setupCmcData(cmcInfo)
                 },
                 { t ->

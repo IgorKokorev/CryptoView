@@ -21,6 +21,7 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
+import dev.kokorev.cryptoview.views.fragments.AiChatFragment
 import dev.kokorev.cryptoview.views.fragments.CoinFragment
 import dev.kokorev.cryptoview.views.fragments.MainFragment
 import dev.kokorev.cryptoview.views.fragments.SavedFragment
@@ -39,8 +40,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            // System Bars' Insets
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            //  System Bars' and Keyboard's insets combined
+            val systemBarsIMEInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars() + WindowInsetsCompat.Type.ime())
+            // We use the combined bottom inset of the System Bars and Keyboard to move the view so it doesn't get covered up by the keyboard
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBarsIMEInsets.bottom)
             insets
         }
 
@@ -126,6 +131,13 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
+                R.id.chat -> {
+                    val tag = Constants.CHAT_FRAGMENT_TAG
+                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: AiChatFragment()
+                    replaceFragment(fragment, tag)
+                    true
+                }
+
                 R.id.settings -> {
                     val tag = Constants.SETTINGS_FRAGMENT_TAG
                     val fragment =
@@ -172,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         val currentTime = System.currentTimeMillis()
         if (lastAppUpdateTime + Constants.APP_UPDATE_INTERVAL < currentTime) {
             Log.d(this.localClassName, "Setting Application data")
-            viewModel.repository.setLastAppUpdateTime()
+            viewModel.repository.saveLastAppUpdateTime()
             updateBinanceInfo()
             updateCoinPaprikaTickers()
             updateCoinPaprikaAllCoins()

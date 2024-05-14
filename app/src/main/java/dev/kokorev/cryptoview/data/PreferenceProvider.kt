@@ -10,13 +10,6 @@ class PreferenceProvider(context: Context) {
     // SharedPreferences
     private val preference: SharedPreferences = appContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
 
-    // Initializing SharedPreferences for the app if launched for the first time
-    init {
-        if(preference.getBoolean(KEY_FIRST_LAUNCH, true)) {
-            preference.edit().putBoolean(KEY_FIRST_LAUNCH, false).apply()
-        }
-    }
-
     // Last time in millis when remote API was accessed to get Top Movers
     fun saveLastTopMoversCallTime() {
         val time = System.currentTimeMillis()
@@ -33,7 +26,7 @@ class PreferenceProvider(context: Context) {
 
     // Last time the app database was updated
     fun getLastAppUpdateTime(): Long = preference.getLong(KEY_LAST_APP_UPDATE_TIME, 0L)
-    fun setLastAppUpdateTime() {
+    fun saveLastAppUpdateTime() {
         val time = System.currentTimeMillis()
         preference.edit().putLong(KEY_LAST_APP_UPDATE_TIME, time).apply()
     }

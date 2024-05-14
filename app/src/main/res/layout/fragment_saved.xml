@@ -16,7 +16,7 @@
         app:tabMode="fixed"
         app:tabTextColor="@color/white"
         app:tabIconTint="@color/light"
-        app:tabBackground="@drawable/rounded_rectangle"
+        app:tabBackground="@drawable/rounded_up_rectangle"
         app:tabIndicatorColor="@color/light"
         app:tabIndicatorFullWidth="true"
         />

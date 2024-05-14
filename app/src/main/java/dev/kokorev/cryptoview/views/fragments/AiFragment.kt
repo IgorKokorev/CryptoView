@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.databinding.FragmentAiBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
@@ -23,14 +22,10 @@ class AiFragment : Fragment() {
     private val viewModel: CoinViewModel by viewModels<CoinViewModel>(
         ownerProducer = { requireParentFragment() }
     )
-    private lateinit var symbol: String
-    private lateinit var name: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentAiBinding.inflate(layoutInflater)
-        symbol = arguments?.getString(Constants.COIN_SYMBOL) ?: ""
-        name = arguments?.getString(Constants.COIN_NAME) ?: ""
         autoDisposable.bindTo(lifecycle)
     }
 
@@ -44,8 +39,8 @@ class AiFragment : Fragment() {
     }
 
     private fun getAiReport() {
-        val emptyReport = "No available AI reports for $name($symbol)"
-        viewModel.remoteApi.getAIReport(symbol)
+        val emptyReport = "No available AI reports for ${viewModel.name}(${viewModel.symbol})"
+        viewModel.remoteApi.getAIReport(viewModel.symbol)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -53,7 +48,7 @@ class AiFragment : Fragment() {
                 val aiReportDataList = it.data
                 Log.d(
                     "AiFragment",
-                    "Success: ${it.success}. Message: ${it.message}. Number of coins with symbol $symbol, name $name = ${aiReportDataList.size}"
+                    "Success: ${it.success}. Message: ${it.message}. Number of coins with symbol ${viewModel.symbol}, name ${viewModel.name} = ${aiReportDataList.size}"
                 )
                 if (aiReportDataList.isEmpty()) {
                     binding.content.text = emptyReport
@@ -68,7 +63,7 @@ class AiFragment : Fragment() {
                     if (aiReportDataList.size == 1) aiReportData = aiReportDataList.get(0)
                     else {
                         for (data in aiReportDataList) {
-                            if (data.TOKENNAME.lowercase() == name.lowercase()) {
+                            if (data.TOKENNAME.lowercase() == viewModel.name.lowercase()) {
                                 aiReportData = data
                                 break
                             }
@@ -78,7 +73,7 @@ class AiFragment : Fragment() {
                         strBuilder.append(emptyReport)
                         Log.d(
                             "AiFragment",
-                            "Fetching CoinPaprika simbol: " + symbol + " with name: " + name + " failed. \nTokenMetrics data:"
+                            "Fetching CoinPaprika simbol: " + viewModel.symbol + " with name: " + viewModel.name + " failed. \nTokenMetrics data:"
                         )
                     } else {
                         aiReportData.apply {

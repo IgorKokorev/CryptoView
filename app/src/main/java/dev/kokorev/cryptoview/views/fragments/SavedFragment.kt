@@ -19,6 +19,17 @@ class SavedFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentSavedBinding.inflate(layoutInflater)
+        adapter = SavedPagerAdapter(this, arguments)
+        binding.savedPager.adapter = adapter
+        TabLayoutMediator(binding.savedTab, binding.savedPager) { tab, position ->
+            when (position) {
+                0 -> tab.text = "Favorites"
+                1 -> tab.text = "Recent"
+                else -> {}
+            }
+        }.attach()
+        binding.savedPager.isSaveEnabled = false
+
     }
 
     override fun onCreateView(
@@ -30,24 +41,6 @@ class SavedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = SavedPagerAdapter(this, arguments)
-        binding.savedPager.adapter = adapter
-        TabLayoutMediator(binding.savedTab, binding.savedPager) { tab, position ->
-            when (position) {
-                0 -> {
-                    tab.text = "Favorites"
-//                    tab.icon = resources.getDrawable(R.drawable.icon_info, null)
-
-                }
-                1 -> {
-                    tab.text = "Recent"
-//                    tab.icon = resources.getDrawable(R.drawable.icon_chart, null)
-                }
-                else -> {
-
-                }
-            }
-        }.attach()
     }
 }
 

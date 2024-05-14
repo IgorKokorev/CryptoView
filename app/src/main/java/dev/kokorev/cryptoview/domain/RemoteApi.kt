@@ -12,6 +12,7 @@ import dev.kokorev.cmc_api.entity.cmc_listing.CmcListingDTO
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcMetadataDTO
 import dev.kokorev.coin_paprika_api.CoinPaprikaApi
 import dev.kokorev.token_metrics_api.TokenMetricsApi
+import dev.kokorev.token_metrics_api.entity.AiQuestion
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 
@@ -50,4 +51,5 @@ class RemoteApi(
 
     // TokenMetrics API
     fun getAIReport(symbol: String) = tokenMetricsApi.getAiReports(symbol = symbol)
+    fun askAi(aiQuestion: AiQuestion) = tokenMetricsApi.aiQuestion(aiQuestion)
 }

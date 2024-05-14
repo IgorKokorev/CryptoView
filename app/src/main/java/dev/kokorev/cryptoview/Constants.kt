@@ -14,6 +14,7 @@ object Constants {
     const val COIN_FRAGMENT_TAG = "coin"
     const val FAVORITES_FRAGMENT_TAG = "favorites"
     const val SEARCH_FRAGMENT_TAG = "search"
+    const val CHAT_FRAGMENT_TAG = "chat"
     const val SETTINGS_FRAGMENT_TAG = "settings"
 
 }

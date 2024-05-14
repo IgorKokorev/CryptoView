@@ -8,7 +8,7 @@ data class RecentCoin(
     override val rank: Int,
     override val logo: String?,
     override val type: String?,
-    val lastTime: Long,
+    val lastTime: Long, // the only difference from FavoriteCoin
     override val price: Double?,
     override val dailyVolume: Double?,
     override val marketCap: Double?,

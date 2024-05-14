@@ -6,6 +6,7 @@ import dev.kokorev.cmc_api.CmcProvider
 import dev.kokorev.coin_paprika_api.CoinPaprikaProvider
 import dev.kokorev.cryptoview.di.modules.DomainModule
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
+import dev.kokorev.cryptoview.viewModel.AiChatViewModel
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.viewModel.SavedViewModel
@@ -31,4 +32,5 @@ interface AppComponent {
     fun inject(settingsViewModel: SettingsViewModel)
     fun inject(searchViewModel: SearchViewModel)
     fun inject(coinViewModel: CoinViewModel)
+    fun inject(aiChatViewModel: AiChatViewModel)
 }

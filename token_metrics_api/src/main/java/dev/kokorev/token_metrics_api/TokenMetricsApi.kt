@@ -1,12 +1,13 @@
 package dev.kokorev.token_metrics_api
 
+import dev.kokorev.token_metrics_api.entity.AiAnswer
+import dev.kokorev.token_metrics_api.entity.AiQuestion
 import dev.kokorev.token_metrics_api.entity.AiReport
 import io.reactivex.rxjava3.core.Observable
+import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.POST
 import retrofit2.http.Query
-import retrofit2.http.QueryMap
-import java.time.Instant
 
 interface TokenMetricsApi {
     @GET("ai-reports")
@@ -16,5 +17,10 @@ interface TokenMetricsApi {
         @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null,
     ): Observable<AiReport>
+
+    @POST("tmai")
+    fun aiQuestion(
+        @Body aiQuestion: AiQuestion
+    ) : Observable<AiAnswer>
 
 }

@@ -1,16 +1,15 @@
 package dev.kokorev.cryptoview.views.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.marginBottom
-import androidx.core.view.marginTop
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentCoinBinding
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
@@ -23,6 +22,24 @@ class CoinFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentCoinBinding.inflate(layoutInflater)
+
+        // Setting ViewPager adapter and Tab
+        adapter = CoinPagerAdapter(this, arguments)
+        binding.coinPager.adapter = adapter
+        TabLayoutMediator(binding.coinTab, binding.coinPager) { tab, position ->
+            when (position) {
+                0 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.icon_info, null)
+                1 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.icon_chart, null)
+                2 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.icon_analytics, null)
+                else -> {}
+            }
+        }.attach()
+        binding.coinPager.isSaveEnabled = false // To avoid exceptions on back pressed
+
+        // Saving args to common VM to reuse by all sub-fragments
+        viewModel.coinPaprikaId = arguments?.getString(Constants.COIN_PAPRIKA_ID) ?: ""
+        viewModel.symbol = arguments?.getString(Constants.COIN_SYMBOL) ?: ""
+        viewModel.name = arguments?.getString(Constants.COIN_NAME) ?: ""
     }
 
     override fun onCreateView(
@@ -32,34 +49,10 @@ class CoinFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        adapter = CoinPagerAdapter(this, arguments)
-        binding.coinPager.adapter = adapter
-        TabLayoutMediator(binding.coinTab, binding.coinPager) { tab, position ->
-            when (position) {
-                0 -> {
-//                    tab.text = "Info"
-                    tab.icon = resources.getDrawable(R.drawable.icon_info, null)
-
-                }
-                1 -> {
-//                    tab.text = "Chart"
-                    tab.icon = resources.getDrawable(R.drawable.icon_chart, null)
-                }
-                2 -> {
-                    tab.icon = resources.getDrawable(R.drawable.icon_analytics, null)
-                }
-                else -> {
-
-                }
-            }
-            Log.d("CoinFragment", "Setting Coin ViewPager TabLayout. PaddingTop = ${tab.view.paddingTop}. PaddingBottom = ${tab.view.paddingBottom}. MarginTop = ${tab.view.marginTop}. MarginBottom = ${tab.view.marginBottom}. Height = ${tab.view.height}.")
-        }.attach()
-    }
 }
 
-class CoinPagerAdapter(fragment: Fragment, val args: Bundle?): FragmentStateAdapter(fragment) {
+// ViewPager adapter
+class CoinPagerAdapter(fragment: Fragment, private val args: Bundle?): FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {
@@ -71,5 +64,4 @@ class CoinPagerAdapter(fragment: Fragment, val args: Bundle?): FragmentStateAdap
         fragment.arguments = args
         return fragment
     }
-
 }

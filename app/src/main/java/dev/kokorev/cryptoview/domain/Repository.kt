@@ -11,7 +11,7 @@ import dev.kokorev.room_db.core_api.entity.TopMoverDB
 import java.util.concurrent.Executors
 
 // Interactor to communicate with local db
-class Repository(val preferenceProvider: PreferenceProvider) {
+class Repository(private val preferenceProvider: PreferenceProvider) {
     private val binanceSymbolDao: BinanceSymbolDao = App.instance.binanceSymbolDao
     private val topMoverDao = App.instance.topMoverDao
     private val coinPaprikaTickerDao = App.instance.coinPaprikaTickerDao
@@ -82,8 +82,8 @@ class Repository(val preferenceProvider: PreferenceProvider) {
     fun saveLastTopMoversCallTime() = preferenceProvider.saveLastTopMoversCallTime()
     fun getLastCpTickersCallTime() = preferenceProvider.getLastCpTickersCallTime()
     fun saveLastCpTickersCallTime() = preferenceProvider.saveLastCpTickersCallTime()
-    fun setLastAppUpdateTime() = preferenceProvider.setLastAppUpdateTime()
     fun getLastAppUpdateTime() = preferenceProvider.getLastAppUpdateTime()
+    fun saveLastAppUpdateTime() = preferenceProvider.saveLastAppUpdateTime()
 
 
 }

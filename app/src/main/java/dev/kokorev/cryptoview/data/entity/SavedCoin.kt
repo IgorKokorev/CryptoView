@@ -1,5 +1,6 @@
 package dev.kokorev.cryptoview.data.entity
 
+// Data interface to reuse SavedRecyclerView for both favorites and recently viewed coins
 interface SavedCoin {
     val id: Int
     val coinPaprikaId: String
