@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.coinpaprika.apiclient.entity.MessageType
 import dev.kokorev.cryptoview.databinding.ChatInItemBinding
 import dev.kokorev.cryptoview.databinding.ChatOutItemBinding
 import dev.kokorev.cryptoview.databinding.FragmentAiChatBinding
@@ -38,7 +39,21 @@ class AiChatFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        showAnswer(getString(dev.kokorev.cryptoview.R.string.ai_greeting))
+        viewModel.messages
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it.isEmpty()) showAndSaveAnswer(getString(dev.kokorev.cryptoview.R.string.ai_greeting))
+                else {
+                    it.sortedBy { it.time }
+                        .forEach { message ->
+                            if (message.type == MessageType.OUT) showQuestion(message.message)
+                            else showAnswer(message.message)
+                    }
+                }
+            }
+            .addTo(autoDisposable)
+
 
         binding.buttonSend.setOnClickListener {
             sendQuestion()
@@ -57,33 +72,41 @@ class AiChatFragment : Fragment() {
     private fun sendQuestion() {
         val question: String = binding.question.text.toString()
         binding.question.text?.clear()
-        showQuestion(question)
+        showAndSaveQuestion(question)
         val aiQuestionMessage = AiQuestionMessage(question)
         val aiQuestion = AiQuestion(arrayListOf(aiQuestionMessage))
         viewModel.remoteApi.askAi(aiQuestion)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                showAnswer(it.answer.toString())
+                showAndSaveAnswer(it.answer.toString())
             }
             .addTo(autoDisposable)
         hideKeyboard()
     }
 
+    private fun showAndSaveQuestion(text: String) {
+        viewModel.repository.saveQuestion(text)
+        showQuestion(text)
+    }
+
     private fun showQuestion(text: String) {
         val outBinding = ChatOutItemBinding.inflate(layoutInflater)
         outBinding.incomingMessage.text = text
-        viewModel.repository.saveQuestion(text)
         binding.chatWindow.addView(outBinding.root)
         binding.containerAnswer.post {
-                binding.containerAnswer.fullScroll(View.FOCUS_DOWN)
-            }
+            binding.containerAnswer.fullScroll(View.FOCUS_DOWN)
+        }
+    }
+
+    private fun showAndSaveAnswer(text: String) {
+        viewModel.repository.saveAnswer(text)
+        showAnswer(text)
     }
 
     private fun showAnswer(text: String) {
         val inBinding = ChatInItemBinding.inflate(layoutInflater)
         inBinding.incomingMessage.text = text
-        viewModel.repository.saveAnswer(text)
         binding.chatWindow.addView(inBinding.root)
         binding.containerAnswer.post {
             binding.containerAnswer.fullScroll(View.FOCUS_DOWN)

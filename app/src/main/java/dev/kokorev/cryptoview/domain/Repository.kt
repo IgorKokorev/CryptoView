@@ -1,13 +1,17 @@
 package dev.kokorev.cryptoview.domain
 
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
+import com.coinpaprika.apiclient.entity.MessageDB
+import com.coinpaprika.apiclient.entity.MessageType
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import dev.kokorev.cryptoview.App
+import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import dev.kokorev.room_db.core_api.entity.TopMoverDB
+import io.reactivex.rxjava3.core.Observable
 import java.util.concurrent.Executors
 
 // Interactor to communicate with local db
@@ -17,6 +21,7 @@ class Repository(private val preferenceProvider: PreferenceProvider) {
     private val coinPaprikaTickerDao = App.instance.coinPaprikaTickerDao
     private val favoriteCoinDao = App.instance.favoriteCoinDao
     private val recentCoinDao = App.instance.recentCoinDao
+    private val messageDao = App.instance.messageDao
 
     // BinanceSymbol table interaction
     fun addBinanceSymbol(binanceSymbolDB: BinanceSymbolDB) = binanceSymbolDao.insertBinanceSymbol(binanceSymbolDB)
@@ -87,12 +92,31 @@ class Repository(private val preferenceProvider: PreferenceProvider) {
 
     // Ai chat q&a
     fun saveQuestion(text: String) {
-
+        Executors.newSingleThreadExecutor().execute {
+            val messageDB: MessageDB = MessageDB(
+                time = System.currentTimeMillis(),
+                type = MessageType.OUT,
+                name = "User",
+                message = text
+            )
+            messageDao.insertMessage(messageDB)
+        }
     }
 
     fun saveAnswer(text: String) {
-
+        Executors.newSingleThreadExecutor().execute {
+            val messageDB: MessageDB = MessageDB(
+                time = System.currentTimeMillis(),
+                type = MessageType.IN,
+                name = "AI",
+                message = text
+            )
+            messageDao.insertMessage(messageDB)
+        }
     }
 
-
+    fun getNewMessages(): Observable<List<MessageDB>> {
+        val time = System.currentTimeMillis() - Constants.CHAT_SHOW_TIME
+        return messageDao.getNewMessages(time)
+    }
 }

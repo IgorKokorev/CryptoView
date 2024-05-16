@@ -7,6 +7,7 @@ import dagger.Provides
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.CoinPaprikaTickerDao
 import dev.kokorev.room_db.core_api.FavoriteCoinDao
+import dev.kokorev.room_db.core_api.MessageDao
 import dev.kokorev.room_db.core_api.RecentCoinDao
 import dev.kokorev.room_db.core_api.TopMoverDao
 import dev.kokorev.room_db.core_api.db.DbContract
@@ -48,6 +49,12 @@ class DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideMessageDao(databaseContract: DbContract): MessageDao {
+        return databaseContract.messageDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideItemsDatabase(context: Context): DbContract {
         return Room.databaseBuilder(
             context,
@@ -57,3 +64,4 @@ class DatabaseModule {
             .build()
     }
 }
+
