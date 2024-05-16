@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="grey">#808080</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="green">#00FF00</color>
+    <color name="red">#FF4040</color>
+
+    <color name="background1">#012b20</color>
+    <color name="background2">#055741</color>
+    <color name="background2Transparent">#20055741</color>
+    <color name="background3">#118062</color>
+    <color name="background4">#26a382</color>
+    <color name="background5">#47c4a3</color>
+    <color name="background6">#6fdec0</color>
+    <color name="background7">#9ef0da</color>
+    <color name="background8">#cffaef</color>
+
+    <color name="accent8">#fadbcf</color>
+    <color name="accent7">#f0b49e</color>
+    <color name="accent6">#de8d6f</color>
+    <color name="accent5">#c46847</color>
+    <color name="accent4">#a34726</color>
+    <color name="accent3">#802e11</color>
+    <color name="accent2">#571b05</color>
+    <color name="accent1">#2b0c01</color>
+
+    <color name="iconColor">@color/background8</color>
+    <color name="coinColor">#f2d654</color>
+    <color name="menu_item_color">@color/white</color>
+    <color name="textColor">@color/white</color>
+    <color name="lineColor">@color/iconColor</color>
+
+    <color name="transparent_shadow_color">#01000000</color>
+    <color name="semitransparent_shadow_color">#09000000</color>
+    <color name="least_transparent_shadow_color">#10000000</color>
+</resources>

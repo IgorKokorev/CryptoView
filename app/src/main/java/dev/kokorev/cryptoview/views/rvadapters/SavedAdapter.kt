@@ -16,7 +16,7 @@ class SavedAdapter(
     private val data = mutableListOf<SavedCoin>()
 
     interface OnItemClickListener {
-        fun click(savedCoin: SavedCoin, position: Int, binding: SavedCoinItemBinding)
+        fun click(savedCoin: SavedCoin)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

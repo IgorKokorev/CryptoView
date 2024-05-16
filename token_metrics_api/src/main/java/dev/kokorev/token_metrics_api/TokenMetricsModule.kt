@@ -18,6 +18,7 @@ class TokenMetricsModule {
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .callTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(30, TimeUnit.SECONDS)
         .addInterceptor(HttpLoggingInterceptor().apply {
             if (BuildConfig.DEBUG) {
                 level = HttpLoggingInterceptor.Level.BASIC
@@ -45,5 +46,6 @@ class TokenMetricsModule {
 
     @Provides
     @Singleton
-    fun provideCoinPaprikaApi(retrofit: Retrofit): TokenMetricsApi = retrofit.create(TokenMetricsApi::class.java)
+    fun provideTokenMetricsApi(retrofit: Retrofit): TokenMetricsApi = retrofit.create(TokenMetricsApi::class.java)
+
 }

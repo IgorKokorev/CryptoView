@@ -62,11 +62,7 @@ class SearchFragment : Fragment() {
     // initializing RV
     private fun initRecycler() {
         searchAdapter = SearchAdapter(object : SearchAdapter.OnItemClickListener {
-            override fun click(
-                coinPaprikaTickerDB: CoinPaprikaTickerDB,
-                position: Int,
-                binding: SearchCoinItemBinding
-            ) {
+            override fun click(coinPaprikaTickerDB: CoinPaprikaTickerDB) {
                 (requireActivity() as MainActivity).launchCoinFragment(
                     coinPaprikaTickerDB.coinPaprikaId,
                     coinPaprikaTickerDB.symbol,

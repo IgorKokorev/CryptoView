@@ -14,7 +14,7 @@ class MainAdapter(private val clickListener: OnItemClickListener) :
         private val data = mutableListOf<TopMoverDB>()
 
     interface OnItemClickListener {
-        fun click(topMoverDB: TopMoverDB, position: Int, binding: MainCoinItemBinding)
+        fun click(topMoverDB: TopMoverDB)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

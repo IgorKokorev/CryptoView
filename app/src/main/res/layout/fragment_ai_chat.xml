@@ -4,59 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark"
-    android:padding="@dimen/big_padding"
+    android:background="@drawable/background_gradient315"
     tools:context=".views.fragments.AiChatFragment">
 
-<ScrollView
-    android:id="@+id/container_answer"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toTopOf="@+id/container_question" >
-
-    <LinearLayout
-        android:id="@+id/chat_window"
+    <ScrollView
+        android:id="@+id/container_answer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:layout_height="0dp"
+        android:contentDescription="@string/ai_chat_hint"
+        app:layout_constraintBottom_toTopOf="@+id/container_question"
+        app:layout_constraintTop_toTopOf="parent">
 
-</ScrollView>
+        <LinearLayout
+            android:id="@+id/chat_window"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/container_question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal"
+        android:padding="@dimen/small_padding"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <EditText
             android:id="@+id/question"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
             android:layout_weight="1"
-            android:background="@color/medium"
+            android:background="@color/background1"
+            android:hint="@string/ai_chat_hint"
+            android:imeOptions="actionSend"
             android:inputType="textMultiLine"
             android:maxLines="5"
-            android:contentDescription="Enter your question here"
-            android:hint="Enter your question here"
-            android:textColorHint="@color/light"
-            android:textColor="@color/white"
-            android:minHeight="60dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_send"
-            app:layout_constraintTop_toBottomOf="@+id/answer" />
+            android:padding="@dimen/medium_padding"
+            android:scrollbars="none"
+            android:textColorHint="@color/grey" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/button_send"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/dark"
-            android:drawableEnd="@drawable/icon_send"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:contentDescription="Send"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/question" />
+            android:backgroundTint="@android:color/transparent"
+            android:contentDescription="@string/button_send_hint"
+            app:icon="@drawable/icon_send"
+            app:iconGravity="textEnd"
+            app:iconTint="@color/iconColor"
+            app:iconSize="30dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

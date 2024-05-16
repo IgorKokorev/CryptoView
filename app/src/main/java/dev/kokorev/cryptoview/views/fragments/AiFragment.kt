@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentAiBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
@@ -16,6 +17,7 @@ import dev.kokorev.token_metrics_api.entity.AiReportData
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
+// AI reports fragment to show Token Metrics reports
 class AiFragment : Fragment() {
     private lateinit var binding: FragmentAiBinding
     private val autoDisposable = AutoDisposable()
@@ -23,77 +25,69 @@ class AiFragment : Fragment() {
         ownerProducer = { requireParentFragment() }
     )
 
+    // Boring
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentAiBinding.inflate(layoutInflater)
         autoDisposable.bindTo(lifecycle)
     }
 
+    // Boring
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        getAiReport()
+        getAiReport() // here we get the reports from API, convert them and show into the view
         return binding.root
     }
 
     private fun getAiReport() {
-        val emptyReport = "No available AI reports for ${viewModel.name}(${viewModel.symbol})"
+        // In case of an error or empty report
+        val emptyReport =
+            getString(R.string.no_available_ai_report, viewModel.name, viewModel.symbol)
         viewModel.remoteApi.getAIReport(viewModel.symbol)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+            .subscribe{
                 val strBuilder = StringBuilder()
-                val aiReportDataList = it.data
-                Log.d(
-                    "AiFragment",
-                    "Success: ${it.success}. Message: ${it.message}. Number of coins with symbol ${viewModel.symbol}, name ${viewModel.name} = ${aiReportDataList.size}"
-                )
-                if (aiReportDataList.isEmpty()) {
-                    binding.content.text = emptyReport
+                // Selecting an item from the list
+                var aiReportData: AiReportData? = findReport(it.data)
+                if (aiReportData == null) {
+                    strBuilder.append(emptyReport)
                 } else {
-                    aiReportDataList.forEach { data ->
-                        Log.d(
-                            "AiFragment",
-                            "TokenMetrics symbol: ${data.SYMBOL}, name: ${data.TOKENNAME}, id: ${data.TOKENID}"
-                        )
+                    aiReportData.run {
+                        strBuilder.append(convertToHtml(getString(R.string.fundamental_report),FUNDAMENTALREPORT))
+                        strBuilder.append(convertToHtml(getString(R.string.trader_report), TRADERREPORT))
+                        strBuilder.append(convertToHtml(getString(R.string.technology_report), TECHNOLOGYREPORT))
                     }
-                    var aiReportData: AiReportData? = null
-                    if (aiReportDataList.size == 1) aiReportData = aiReportDataList.get(0)
-                    else {
-                        for (data in aiReportDataList) {
-                            if (data.TOKENNAME.lowercase() == viewModel.name.lowercase()) {
-                                aiReportData = data
-                                break
-                            }
-                        }
-                    }
-                    if (aiReportData == null) {
-                        strBuilder.append(emptyReport)
-                        Log.d(
-                            "AiFragment",
-                            "Fetching CoinPaprika simbol: " + viewModel.symbol + " with name: " + viewModel.name + " failed. \nTokenMetrics data:"
-                        )
-                    } else {
-                        aiReportData.apply {
-                            strBuilder.append(convertToHtml("FUNDAMENTAL REPORT", FUNDAMENTALREPORT))
-                            strBuilder.append(convertToHtml("TRADER REPORT", TRADERREPORT))
-                            strBuilder.append(convertToHtml("TECHNOLOGY REPORT:", TECHNOLOGYREPORT))
-                        }
-                    }
-                    binding.content.text =
-                        Html.fromHtml(strBuilder.toString(), Html.FROM_HTML_MODE_COMPACT)
                 }
-            },
-                {
-                    Log.d(
-                        "AiFragment",
-                        "Request failed"
-                    )
-                    binding.content.text = emptyReport
-                })
+                binding.content.text =
+                    Html.fromHtml(strBuilder.toString(), Html.FROM_HTML_MODE_COMPACT)
+            }
             .addTo(autoDisposable)
+    }
+
+    // in a list of reports find the one we need
+    private fun findReport(aiReportDataList: ArrayList<AiReportData>): AiReportData? {
+        if (aiReportDataList.isEmpty()) return null
+        aiReportDataList.forEach { data ->
+            Log.d(
+                "AiFragment",
+                "TokenMetrics symbol: ${data.SYMBOL}, name: ${data.TOKENNAME}, id: ${data.TOKENID}"
+            )
+        }
+        var aiReportData: AiReportData? = null
+        if (aiReportDataList.size == 1) aiReportData = aiReportDataList.get(0)
+        else {
+            for (data in aiReportDataList) {
+                if (data.TOKENNAME.lowercase() == viewModel.name.lowercase()) {
+                    aiReportData = data
+                    break
+                }
+            }
+        }
+        return aiReportData
     }
 
     // Creating a html section from TokenMetrics with given header
@@ -102,7 +96,7 @@ class AiFragment : Fragment() {
         if (text.isNullOrBlank()) return strBuilder
 
         val newText = reportTextToHtml(text)
-        strBuilder.append("<h3>${header}:</h3><br><br>", newText, "<br><br>")
+        strBuilder.append("<h2>${header}</h2><br><br>", newText, "<br><br>")
 
         return strBuilder
     }

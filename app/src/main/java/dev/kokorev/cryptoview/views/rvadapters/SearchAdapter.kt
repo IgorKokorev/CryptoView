@@ -14,7 +14,7 @@ class SearchAdapter(private val clickListener: OnItemClickListener) :
         private val data = mutableListOf<CoinPaprikaTickerDB>()
 
     interface OnItemClickListener {
-        fun click(coinPaprikaTickerDB: CoinPaprikaTickerDB, position: Int, binding: SearchCoinItemBinding)
+        fun click(coinPaprikaTickerDB: CoinPaprikaTickerDB)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

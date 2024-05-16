@@ -1,35 +1,48 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.CryptoView" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:textViewStyle">@style/TextViewStyle</item>
+        <item name="android:textAppearance">@style/CVTextAppearance</item>
         <item name="android:alertDialogStyle">@style/DialogStyle</item>
+        <item name="android:toolbarStyle">@style/CVMaterialToolbar</item>
     </style>
-    
+
+    <style name="CVTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">12sp</item>
+        <item name="color">@color/black</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorLink">@color/black</item>
+    </style>
+
+    <style name="CVMaterialToolbar" parent="Widget.MaterialComponents.Toolbar.Primary" >
+        <item name="android:background">@color/background1</item>
+    </style>
+
     <style name="TextViewStyle" parent="android:Widget.TextView">
         <item name="fontFamily">@font/roboto</item>
         <item name="android:textSize">12sp</item>
-        <item name="color">@color/white</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textColorLink">@color/white</item>
+        <item name="color">@color/black</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorLink">@color/black</item>
         <item name="android:layout_marginTop">0dp</item>
         <item name="android:layout_marginBottom">0dp</item>
     </style>
 
     <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/medium</item>
+        <item name="android:background">@color/background3</item>
         <item name="android:textColor">@color/white</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="backgroundTint">@color/dark</item>
+        <item name="backgroundTint">@color/background1</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="backgroundTint">@color/dark</item>
+        <item name="backgroundTint">@color/background1</item>
         <item name="android:textColor">@color/white</item>
     </style>
 

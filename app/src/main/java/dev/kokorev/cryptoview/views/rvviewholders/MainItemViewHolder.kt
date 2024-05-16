@@ -28,13 +28,13 @@ class MainItemViewHolder(val binding: MainCoinItemBinding) : RecyclerView.ViewHo
         binding.coinChange.text = change
 
         if (topMoverDB.percentChange < 0) {
-            binding.coinChange.setTextColor(ContextCompat.getColor(binding.root.context, R.color.lightAccent))
+            binding.coinChange.setTextColor(ContextCompat.getColor(binding.root.context, R.color.red))
         } else {
-            binding.coinChange.setTextColor(ContextCompat.getColor(binding.root.context, R.color.light))
+            binding.coinChange.setTextColor(ContextCompat.getColor(binding.root.context, R.color.green))
         }
 
         binding.root.setOnClickListener {
-            clickListener.click(topMoverDB, position, binding)
+            clickListener.click(topMoverDB)
         }
     }
 }

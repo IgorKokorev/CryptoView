@@ -5,14 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient45"
+    android:background="@drawable/background_gradient225"
     tools:context=".views.fragments.SearchFragment">
 
         <LinearLayout
             android:id="@+id/rv_headers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/medium"
+            android:background="@color/background3"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:layout_marginTop="10dp"

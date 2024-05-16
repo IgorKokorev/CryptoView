@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dev.kokorev.cryptoview.databinding.FragmentMainBinding
-import dev.kokorev.cryptoview.databinding.MainCoinItemBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.MainViewModel
@@ -57,11 +56,8 @@ class MainFragment : Fragment() {
 
     private fun initRecycler() {
         mainAdapter = MainAdapter(object : MainAdapter.OnItemClickListener {
-            override fun click(
-                topMoverDB: TopMoverDB,
-                position: Int,
-                binding: MainCoinItemBinding
-            ) { // On item click Coin fragment opens
+            override fun click(topMoverDB: TopMoverDB) {
+                // On item click Coin fragment opens
                 (requireActivity() as MainActivity).launchCoinFragment(
                     topMoverDB.coinPaprikaId,
                     topMoverDB.symbol,

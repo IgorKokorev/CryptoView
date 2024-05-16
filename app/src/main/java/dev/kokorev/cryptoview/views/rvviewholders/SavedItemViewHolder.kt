@@ -36,7 +36,7 @@ class SavedItemViewHolder(val binding: SavedCoinItemBinding) : RecyclerView.View
         binding.coinType.text = coin.type?.get(0)?.uppercase()
 
         binding.root.setOnClickListener {
-            clickListener.click(coin, position, binding)
+            clickListener.click(coin)
         }
     }
 }

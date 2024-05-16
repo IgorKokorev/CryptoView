@@ -67,6 +67,9 @@ dependencies {
     implementation(libs.glide)
     kapt(libs.glide.annotation.processor)
 
+    // retrofit for error handling
+    implementation(libs.retrofit)
+
     implementation(libs.dagger)
     kapt(libs.daggerCompiler)
 

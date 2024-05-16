@@ -50,7 +50,7 @@ object NumbersUtils {
             view.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    R.color.lightAccent
+                    R.color.red
                 )
             )
         } else if (changeNumber > 0) {
@@ -58,7 +58,7 @@ object NumbersUtils {
             view.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    R.color.light
+                    R.color.green
                 )
             )
         }

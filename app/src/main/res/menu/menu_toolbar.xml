@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
     <item
         android:id="@+id/main"
         android:enabled="true"
         android:icon="@drawable/icon_up_down"
+        android:iconTint="@color/iconColor"
         app:showAsAction="always"
         android:title="@string/menu_text_home"/>
     <item
         android:id="@+id/favorites"
         android:enabled="true"
         android:icon="@drawable/icon_favorite"
+        android:iconTint="@color/iconColor"
         app:showAsAction="always"
         android:title="@string/menu_text_favorites"/>
     <item
         android:id="@+id/search"
         android:enabled="true"
         android:icon="@drawable/icon_search"
+        android:iconTint="@color/iconColor"
         app:showAsAction="always"
         android:title="@string/menu_text_search"/>
     <item
         android:id="@+id/chat"
         android:enabled="true"
         android:icon="@drawable/icon_chat"
+        android:iconTint="@color/iconColor"
         app:showAsAction="always"
         android:title="@string/menu_text_chat"/>
     <item
         android:id="@+id/settings"
         android:enabled="true"
         android:icon="@drawable/icon_settings"
+        android:iconTint="@color/iconColor"
         app:showAsAction="always"
         android:title="@string/menu_text_settings"/>
 

@@ -5,7 +5,8 @@
     <dimen name="big_text">16sp</dimen>
     <dimen name="corner_radius">15dp</dimen>
     <dimen name="text_margin">16dp</dimen>
-    <dimen name="small_padding">3dp</dimen>
+    <dimen name="min_padding">3dp</dimen>
+    <dimen name="small_padding">6dp</dimen>
     <dimen name="medium_padding">12dp</dimen>
     <dimen name="big_padding">24dp</dimen>
 </resources>

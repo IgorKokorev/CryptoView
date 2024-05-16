@@ -30,6 +30,7 @@ class DomainModule(val context: Context) {
         tokenMetricsApi: TokenMetricsApi
     ) =
         RemoteApi(
+            context = context,
             binanceApi = binanceApi,
             cmcApi = cmcApi,
             coinPaprikaApi = coinPaprikaApi,

@@ -85,5 +85,14 @@ class Repository(private val preferenceProvider: PreferenceProvider) {
     fun getLastAppUpdateTime() = preferenceProvider.getLastAppUpdateTime()
     fun saveLastAppUpdateTime() = preferenceProvider.saveLastAppUpdateTime()
 
+    // Ai chat q&a
+    fun saveQuestion(text: String) {
+
+    }
+
+    fun saveAnswer(text: String) {
+
+    }
+
 
 }

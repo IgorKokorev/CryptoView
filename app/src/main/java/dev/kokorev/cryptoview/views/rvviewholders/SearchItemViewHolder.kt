@@ -32,7 +32,7 @@ class SearchItemViewHolder(val binding: SearchCoinItemBinding) :
         binding.coinMcap.text = mcap
 
         binding.root.setOnClickListener {
-            clickListener.click(ticker, position, binding)
+            clickListener.click(ticker)
         }
     }
 

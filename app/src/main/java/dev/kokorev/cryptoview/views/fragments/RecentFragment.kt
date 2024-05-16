@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import dev.kokorev.cryptoview.data.entity.RecentCoin
 import dev.kokorev.cryptoview.data.entity.SavedCoin
 import dev.kokorev.cryptoview.databinding.FragmentRecentBinding
-import dev.kokorev.cryptoview.databinding.SavedCoinItemBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.addTo
@@ -57,11 +56,7 @@ class RecentFragment : Fragment() {
     private fun initRecycler() {
         savedAdapter = SavedAdapter(
             object : SavedAdapter.OnItemClickListener {
-                override fun click(
-                    savedCoin: SavedCoin,
-                    position: Int,
-                    binding: SavedCoinItemBinding
-                ) { // On item click Coin fragment opens
+                override fun click(savedCoin: SavedCoin) { // On item click Coin fragment opens
                     (requireActivity() as MainActivity).launchCoinFragment(
                         savedCoin.coinPaprikaId,
                         savedCoin.symbol,

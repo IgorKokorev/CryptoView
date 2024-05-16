@@ -50,22 +50,30 @@ class ChartFragment : Fragment() {
     private lateinit var hiChart: HIChart
 
     // Used colors on chart
+    private lateinit var textColorString: String
+    private lateinit var chartColorString:String
     private val transparentColor = HIColor.initWithRGBA(0, 0, 0, 0.0)
     private val semitransparentBlackColor = HIColor.initWithRGBA(0, 0, 0, 0.2)
-    private val lightColorString = "00FFA0"
-    private val lightColor = HIColor.initWithHexValue(lightColorString)
-    private val whiteColorString = "FFFFFF"
-    private val whiteColor = HIColor.initWithHexValue(whiteColorString)
-    private val whiteTextStyle = HICSSObject().apply {
-        color = "#" + whiteColorString
-        fontSize = "8pt"
-    }
+    private lateinit var chartColor: HIColor
+    private lateinit var textColor: HIColor
+    private lateinit var textThemeStyle: HICSSObject
     private var ticks: List<TickerTickEntity> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentChartBinding.inflate(layoutInflater)
         autoDisposable.bindTo(lifecycle)
+
+        // initializing chart colors with theme colors
+        textColorString = Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.textColor)).substring(2)
+        chartColorString = Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.accent6)).substring(2)
+        chartColor = HIColor.initWithHexValue(chartColorString)
+        textColor = HIColor.initWithHexValue(textColorString)
+        textThemeStyle = HICSSObject().apply {
+            color = "#" + textColorString
+            fontSize = "8pt"
+        }
+
         initChartView()
     }
 
@@ -149,7 +157,7 @@ class ChartFragment : Fragment() {
 
         val yLabels = HILabels().apply {
             enabled = true
-            style = whiteTextStyle
+            style = textThemeStyle
         }
 
         val ytitle = HITitle().apply {
@@ -160,18 +168,18 @@ class ChartFragment : Fragment() {
         val hiyAxis = HIYAxis().apply {
             labels = yLabels
             title = ytitle
-            lineColor = whiteColor
+            lineColor = textColor
             lineWidth = 1
-            gridLineColor = whiteColor
+            gridLineColor = textColor
             gridLineWidth = 1
             gridLineDashStyle = "Dot"
-            tickColor = whiteColor
+            tickColor = textColor
             opposite = true
         }
 
         val xLabels = HILabels().apply {
             enabled = true
-            style = whiteTextStyle
+            style = textThemeStyle
         }
 
         val xtitle = HITitle().apply {
@@ -182,9 +190,9 @@ class ChartFragment : Fragment() {
         val hixAxis = HIXAxis().apply {
             labels = xLabels
             title = xtitle
-            lineColor = whiteColor
+            lineColor = textColor
             lineWidth = 1
-            tickColor = whiteColor
+            tickColor = textColor
             tickWidth = 1
         }
 
@@ -196,7 +204,7 @@ class ChartFragment : Fragment() {
 
         // Chart's title
         val whiteColorStyle = HICSSObject().apply {
-            color = "#" + whiteColorString
+            color = "#" + textColorString
         }
 
         val chartTitle = HITitle().apply {
@@ -212,7 +220,7 @@ class ChartFragment : Fragment() {
                 "<tr><td style=\"{series.color}\">{series.name}</td><td style=\"text-align: right\"><b>{point.y}</b></td></tr>"
             footerFormat = "</table>"
             backgroundColor = semitransparentBlackColor
-            style = whiteTextStyle
+            style = textThemeStyle
         }
 
         // Chart options
@@ -240,7 +248,7 @@ class ChartFragment : Fragment() {
                 ticks.map { e -> e.price }
                     .takeLast(interval)
             )
-            color = lightColor
+            color = chartColor
             name = viewModel.symbol
             marker = HIMarker().apply {
                 enabled = false
@@ -298,13 +306,13 @@ class ChartFragment : Fragment() {
         if (change < 0) binding.change.setTextColor(
             ContextCompat.getColor(
                 binding.root.context,
-                R.color.lightAccent
+                R.color.accent1
             )
         )
         else binding.change.setTextColor(
             ContextCompat.getColor(
                 binding.root.context,
-                R.color.light
+                R.color.background8
             )
         )
 

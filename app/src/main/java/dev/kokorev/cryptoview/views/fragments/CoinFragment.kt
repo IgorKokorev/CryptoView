@@ -30,7 +30,7 @@ class CoinFragment : Fragment() {
             when (position) {
                 0 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.icon_info, null)
                 1 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.icon_chart, null)
-                2 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.icon_analytics, null)
+                2 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.svg_report, null)
                 else -> {}
             }
         }.attach()

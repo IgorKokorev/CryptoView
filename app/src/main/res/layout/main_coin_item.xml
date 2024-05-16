@@ -5,11 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_item_container"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:background="@color/dark"
-    android:elevation="10dp"
-    android:paddingStart="12dp"
-    android:paddingEnd="12dp"
+    android:layout_height="wrap_content"
+    android:background="@color/background1"
+    android:gravity="center"
+    android:padding="@dimen/medium_padding"
+    android:layout_marginTop="@dimen/min_padding"
     android:orientation="horizontal">
 
     <TextView
@@ -18,18 +18,17 @@
         android:layout_weight="50"
         android:layout_height="wrap_content"
         android:textAlignment="viewStart"
-        android:maxLines="1"
-        android:text="Unknown" />
+        android:gravity="start|center_vertical"
+        android:maxLines="1" />
 
     <TextView
         android:id="@+id/coin_symbol"
         android:layout_width="0dp"
         android:layout_weight="25"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        android:layout_gravity="end|center_vertical"
         android:textAlignment="viewEnd"
-        android:maxLines="1"
-        android:text="-" />
+        android:maxLines="1" />
 
     <TextView
         android:id="@+id/coin_change"
@@ -37,9 +36,8 @@
         android:layout_weight="25"
         android:layout_height="wrap_content"
         android:textAlignment="viewEnd"
-        android:gravity="end"
-        android:maxLines="1"
-        android:text="-" />
+        android:gravity="end|center_vertical"
+        android:maxLines="1" />
 
 
 </LinearLayout>

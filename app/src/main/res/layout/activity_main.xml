@@ -24,13 +24,15 @@
             android:layout_height="48dp"
             android:padding="0dp"
             app:title="@string/app_name"
-            app:titleTextColor="@color/white"
             app:titleMargin="0dp"
             android:layout_margin="0dp"
             android:layout_gravity="center"
             android:gravity="center"
+            app:titleTextColor="@color/background8"
+            app:subtitleTextColor="@color/background5"
+            android:backgroundTint="@color/background2"
             app:menu="@menu/menu_toolbar"
-            android:background="@color/dark"
+            android:background="@color/background1"
             style="@style/Widget.MaterialComponents.Toolbar.Primary" />
 
     </com.google.android.material.appbar.AppBarLayout>
