@@ -26,10 +26,13 @@
     <color name="accent1">#2b0c01</color>
 
     <color name="iconColor">@color/background8</color>
-    <color name="coinColor">#f2d654</color>
+    <color name="iconColor2">@color/background6</color>
     <color name="menu_item_color">@color/white</color>
+    <color name="lineColor">@color/background8</color>
     <color name="textColor">@color/white</color>
-    <color name="lineColor">@color/iconColor</color>
+
+    <color name="coinColor">#f2d654</color>
+    <color name="tokenColor">#d0d0d0</color>
 
     <color name="transparent_shadow_color">#01000000</color>
     <color name="semitransparent_shadow_color">#09000000</color>

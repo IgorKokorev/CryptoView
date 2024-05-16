@@ -28,7 +28,7 @@ class CoinFragment : Fragment() {
         binding.coinPager.adapter = adapter
         TabLayoutMediator(binding.coinTab, binding.coinPager) { tab, position ->
             when (position) {
-                0 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.icon_info, null)
+                0 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.icon_info2, null)
                 1 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.icon_chart, null)
                 2 ->  tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.svg_report, null)
                 else -> {}

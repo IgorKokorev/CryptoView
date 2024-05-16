@@ -1,7 +1,9 @@
 package dev.kokorev.cryptoview.views.rvviewholders
 
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.data.entity.SavedCoin
 import dev.kokorev.cryptoview.databinding.SavedCoinItemBinding
 import dev.kokorev.cryptoview.utils.NumbersUtils
@@ -33,7 +35,9 @@ class SavedItemViewHolder(val binding: SavedCoinItemBinding) : RecyclerView.View
         val mcap = NumbersUtils.formatBigNumber(coin.marketCap ?: 0.0)
         binding.coinMcap.text = mcap
         binding.coinRank.text = coin.rank.toString()
-        binding.coinType.text = coin.type?.get(0)?.uppercase()
+        val type = coin.type?.get(0)?.uppercase()
+        binding.coinType.text = type
+        if (type == "T") binding.coinType.setTextColor(ContextCompat.getColor(binding.root.context, R.color.tokenColor))
 
         binding.root.setOnClickListener {
             clickListener.click(coin)

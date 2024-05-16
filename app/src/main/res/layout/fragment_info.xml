@@ -57,7 +57,7 @@
         android:backgroundTint="@color/background3"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="right|bottom"
-        app:srcCompat="@drawable/icon_favorite"
+        app:srcCompat="@drawable/icon_star_empty"
         android:contentDescription="@string/favorite"/>
 
     <androidx.core.widget.NestedScrollView

@@ -102,8 +102,8 @@ class InfoFragment : Fragment() {
     // set 'add to favorites' fab icon depending on status
     private fun setFavoriteIcon() {
         binding.favoriteFab.setImageResource(
-            if (isFavorite) R.drawable.icon_favorite_fill
-            else R.drawable.icon_favorite
+            if (isFavorite) R.drawable.icon_star_fill
+            else R.drawable.icon_star_empty
         )
     }
 
