@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             //  System Bars' and Keyboard's insets combined
             val systemBarsIMEInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars() + WindowInsetsCompat.Type.ime())
             // We use the combined bottom inset of the System Bars and Keyboard to move the view so it doesn't get covered up by the keyboard
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBarsIMEInsets.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
@@ -55,10 +55,57 @@ class MainActivity : AppCompatActivity() {
 
         setupOnBackPressed()
         setupApp()
-        initMenuButtons()
+//        initMenuButtons()
+        initBottomBarButtons()
 
         addFragment(MainFragment(), Constants.MAIN_FRAGMENT_TAG)
 
+    }
+
+    private fun initBottomBarButtons() {
+        binding.bottomNavigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.main -> {
+                    val tag = Constants.MAIN_FRAGMENT_TAG
+                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: MainFragment()
+                    replaceFragment(fragment, tag)
+                    true
+                }
+
+                R.id.favorites -> {
+                    val tag = Constants.FAVORITES_FRAGMENT_TAG
+                    val fragment =
+                        supportFragmentManager.findFragmentByTag(tag) ?: SavedFragment()
+                    replaceFragment(fragment, tag)
+                    true
+                }
+
+                R.id.search -> {
+                    val tag = Constants.SEARCH_FRAGMENT_TAG
+                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: SearchFragment()
+                    replaceFragment(fragment, tag)
+                    true
+                }
+
+                R.id.chat -> {
+                    val tag = Constants.CHAT_FRAGMENT_TAG
+                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: AiChatFragment()
+                    replaceFragment(fragment, tag)
+                    true
+                }
+
+                R.id.settings -> {
+                    val tag = Constants.SETTINGS_FRAGMENT_TAG
+                    val fragment =
+                        supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
+                    replaceFragment(fragment, tag)
+                    Toast.makeText(this, R.string.settings_toast, Toast.LENGTH_SHORT).show()
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     private fun setupOnBackPressed() {
@@ -105,7 +152,7 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedExitCallback)
     }
 
-    private fun initMenuButtons() {
+/*    private fun initMenuButtons() {
 
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -150,7 +197,7 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
+    }*/
 
     fun launchCoinFragment(coinPaprikaId: String, symbol: String, name: String) {
         val bundle = Bundle()

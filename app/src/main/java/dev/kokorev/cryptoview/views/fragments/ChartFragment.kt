@@ -66,7 +66,7 @@ class ChartFragment : Fragment() {
 
         // initializing chart colors with theme colors
         textColorString = Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.textColor)).substring(2)
-        chartColorString = Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.accent6)).substring(2)
+        chartColorString = Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.background7)).substring(2)
         chartColor = HIColor.initWithHexValue(chartColorString)
         textColor = HIColor.initWithHexValue(textColorString)
         textThemeStyle = HICSSObject().apply {

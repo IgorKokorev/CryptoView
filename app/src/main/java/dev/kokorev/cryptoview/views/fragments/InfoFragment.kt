@@ -2,17 +2,16 @@ package dev.kokorev.cryptoview.views.fragments
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcCoinDataDTO
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentInfoBinding
@@ -153,13 +152,9 @@ class InfoFragment : Fragment() {
                 val itemViewBinding = OneColumnItemViewBinding.inflate(layoutInflater)
                 itemViewBinding.value.text = tag.name
                 itemViewBinding.root.setOnClickListener {
-                    val message =
-                        Html.fromHtml(
-                            "<font color='#FFFFFF'>Coins: " + tag.coinCounter + "<br>" + "ICOs: " + tag.icoCounter + "\n" + (tag.description
-                                ?: "") + "</font>", 0
-                        )
+                    val message = "Coins: " + tag.coinCounter + "\n" + "ICOs: " + tag.icoCounter
                     val alert =
-                        AlertDialog.Builder(binding.root.context, R.style.DialogStyle)
+                        MaterialAlertDialogBuilder(binding.root.context, R.style.DialogStyle)
                             .setTitle(tag.name)
                             .setMessage(message)
                             .setPositiveButton(
