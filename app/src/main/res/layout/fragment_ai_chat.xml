@@ -42,7 +42,7 @@
             android:background="@color/background1"
             android:hint="@string/ai_chat_hint"
             android:imeOptions="actionSend"
-            android:inputType="textMultiLine"
+            android:inputType="textMultiLine|textCapSentences|textAutoComplete|textAutoCorrect"
             android:maxLines="5"
             android:padding="@dimen/medium_padding"
             android:scrollbars="none"

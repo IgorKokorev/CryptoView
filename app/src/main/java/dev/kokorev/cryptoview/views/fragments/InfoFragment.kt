@@ -1,6 +1,5 @@
 package dev.kokorev.cryptoview.views.fragments
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -69,7 +68,8 @@ class InfoFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    val cmcInfo = it.data.get(viewModel.symbol)?.get(0) // Coin Info from CoinMarketCap
+                    val cmcInfo =
+                        it.data.get(viewModel.symbol)?.get(0) // Coin Info from CoinMarketCap
                     if (cmcInfo != null) setupCmcData(cmcInfo)
                 },
                 { t ->
@@ -90,7 +90,8 @@ class InfoFragment : Fragment() {
             if (isFavorite) {
                 viewModel.repository.deleteFavorite(coin.id)
             } else {
-                val favoriteCoinDB: FavoriteCoinDB = Converter.CoinDetailsEntityToFavoriteCoinDB(coin)
+                val favoriteCoinDB: FavoriteCoinDB =
+                    Converter.CoinDetailsEntityToFavoriteCoinDB(coin)
                 viewModel.repository.addFavorite(favoriteCoinDB)
             }
             isFavorite = !isFavorite
@@ -113,7 +114,6 @@ class InfoFragment : Fragment() {
 
     private fun setupCoinPaprikaData(cpInfo: CoinDetailsEntity) {
         val coinPaprikaId = cpInfo.id
-        val symbol = cpInfo.symbol
 
         viewModel.repository.findFavoriteCoinByCoinPaprikaId(coinPaprikaId)
             .subscribeOn(Schedulers.io())
@@ -153,16 +153,13 @@ class InfoFragment : Fragment() {
                 itemViewBinding.value.text = tag.name
                 itemViewBinding.root.setOnClickListener {
                     val message = "Coins: " + tag.coinCounter + "\n" + "ICOs: " + tag.icoCounter
-                    val alert =
-                        MaterialAlertDialogBuilder(binding.root.context, R.style.DialogStyle)
-                            .setTitle(tag.name)
-                            .setMessage(message)
-                            .setPositiveButton(
-                                "Ok",
-                                DialogInterface.OnClickListener { dialog, which ->
-                                    dialog.cancel()
-                                })
-                    alert.show()
+                    MaterialAlertDialogBuilder(binding.root.context, R.style.DialogStyle)
+                        .setTitle(tag.name)
+                        .setMessage(message)
+                        .setPositiveButton("Ok") { dialog, which ->
+                            dialog.cancel()
+                        }
+                        .show()
 
                 }
                 binding.tagList.addView(itemViewBinding.root)
@@ -207,42 +204,43 @@ class InfoFragment : Fragment() {
 
         if (cpInfo.openSource != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Open source:"
-            itemViewBinding.value.text = if (cpInfo.openSource!!) "Yes" else "No"
+            itemViewBinding.name.text = getString(R.string.open_source)
+            itemViewBinding.value.text = if (cpInfo.openSource!!) getString(R.string.yes)
+            else getString(R.string.no)
             binding.infoList.addView(itemViewBinding.root)
         }
 
         if (cpInfo.developmentStatus != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Development status:"
+            itemViewBinding.name.text = getString(R.string.development_status)
             itemViewBinding.value.text = cpInfo.developmentStatus
             binding.infoList.addView(itemViewBinding.root)
         }
 
         if (cpInfo.proofType != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Proof type:"
+            itemViewBinding.name.text = getString(R.string.proof_type)
             itemViewBinding.value.text = cpInfo.proofType
             binding.infoList.addView(itemViewBinding.root)
         }
 
         if (cpInfo.organizationStructure != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Org structure:"
+            itemViewBinding.name.text = getString(R.string.org_structure)
             itemViewBinding.value.text = cpInfo.organizationStructure
             binding.infoList.addView(itemViewBinding.root)
         }
 
         if (cpInfo.algorithm != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Hash algorithm:"
+            itemViewBinding.name.text = getString(R.string.hash_algorithm)
             itemViewBinding.value.text = cpInfo.algorithm
             binding.infoList.addView(itemViewBinding.root)
         }
 
         if (cpInfo.startedAt != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Started:"
+            itemViewBinding.name.text = getString(R.string.started)
             itemViewBinding.value.text = cpInfo.startedAt!!.substring(0, 10)
             binding.infoList.addView(itemViewBinding.root)
         }
