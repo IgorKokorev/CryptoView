@@ -35,4 +35,17 @@
     <string name="org_structure">Org structure:</string>
     <string name="hash_algorithm">Hash algorithm:</string>
     <string name="started">Started:</string>
+    <string name="tokenmetrics_bot">TokenMetrics Bot</string>
+    <string name="system">System</string>
+    <string name="no_answer">No answer</string>
+    <string name="user">User</string>
+    <string name="type">Type</string>
+    <string name="rank">Rank</string>
+    <string name="coin_logo">Coin logo</string>
+    <string name="symbol">Symbol</string>
+    <string name="name">Name</string>
+    <string name="price">Price</string>
+    <string name="change_24h">%24hr</string>
+    <string name="volume">Volume</string>
+    <string name="mcap">MCap</string>
 </resources>

@@ -6,6 +6,7 @@
     android:layout_marginTop="6dp"
     android:background="@color/background3"
     android:orientation="horizontal"
+    android:gravity="fill_vertical"
     android:paddingStart="22dp"
     android:paddingTop="6dp"
     android:paddingEnd="22dp"
@@ -15,6 +16,7 @@
         android:id="@+id/logo"
         android:layout_width="40dp"
         android:layout_height="match_parent"
+        android:contentDescription="@string/coin_logo"
         android:gravity="start|center_vertical"
         android:scaleType="centerInside" />
 
@@ -23,27 +25,27 @@
         android:layout_height="wrap_content"
         android:layout_weight="15"
         android:orientation="vertical"
-        android:paddingStart="12dp">
+        android:paddingStart="@dimen/medium_padding">
 
         <TextView
             android:id="@+id/coin_symbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
-            android:text="Symbol"
+            android:padding="@dimen/min_padding"
+            android:text="@string/symbol"
             android:textAlignment="viewStart"
-            android:textSize="14sp" />
+            android:textSize="@dimen/medium_text" />
 
         <TextView
             android:id="@+id/coin_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
-            android:text="Name"
+            android:padding="@dimen/min_padding"
+            android:text="@string/name"
             android:textAlignment="viewStart"
-            android:textSize="11sp" />
+            android:textSize="@dimen/small_text" />
     </LinearLayout>
 
     <LinearLayout
@@ -58,20 +60,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
-            android:text="Price"
+            android:padding="@dimen/min_padding"
+            android:text="@string/price"
             android:textAlignment="viewEnd"
-            android:textSize="14sp" />
+            android:textSize="@dimen/medium_text" />
 
         <TextView
             android:id="@+id/coin_change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
-            android:text="%24hr"
+            android:padding="@dimen/min_padding"
+            android:text="@string/change_24h"
             android:textAlignment="viewEnd"
-            android:textSize="11sp" />
+            android:textSize="@dimen/small_text" />
     </LinearLayout>
 
     <LinearLayout
@@ -86,20 +88,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
-            android:text="Volume"
+            android:padding="@dimen/min_padding"
+            android:text="@string/volume"
             android:textAlignment="viewEnd"
-            android:textSize="14sp" />
+            android:textSize="@dimen/medium_text" />
 
         <TextView
             android:id="@+id/coin_mcap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
-            android:text="MCap"
+            android:padding="@dimen/min_padding"
+            android:text="@string/mcap"
             android:textAlignment="viewEnd"
-            android:textSize="10sp" />
+            android:textSize="@dimen/small_text" />
     </LinearLayout>
 
     <TextView
@@ -110,21 +112,21 @@
         android:layout_weight="7"
         android:maxLines="1"
         android:rotation="-90"
-        android:text="Rank"
+        android:text="@string/rank"
         android:textAlignment="center"
-        android:textSize="11sp" />
+        android:textSize="@dimen/tiny_text" />
 
     <TextView
         android:id="@+id/coin_type"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:layout_weight="4"
+        android:layout_weight="5"
         android:maxLines="1"
         android:rotation="-90"
-        android:text="Type"
+        android:text="@string/type"
         android:padding="0dp"
         android:layout_margin="0dp"
         android:textAlignment="center"
-        android:textSize="10sp" />
+        android:textSize="@dimen/tiny_text" />
 </LinearLayout>

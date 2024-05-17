@@ -11,7 +11,9 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.coinpaprika.apiclient.entity.MessageDB
 import com.coinpaprika.apiclient.entity.MessageType
+import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.ChatInItemBinding
 import dev.kokorev.cryptoview.databinding.ChatOutItemBinding
 import dev.kokorev.cryptoview.databinding.FragmentAiChatBinding
@@ -22,12 +24,14 @@ import dev.kokorev.token_metrics_api.entity.AiQuestion
 import dev.kokorev.token_metrics_api.entity.AiQuestionMessage
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.text.SimpleDateFormat
 
-
+// Fragment to chat with TokenMetrics AI chat bot
 class AiChatFragment : Fragment() {
     private val viewModel: AiChatViewModel by viewModels()
     private lateinit var binding: FragmentAiChatBinding
     private val autoDisposable = AutoDisposable()
+    private var lastShownTime = 0L // the last shown message time
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,17 +43,27 @@ class AiChatFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Show messages saved in db
         viewModel.messages
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (it.isEmpty()) showAndSaveAnswer(getString(dev.kokorev.cryptoview.R.string.ai_greeting))
-                else {
+                if (it.isEmpty()) {
+                    viewModel.repository.saveAnswer(
+                        getString(R.string.tokenmetrics_bot),
+                        getString(dev.kokorev.cryptoview.R.string.ai_greeting)
+                    )
+                    lastShownTime = System.currentTimeMillis()
+                } else {
                     it.sortedBy { it.time }
                         .forEach { message ->
-                            if (message.type == MessageType.OUT) showQuestion(message.message)
-                            else showAnswer(message.message)
-                    }
+                            if (message.time > lastShownTime) {
+                                if (message.type == MessageType.OUT) showQuestion(message)
+                                else showAnswer(message)
+                                lastShownTime = message.time
+                            }
+
+                        }
                 }
             }
             .addTo(autoDisposable)
@@ -58,55 +72,73 @@ class AiChatFragment : Fragment() {
         binding.buttonSend.setOnClickListener {
             sendQuestion()
         }
-        binding.question.setInputType(InputType.TYPE_CLASS_TEXT)
-        binding.question.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEND) {
-                sendQuestion()
-                return@setOnEditorActionListener true
+
+        binding.question.run {
+            setImeOptions(EditorInfo.IME_ACTION_SEND);
+            setRawInputType(InputType.TYPE_CLASS_TEXT);
+            // listen to "Send" soft key
+            setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    sendQuestion()
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
             }
-            return@setOnEditorActionListener false
         }
+
         return binding.root
     }
 
     private fun sendQuestion() {
-        val question: String = binding.question.text.toString()
+        hideKeyboard()
+        val question = binding.question.text.toString()
         binding.question.text?.clear()
-        showAndSaveQuestion(question)
+
+        // If the input is empty do nothing
+        if (question.isNullOrBlank()) return
+
+        viewModel.repository.saveQuestion(getString(R.string.user), question)
+
         val aiQuestionMessage = AiQuestionMessage(question)
         val aiQuestion = AiQuestion(arrayListOf(aiQuestionMessage))
+
+        viewModel.progressBarState.onNext(true)
+
         viewModel.remoteApi.askAi(aiQuestion)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                showAndSaveAnswer(it.answer.toString())
+                if (!it.answer.isNullOrBlank()) {
+                    viewModel.repository.saveAnswer(getString(R.string.tokenmetrics_bot), it.answer.toString())
+                } else {
+                    viewModel.repository.saveAnswer(getString(R.string.system), getString(R.string.no_answer))
+                }
+                viewModel.progressBarState.onNext(false)
+
             }
             .addTo(autoDisposable)
-        hideKeyboard()
     }
 
-    private fun showAndSaveQuestion(text: String) {
-        viewModel.repository.saveQuestion(text)
-        showQuestion(text)
-    }
-
-    private fun showQuestion(text: String) {
+    private fun showQuestion(message: MessageDB) {
         val outBinding = ChatOutItemBinding.inflate(layoutInflater)
-        outBinding.incomingMessage.text = text
+        outBinding.message.text = message.message
+        outBinding.name.text = message.name
+        val format = SimpleDateFormat("dd MMMM yyyy hh:mm:ss")
+        outBinding.time.text = format.format(message.time)
+
         binding.chatWindow.addView(outBinding.root)
         binding.containerAnswer.post {
             binding.containerAnswer.fullScroll(View.FOCUS_DOWN)
         }
     }
 
-    private fun showAndSaveAnswer(text: String) {
-        viewModel.repository.saveAnswer(text)
-        showAnswer(text)
-    }
-
-    private fun showAnswer(text: String) {
+    private fun showAnswer(message: MessageDB) {
         val inBinding = ChatInItemBinding.inflate(layoutInflater)
-        inBinding.incomingMessage.text = text
+        inBinding.message.text = message.message
+        inBinding.name.text = message.name
+        val format = SimpleDateFormat("dd MMMM yyyy hh:mm:ss")
+        inBinding.time.text = format.format(message.time)
+
         binding.chatWindow.addView(inBinding.root)
         binding.containerAnswer.post {
             binding.containerAnswer.fullScroll(View.FOCUS_DOWN)

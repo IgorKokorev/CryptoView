@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.coinpaprika.apiclient.entity.CoinType
@@ -57,9 +58,17 @@ class MainActivity : AppCompatActivity() {
         setupApp()
 //        initMenuButtons()
         initBottomBarButtons()
+        setupProgressBar()
 
         addFragment(MainFragment(), Constants.MAIN_FRAGMENT_TAG)
 
+    }
+
+    private fun setupProgressBar() {
+        viewModel.remoteApi.progressBarState.subscribe{
+            binding.progressBar.isVisible = it
+        }
+            .addTo(autoDisposable)
     }
 
     private fun initBottomBarButtons() {

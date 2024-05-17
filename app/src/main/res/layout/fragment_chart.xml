@@ -15,51 +15,331 @@
         android:layout_height="wrap_content"
         android:gravity="fill_horizontal"
         android:orientation="horizontal"
-        android:weightSum="100"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/symbol"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_weight="20"
-            android:textAlignment="viewStart"
-            android:textSize="@dimen/small_text" />
-
-        <TextView
-            android:id="@+id/price"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="20"
-            android:textAlignment="center"
-            android:paddingEnd="1dp"
-            android:textSize="@dimen/small_text" />
+            android:padding="@dimen/small_padding"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/change"
+            <TextView
+                android:id="@+id/symbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:maxLines="1"
+                android:textAlignment="center"
+                android:textSize="@dimen/medium_text"
+                tools:text="SYMBOL" />
+
+            <TextView
+                android:id="@+id/ath_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:maxLines="1"
+                android:text="ATH:"
+                android:textAlignment="viewEnd"
+                android:textSize="@dimen/small_text" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:textAlignment="center"
-            android:textSize="@dimen/small_text" />
+            android:layout_weight="20"
+            android:padding="@dimen/small_padding"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/volume"
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textAlignment="viewStart"
+                android:textSize="@dimen/medium_text"
+                tools:text="price" />
+
+            <TextView
+                android:id="@+id/ath"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textAlignment="viewStart"
+                android:textSize="@dimen/small_text"
+                tools:text="ATH" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
-            android:textAlignment="viewEnd"
-            android:textSize="@dimen/small_text" />
+            android:layout_weight="20"
+            android:gravity="end"
+            android:padding="@dimen/small_padding"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/mcap"
+            <TextView
+                android:id="@+id/vol_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textAlignment="viewEnd"
+                android:textSize="@dimen/medium_text"
+                android:text="Vol:" />
+
+            <TextView
+                android:id="@+id/mcap_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textAlignment="viewStart"
+                android:textSize="@dimen/small_text"
+                android:text="MCap:" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_weight="25"
-            android:textAlignment="viewEnd"
-            android:textSize="@dimen/small_text" />
+            android:layout_weight="20"
+            android:padding="@dimen/small_padding"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/volume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textAlignment="viewStart"
+                android:textSize="@dimen/medium_text"
+                tools:text="vol" />
+
+            <TextView
+                android:id="@+id/mcap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textAlignment="viewStart"
+                android:textSize="@dimen/small_text"
+                tools:text="mcap" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/changes_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/big_padding"
+        android:maxLines="1"
+        android:text="Price change (%):"
+        android:textSize="@dimen/big_text"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/price_stat" />
+
+    <LinearLayout
+        android:id="@+id/changes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_padding"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/changes_header">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:text="1h"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/change_1h"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:textSize="@dimen/tiny_text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:text="12h"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/change_12h"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:textSize="@dimen/tiny_text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:text="24h"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/change_24h"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:textSize="@dimen/tiny_text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:text="7d"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/change_7d"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:textSize="@dimen/tiny_text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:text="30d"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/change_30d"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:textSize="@dimen/tiny_text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:text="1Y"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/change_1y"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:textSize="@dimen/tiny_text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:text="ATH"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/change_ath"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:textSize="@dimen/tiny_text" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
@@ -67,83 +347,83 @@
         android:id="@+id/interval_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/min_padding"
         android:layout_marginTop="@dimen/medium_padding"
+        android:padding="@dimen/min_padding"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintTop_toBottomOf="@+id/price_stat" >
+        app:layout_constraintTop_toBottomOf="@+id/changes">
 
 
         <TextView
             android:id="@+id/d7"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="1w"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
             android:gravity="center"
             android:padding="@dimen/min_padding"
-            android:layout_margin="@dimen/min_padding"
-            android:layout_width="50dp"
-            android:background="@drawable/rounded_rectangle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="1w"
+            android:textSize="@dimen/medium_text"
             app:layout_constraintDimensionRatio="1:1"
-            android:textSize="@dimen/medium_text" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/m1"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="1m"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
             android:gravity="center"
             android:padding="@dimen/min_padding"
-            android:layout_margin="@dimen/min_padding"
-            android:layout_width="50dp"
-            android:background="@drawable/rounded_rectangle"
+            android:text="1m"
 
-            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="@dimen/medium_text"
             app:layout_constraintStart_toEndOf="@+id/d7"
-            android:textSize="@dimen/medium_text" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/m3"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="3m"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
             android:gravity="center"
             android:padding="@dimen/min_padding"
-            android:layout_margin="@dimen/min_padding"
-            android:layout_width="50dp"
-            android:background="@drawable/rounded_rectangle"
-            app:layout_constraintTop_toTopOf="parent"
+            android:text="3m"
+            android:textSize="@dimen/medium_text"
             app:layout_constraintStart_toEndOf="@+id/m1"
-            android:textSize="@dimen/medium_text" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/m6"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="6m"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
             android:gravity="center"
             android:padding="@dimen/min_padding"
-            android:layout_margin="@dimen/min_padding"
-            android:layout_width="50dp"
-            android:background="@drawable/rounded_rectangle"
-            app:layout_constraintTop_toTopOf="parent"
+            android:text="6m"
+            android:textSize="@dimen/medium_text"
             app:layout_constraintStart_toEndOf="@+id/m3"
-            android:textSize="@dimen/medium_text" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/y1"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="Y"
-                android:gravity="center"
-                android:padding="@dimen/min_padding"
-                android:layout_margin="@dimen/min_padding"
-                android:layout_width="50dp"
-                android:background="@drawable/rounded_rectangle"
-                android:textSize="@dimen/medium_text"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/m6" />
+        <TextView
+            android:id="@+id/y1"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
+            android:gravity="center"
+            android:padding="@dimen/min_padding"
+            android:text="Y"
+            android:textSize="@dimen/medium_text"
+            app:layout_constraintStart_toEndOf="@+id/m6"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

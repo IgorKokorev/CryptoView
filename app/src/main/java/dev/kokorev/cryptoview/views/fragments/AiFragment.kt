@@ -46,9 +46,13 @@ class AiFragment : Fragment() {
         // In case of an error or empty report
         val emptyReport =
             getString(R.string.no_available_ai_report, viewModel.name, viewModel.symbol)
+        viewModel.progressBarState.onNext(true)
         viewModel.remoteApi.getAIReport(viewModel.symbol)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doAfterTerminate {
+                viewModel.progressBarState.onNext(false)
+            }
             .subscribe{
                 val strBuilder = StringBuilder()
                 // Selecting an item from the list

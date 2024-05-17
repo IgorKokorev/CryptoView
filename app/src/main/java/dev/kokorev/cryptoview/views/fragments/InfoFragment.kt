@@ -12,6 +12,7 @@ import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcCoinDataDTO
+import dev.kokorev.cmc_api.entity.cmc_metadata.CmcMetadataDTO
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentInfoBinding
 import dev.kokorev.cryptoview.databinding.OneColumnItemViewBinding
@@ -44,11 +45,14 @@ class InfoFragment : Fragment() {
     ): View {
         binding = FragmentInfoBinding.inflate(layoutInflater)
 
+        viewModel.progressBarState.onNext(true)
+
         viewModel.remoteApi.getCoinPaprikaCoinInfo(viewModel.coinPaprikaId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
+                    viewModel.cpInfo = it
                     setupCoinPaprikaData(it)
                     val recentCoinDB = Converter.CoinDetailsEntityToRecentCoinDB(it)
                     viewModel.repository.addRecent(recentCoinDB)
@@ -68,9 +72,10 @@ class InfoFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    val cmcInfo =
-                        it.data.get(viewModel.symbol)?.get(0) // Coin Info from CoinMarketCap
-                    if (cmcInfo != null) setupCmcData(cmcInfo)
+                    // Coin Info from CoinMarketCap
+                    findCoin(it)
+                    if (viewModel.cmcInfo != null) setupCmcData(viewModel.cmcInfo!!)
+                    viewModel.progressBarState.onNext(false)
                 },
                 { t ->
                     Log.d(
@@ -80,9 +85,22 @@ class InfoFragment : Fragment() {
                     )
                 })
             .addTo(autoDisposable)
-
-
         return binding.root
+    }
+
+    private fun findCoin(it: CmcMetadataDTO) {
+        val list = it.data.get(viewModel.symbol)
+        if (list.isNullOrEmpty()) return
+        if (list.size == 1) {
+            viewModel.cmcInfo = list.get(0)
+            return
+        }
+        list.forEach {
+            if (it.name.lowercase() == viewModel.name.lowercase()) {
+                viewModel.cmcInfo = it
+                return
+            }
+        }
     }
 
     private fun setupFavoriteFab(coin: CoinDetailsEntity) {

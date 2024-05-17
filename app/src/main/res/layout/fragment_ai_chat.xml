@@ -11,7 +11,7 @@
         android:id="@+id/container_answer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="@dimen/medium_padding"
+        android:padding="@dimen/medium_padding"
         android:contentDescription="@string/ai_chat_hint"
         app:layout_constraintBottom_toTopOf="@+id/container_question"
         app:layout_constraintTop_toTopOf="parent">
@@ -42,7 +42,7 @@
             android:background="@color/background1"
             android:hint="@string/ai_chat_hint"
             android:imeOptions="actionSend"
-            android:inputType="textMultiLine|textCapSentences|textAutoComplete|textAutoCorrect"
+            android:inputType="textMultiLine"
             android:maxLines="5"
             android:padding="@dimen/medium_padding"
             android:scrollbars="none"

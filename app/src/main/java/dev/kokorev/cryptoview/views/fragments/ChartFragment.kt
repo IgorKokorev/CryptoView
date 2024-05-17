@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -36,6 +37,7 @@ import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
+import java.util.Locale
 
 class ChartFragment : Fragment() {
     private lateinit var binding: FragmentChartBinding
@@ -51,7 +53,7 @@ class ChartFragment : Fragment() {
 
     // Used colors on chart
     private lateinit var textColorString: String
-    private lateinit var chartColorString:String
+    private lateinit var chartColorString: String
     private val transparentColor = HIColor.initWithRGBA(0, 0, 0, 0.0)
     private val semitransparentBlackColor = HIColor.initWithRGBA(0, 0, 0, 0.2)
     private lateinit var chartColor: HIColor
@@ -65,8 +67,12 @@ class ChartFragment : Fragment() {
         autoDisposable.bindTo(lifecycle)
 
         // initializing chart colors with theme colors
-        textColorString = Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.textColor)).substring(2)
-        chartColorString = Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.background7)).substring(2)
+        textColorString =
+            Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.textColor))
+                .substring(2)
+        chartColorString =
+            Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.background7))
+                .substring(2)
         chartColor = HIColor.initWithHexValue(chartColorString)
         textColor = HIColor.initWithHexValue(textColorString)
         textThemeStyle = HICSSObject().apply {
@@ -84,9 +90,14 @@ class ChartFragment : Fragment() {
 
         setupIntervalButtons()
 
+        viewModel.progressBarState.onNext(true)
+
         viewModel.remoteApi.getCoinPaprikaTicker(viewModel.coinPaprikaId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete {
+
+            }
             .subscribe({
                 binding.symbol.text = viewModel.symbol
                 val quotes = it.quotes?.get("USD")
@@ -104,6 +115,9 @@ class ChartFragment : Fragment() {
         viewModel.remoteApi.getCoinPaprikaTickerHistorical(viewModel.coinPaprikaId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doAfterTerminate {
+                viewModel.progressBarState.onNext(false)
+            }
             .subscribe({
                 Log.d("ChartFragment", "${it.size} ticks received for the chart")
                 ticks = it
@@ -122,8 +136,10 @@ class ChartFragment : Fragment() {
         // Refresh chart with delay, otherwise sometimes it isn't drawn.
         Handler(Looper.getMainLooper()).postDelayed({
             updateChart(MAX_INTERVAL)
-            Log.d("ChartFragment",
-                "Chart refreshed")
+            Log.d(
+                "ChartFragment",
+                "Chart refreshed"
+            )
         }, 500)
 
         return binding.root
@@ -261,8 +277,8 @@ class ChartFragment : Fragment() {
         // setting x-axis labels
         hiChartView.options.xAxis.get(0).categories = ArrayList(
             ticks.map { tick ->
-                    convertDate(tick.timestamp) //.substring(5, 10)
-                }.takeLast(interval)
+                convertDate(tick.timestamp) //.substring(5, 10)
+            }.takeLast(interval)
         )
 
         hiChartView.update(options)
@@ -292,36 +308,43 @@ class ChartFragment : Fragment() {
     }
 
     private fun showQuotes(quotes: QuoteEntity) {
-        binding.price.text = DecimalFormat("#,###.########$").format(
+        binding.price.text = formatPrice(quotes.price)
+        binding.ath.text = formatPrice(quotes.athPrice)
+
+        showChange(quotes.percentChange1h, binding.change1h)
+        showChange(quotes.percentChange12h, binding.change12h)
+        showChange(quotes.percentChange24h, binding.change24h)
+        showChange(quotes.percentChange7d, binding.change7d)
+        showChange(quotes.percentChange30d, binding.change30d)
+        showChange(quotes.percentChange1y, binding.change1y)
+        showChange(quotes.percentFromPriceAth, binding.changeAth)
+
+        binding.volume.text = NumbersUtils.formatBigNumber(quotes.dailyVolume)
+        binding.mcap.text = NumbersUtils.formatBigNumber(quotes.marketCap)
+    }
+
+    private fun showChange(change: Double?, changeView: TextView) {
+        changeView.text = if (change == null) "-"
+        else {
+            changeView.setTextColor(
+                if (change < 0)
+                    ContextCompat.getColor(changeView.context, R.color.red)
+                else
+                    ContextCompat.getColor(changeView.context, R.color.green)
+            )
+
+            "%.3f".format(Locale.ENGLISH, change)
+        }
+    }
+
+    private fun formatPrice(price: Double?): String =
+        if (price == null) "-"
+        else DecimalFormat("#,###.########$").format(
             NumbersUtils.roundNumber(
-                quotes.price,
+                price,
                 3
             )
         )
-
-        val change = quotes.percentChange24h
-        binding.change.text = DecimalFormat("#,###.##%").format(
-            NumbersUtils.roundNumber(change / 100.0, 2)
-        )
-        if (change < 0) binding.change.setTextColor(
-            ContextCompat.getColor(
-                binding.root.context,
-                R.color.accent1
-            )
-        )
-        else binding.change.setTextColor(
-            ContextCompat.getColor(
-                binding.root.context,
-                R.color.background8
-            )
-        )
-
-        val volume = "Vol: " + NumbersUtils.formatBigNumber(quotes.dailyVolume)
-        binding.volume.text = volume
-
-        val mcap = "MCap: " + NumbersUtils.formatBigNumber(quotes.marketCap)
-        binding.mcap.text = mcap
-    }
 
     companion object {
         const val D7_INTERVAL = 7

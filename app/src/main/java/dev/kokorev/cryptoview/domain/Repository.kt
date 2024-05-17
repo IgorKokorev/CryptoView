@@ -91,25 +91,25 @@ class Repository(private val preferenceProvider: PreferenceProvider) {
     fun saveLastAppUpdateTime() = preferenceProvider.saveLastAppUpdateTime()
 
     // Ai chat q&a
-    fun saveQuestion(text: String) {
+    fun saveQuestion(name: String, message: String) {
         Executors.newSingleThreadExecutor().execute {
             val messageDB: MessageDB = MessageDB(
                 time = System.currentTimeMillis(),
                 type = MessageType.OUT,
-                name = "User",
-                message = text
+                name = name,
+                message = message
             )
             messageDao.insertMessage(messageDB)
         }
     }
 
-    fun saveAnswer(text: String) {
+    fun saveAnswer(name: String, message: String) {
         Executors.newSingleThreadExecutor().execute {
             val messageDB: MessageDB = MessageDB(
                 time = System.currentTimeMillis(),
                 type = MessageType.IN,
-                name = "AI",
-                message = text
+                name = name,
+                message = message
             )
             messageDao.insertMessage(messageDB)
         }

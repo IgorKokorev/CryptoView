@@ -111,7 +111,7 @@
         android:id="@+id/coin_type"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
+        android:layout_weight="5"
         android:layout_gravity="center_vertical|end"
         android:maxLines="1"
         android:padding="3dp"
