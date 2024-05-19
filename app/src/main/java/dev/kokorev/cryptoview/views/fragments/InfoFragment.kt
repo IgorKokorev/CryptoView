@@ -45,11 +45,7 @@ class InfoFragment : Fragment() {
     ): View {
         binding = FragmentInfoBinding.inflate(layoutInflater)
 
-        viewModel.progressBarState.onNext(true)
-
         viewModel.remoteApi.getCoinPaprikaCoinInfo(viewModel.coinPaprikaId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
                     viewModel.cpInfo = it
@@ -68,14 +64,11 @@ class InfoFragment : Fragment() {
             .addTo(autoDisposable)
 
         viewModel.remoteApi.getCmcMetadata(viewModel.symbol)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
                     // Coin Info from CoinMarketCap
                     findCoin(it)
                     if (viewModel.cmcInfo != null) setupCmcData(viewModel.cmcInfo!!)
-                    viewModel.progressBarState.onNext(false)
                 },
                 { t ->
                     Log.d(

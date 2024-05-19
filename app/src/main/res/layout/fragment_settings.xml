@@ -12,26 +12,50 @@
         android:id="@+id/switch_element"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/medium_padding"
         android:text="Switch text"
         android:textColor="@color/white"
         android:textSize="24sp"
-        app:useMaterialThemeColors="false"
-        app:thumbTint="@color/background1"
-        app:trackTint="@color/background8"
-        android:paddingHorizontal="@dimen/medium_padding"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/switch_element"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@color/accent1"
-        android:textSize="36dp"
-        android:text="SettingsFragment" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:thumbTint="@color/base1"
+        app:trackTint="@color/base8"
+        app:useMaterialThemeColors="false" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/switch_element">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Min MCap" />
+
+        <com.google.android.material.slider.Slider
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="Minimum market cap"
+            android:valueFrom="0"
+            android:valueTo="10"
+            app:labelBehavior="gone"
+            app:thumbColor="@color/accent6"
+            app:thumbRadius="20dp"
+            app:thumbWidth="20dp"
+            app:thumbHeight="20dp"
+            app:thumbElevation="10dp"
+            app:haloColor="@color/white"
+            app:trackHeight="5dp"
+            app:trackColorInactive="@color/accent3"
+            app:trackColorActive="@color/accent5"
+            />
+
+        <EditText
+            android:layout_width="60dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

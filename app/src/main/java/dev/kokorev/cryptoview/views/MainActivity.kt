@@ -65,7 +65,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupProgressBar() {
-        viewModel.remoteApi.progressBarState.subscribe{
+        viewModel.remoteApi.progressBarState
+            .onErrorComplete()
+            .subscribe{
             binding.progressBar.isVisible = it
         }
             .addTo(autoDisposable)
@@ -249,7 +251,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateCoinPaprikaAllCoins() {
         viewModel.remoteApi.getCoinPaprikaAllCoins()
-            .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe {
                 Log.d("MainActivity", "SetupApp: total CoinPaprika coins: ${it.size}")
@@ -275,7 +276,6 @@ class MainActivity : AppCompatActivity() {
 
     fun updateCoinPaprikaTickers() {
         viewModel.remoteApi.getCoinPaprikaTickers()
-            .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe {
                 val tickers = it
@@ -288,7 +288,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateBinanceInfo() {
         viewModel.remoteApi.getBinanceInfo()
-            .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe {
                 val symbols = it.binanceSymbolDTOS.asSequence()

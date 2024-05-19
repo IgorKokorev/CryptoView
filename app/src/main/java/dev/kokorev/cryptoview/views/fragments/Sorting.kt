@@ -1,6 +1,6 @@
 package dev.kokorev.cryptoview.views.fragments
 
-enum class LastSorting {
+enum class Sorting {
     SYMBOL,
     NAME,
     PRICE,
@@ -8,5 +8,6 @@ enum class LastSorting {
     ATH,
     ATH_CHANGE,
     VOLUME,
-    MCAP
+    MCAP,
+    NONE
 }

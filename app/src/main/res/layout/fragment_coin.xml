@@ -11,13 +11,13 @@
         android:id="@+id/coin_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background1"
+        android:background="@color/base1"
         android:contentDescription="Select coin information"
         app:tabMode="fixed"
         app:tabTextColor="@color/white"
-        app:tabIconTint="@color/background8"
+        app:tabIconTint="@color/base8"
         app:tabBackground="@drawable/rounded_up_rectangle"
-        app:tabIndicatorColor="@color/background8"
+        app:tabIndicatorColor="@color/base8"
         app:tabIndicatorFullWidth="true"
         />
 

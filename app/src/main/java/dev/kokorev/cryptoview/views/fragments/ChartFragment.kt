@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.coinpaprika.apiclient.entity.QuoteEntity
 import com.highsoft.highcharts.common.HIColor
 import com.highsoft.highcharts.common.hichartsclasses.HICSSObject
@@ -34,9 +35,8 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
+import java.time.LocalDate
 import java.util.Locale
 
 class ChartFragment : Fragment() {
@@ -71,7 +71,7 @@ class ChartFragment : Fragment() {
             Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.textColor))
                 .substring(2)
         chartColorString =
-            Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.background7))
+            Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.base7))
                 .substring(2)
         chartColor = HIColor.initWithHexValue(chartColorString)
         textColor = HIColor.initWithHexValue(textColorString)
@@ -90,16 +90,10 @@ class ChartFragment : Fragment() {
 
         setupIntervalButtons()
 
-        viewModel.progressBarState.onNext(true)
-
         viewModel.remoteApi.getCoinPaprikaTicker(viewModel.coinPaprikaId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnComplete {
-
-            }
             .subscribe({
-                binding.symbol.text = viewModel.symbol
+                val nameAndSymbol = viewModel.name + " (" + viewModel.symbol + ")"
+                binding.symbol.text = nameAndSymbol
                 val quotes = it.quotes?.get("USD")
                 if (quotes != null) showQuotes(quotes)
             },
@@ -113,11 +107,6 @@ class ChartFragment : Fragment() {
             .addTo(autoDisposable)
 
         viewModel.remoteApi.getCoinPaprikaTickerHistorical(viewModel.coinPaprikaId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doAfterTerminate {
-                viewModel.progressBarState.onNext(false)
-            }
             .subscribe({
                 Log.d("ChartFragment", "${it.size} ticks received for the chart")
                 ticks = it
@@ -150,6 +139,7 @@ class ChartFragment : Fragment() {
         binding.m1.setOnClickListener { updateChart(M1_INTERVAL) }
         binding.m3.setOnClickListener { updateChart(M3_INTERVAL) }
         binding.m6.setOnClickListener { updateChart(M6_INTERVAL) }
+        binding.ytd.setOnClickListener { updateChart(LocalDate.now().dayOfYear) }
         binding.y1.setOnClickListener { updateChart(Y1_INTERVAL) }
     }
 
@@ -308,6 +298,12 @@ class ChartFragment : Fragment() {
     }
 
     private fun showQuotes(quotes: QuoteEntity) {
+
+        Glide.with(binding.root)
+            .load(viewModel.cpInfo?.logo)
+            .centerCrop()
+            .into(binding.logo)
+
         binding.price.text = formatPrice(quotes.price)
         binding.ath.text = formatPrice(quotes.athPrice)
 

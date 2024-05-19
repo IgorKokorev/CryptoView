@@ -6,7 +6,7 @@ import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter
-import dev.kokorev.cryptoview.views.fragments.LastSorting
+import dev.kokorev.cryptoview.views.fragments.Sorting
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -20,7 +20,7 @@ class SearchViewModel : ViewModel() {
     lateinit var repository: Repository
     private val compositeDisposable = CompositeDisposable()
     val cpTickers: Observable<List<CoinPaprikaTickerDB>>
-    var sorting = LastSorting.VOLUME // field for RV sorting
+    var sorting = Sorting.NONE // field for RV sorting
     var direction = 1 // sorting direction
 //    val showProgressBar: BehaviorSubject<Boolean>
 
@@ -38,7 +38,6 @@ class SearchViewModel : ViewModel() {
             repository.saveLastCpTickersCallTime()
 
             val disposable = remoteApi.getCoinPaprikaTickers()
-                .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe {
                     val tickers = it

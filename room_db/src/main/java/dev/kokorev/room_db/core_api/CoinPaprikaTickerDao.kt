@@ -9,7 +9,7 @@ import io.reactivex.rxjava3.core.Observable
 
 @Dao
 interface CoinPaprikaTickerDao {
-    @Query("SELECT * FROM coin_paprika_ticker")
+    @Query("SELECT * FROM coin_paprika_ticker ORDER BY rank")
     fun getCoinPaprikaTickers(): Observable<List<CoinPaprikaTickerDB>>
 
     @Query("SELECT * FROM coin_paprika_ticker WHERE symbol = :symbol")

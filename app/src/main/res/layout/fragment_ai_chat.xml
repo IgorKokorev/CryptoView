@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start|top"
             android:layout_weight="1"
-            android:background="@color/background1"
+            android:background="@color/base1"
             android:hint="@string/ai_chat_hint"
             android:imeOptions="actionSend"
             android:inputType="textMultiLine"

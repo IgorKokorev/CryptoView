@@ -25,6 +25,7 @@ import dev.kokorev.token_metrics_api.entity.AiQuestionMessage
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.SimpleDateFormat
+import java.util.Locale
 
 // Fragment to chat with TokenMetrics AI chat bot
 class AiChatFragment : Fragment() {
@@ -102,19 +103,13 @@ class AiChatFragment : Fragment() {
         val aiQuestionMessage = AiQuestionMessage(question)
         val aiQuestion = AiQuestion(arrayListOf(aiQuestionMessage))
 
-        viewModel.progressBarState.onNext(true)
-
         viewModel.remoteApi.askAi(aiQuestion)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (!it.answer.isNullOrBlank()) {
                     viewModel.repository.saveAnswer(getString(R.string.tokenmetrics_bot), it.answer.toString())
                 } else {
                     viewModel.repository.saveAnswer(getString(R.string.system), getString(R.string.no_answer))
                 }
-                viewModel.progressBarState.onNext(false)
-
             }
             .addTo(autoDisposable)
     }
@@ -123,7 +118,7 @@ class AiChatFragment : Fragment() {
         val outBinding = ChatOutItemBinding.inflate(layoutInflater)
         outBinding.message.text = message.message
         outBinding.name.text = message.name
-        val format = SimpleDateFormat("dd MMMM yyyy hh:mm:ss")
+        val format = SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.ENGLISH)
         outBinding.time.text = format.format(message.time)
 
         binding.chatWindow.addView(outBinding.root)
@@ -136,7 +131,7 @@ class AiChatFragment : Fragment() {
         val inBinding = ChatInItemBinding.inflate(layoutInflater)
         inBinding.message.text = message.message
         inBinding.name.text = message.name
-        val format = SimpleDateFormat("dd MMMM yyyy hh:mm:ss")
+        val format = SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.ENGLISH)
         inBinding.time.text = format.format(message.time)
 
         binding.chatWindow.addView(inBinding.root)

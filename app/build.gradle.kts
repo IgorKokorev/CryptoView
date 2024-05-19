@@ -29,6 +29,25 @@ android {
         }
     }
 
+    flavorDimensions += "version"
+
+    productFlavors {
+        create("basic") {
+            // Assigns this product flavor to the "version" flavor dimension.
+            // If you are using only one dimension, this property is optional,
+            // and the plugin automatically assigns all the module's flavors to
+            // that dimension.
+            dimension = "version"
+            applicationIdSuffix = ".basic"
+            versionNameSuffix = "-basic"
+        }
+        create("full") {
+            dimension = "version"
+            applicationIdSuffix = ".full"
+            versionNameSuffix = "-full"
+        }
+    }
+
 //    compileOptions.incremental = false
 
     compileOptions {

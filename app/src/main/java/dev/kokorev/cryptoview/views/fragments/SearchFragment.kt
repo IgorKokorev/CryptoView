@@ -9,19 +9,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.databinding.FragmentSearchBinding
-import dev.kokorev.cryptoview.databinding.SearchCoinItemBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.SearchViewModel
 import dev.kokorev.cryptoview.views.MainActivity
-import dev.kokorev.cryptoview.views.fragments.LastSorting.ATH
-import dev.kokorev.cryptoview.views.fragments.LastSorting.ATH_CHANGE
-import dev.kokorev.cryptoview.views.fragments.LastSorting.CHANGE24HR
-import dev.kokorev.cryptoview.views.fragments.LastSorting.MCAP
-import dev.kokorev.cryptoview.views.fragments.LastSorting.NAME
-import dev.kokorev.cryptoview.views.fragments.LastSorting.PRICE
-import dev.kokorev.cryptoview.views.fragments.LastSorting.SYMBOL
-import dev.kokorev.cryptoview.views.fragments.LastSorting.VOLUME
+import dev.kokorev.cryptoview.views.fragments.Sorting.ATH
+import dev.kokorev.cryptoview.views.fragments.Sorting.ATH_CHANGE
+import dev.kokorev.cryptoview.views.fragments.Sorting.CHANGE24HR
+import dev.kokorev.cryptoview.views.fragments.Sorting.MCAP
+import dev.kokorev.cryptoview.views.fragments.Sorting.NAME
+import dev.kokorev.cryptoview.views.fragments.Sorting.PRICE
+import dev.kokorev.cryptoview.views.fragments.Sorting.SYMBOL
+import dev.kokorev.cryptoview.views.fragments.Sorting.VOLUME
 import dev.kokorev.cryptoview.views.rvadapters.SearchAdapter
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -35,8 +34,9 @@ class SearchFragment : Fragment() {
     private var tickers: List<CoinPaprikaTickerDB> = listOf()
         set(value) {
             if (field == value) return
-            field = value.sort(viewModel.sorting, viewModel.direction)
+            field = value
             searchAdapter.addItems(field)
+            binding.mainRecycler.layoutManager?.scrollToPosition(0)
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +72,7 @@ class SearchFragment : Fragment() {
         })
         searchAdapter.addItems(tickers)
         binding.mainRecycler.adapter = searchAdapter
+
 //        binding.mainRecycler.addItemDecoration(TopSpacingItemDecoration(0))
     }
 
@@ -87,15 +88,14 @@ class SearchFragment : Fragment() {
         binding.headerAth.setOnClickListener { sortTickers(ATH_CHANGE) }
     }
 
-    private fun sortTickers(toSort: LastSorting) {
+    private fun sortTickers(toSort: Sorting) {
         viewModel.direction = if (viewModel.sorting == toSort) -viewModel.direction else 1
         viewModel.sorting = toSort
         tickers = tickers.sort(viewModel.sorting, viewModel.direction)
-        binding.mainRecycler.layoutManager?.scrollToPosition(0)
+//        binding.mainRecycler.layoutManager?.scrollToPosition(0)
     }
 
     private fun setupDataFromViewModel() {
-        viewModel.loadTickers()
         viewModel.cpTickers
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -105,7 +105,6 @@ class SearchFragment : Fragment() {
                         (ticker.dailyVolume ?: 0.0) > Constants.MIN_VOLUME &&
                                 (ticker.marketCap ?: 0.0) > Constants.MIN_MCAP
                     }
-//                        .sortedByDescending { it.dailyVolume }
                 },
                 {
                     Log.d(
@@ -116,12 +115,10 @@ class SearchFragment : Fragment() {
                 })
             .addTo(autoDisposable)
     }
-
-
 }
 
 private fun List<CoinPaprikaTickerDB>.sort(
-    sorting: LastSorting,
+    sorting: Sorting,
     direction: Int
 ): List<CoinPaprikaTickerDB> {
     return if (direction > 0) {

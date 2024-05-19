@@ -14,11 +14,9 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import dev.kokorev.token_metrics_api.entity.AiReportData
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 
 // AI reports fragment to show Token Metrics reports
-class AiFragment : Fragment() {
+class AiReportFragment : Fragment() {
     private lateinit var binding: FragmentAiBinding
     private val autoDisposable = AutoDisposable()
     private val viewModel: CoinViewModel by viewModels<CoinViewModel>(
@@ -46,13 +44,7 @@ class AiFragment : Fragment() {
         // In case of an error or empty report
         val emptyReport =
             getString(R.string.no_available_ai_report, viewModel.name, viewModel.symbol)
-        viewModel.progressBarState.onNext(true)
         viewModel.remoteApi.getAIReport(viewModel.symbol)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doAfterTerminate {
-                viewModel.progressBarState.onNext(false)
-            }
             .subscribe{
                 val strBuilder = StringBuilder()
                 // Selecting an item from the list

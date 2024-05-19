@@ -26,7 +26,7 @@
         android:id="@+id/rv_headers"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/background1"
+        android:background="@color/base1"
         android:elevation="@dimen/small_padding"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"

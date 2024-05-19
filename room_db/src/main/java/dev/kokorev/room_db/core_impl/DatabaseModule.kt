@@ -60,7 +60,7 @@ class DatabaseModule {
             context,
             CoinViewDb::class.java, DATABASE_NAME
         )
-            .fallbackToDestructiveMigration()
+//            .fallbackToDestructiveMigration()
             .build()
     }
 }

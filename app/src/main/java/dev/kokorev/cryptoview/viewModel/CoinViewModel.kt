@@ -22,11 +22,9 @@ class CoinViewModel : ViewModel() {
 
     var cmcInfo: CmcCoinDataDTO? = null
     var cpInfo: CoinDetailsEntity? = null
-    val progressBarState: BehaviorSubject<Boolean>
 
 
     init {
         App.instance.dagger.inject(this)
-        progressBarState = remoteApi.progressBarState
     }
 }

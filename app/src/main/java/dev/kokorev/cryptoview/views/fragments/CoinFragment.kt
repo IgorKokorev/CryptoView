@@ -58,7 +58,7 @@ class CoinPagerAdapter(fragment: Fragment, private val args: Bundle?): FragmentS
     override fun createFragment(position: Int): Fragment {
         val fragment = when (position) {
             1 -> ChartFragment()
-            2 -> AiFragment()
+            2 -> AiReportFragment()
             else -> InfoFragment()
         }
         fragment.arguments = args

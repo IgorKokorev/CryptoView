@@ -46,7 +46,11 @@ class Repository(private val preferenceProvider: PreferenceProvider) {
 
     // CoinPaprikaTicker table interaction
     fun getAllCoinPaprikaTickers() = coinPaprikaTickerDao.getCoinPaprikaTickers()
-    fun addCoinPaprikaTickers(list: List<CoinPaprikaTickerDB>) = coinPaprikaTickerDao.insertAll(list)
+    fun addCoinPaprikaTickers(list: List<CoinPaprikaTickerDB>) {
+        Executors.newSingleThreadExecutor().execute {
+            coinPaprikaTickerDao.insertAll(list)
+        }
+    }
     fun findCoinPaprikaTickerBySymbol(symbol: String) = coinPaprikaTickerDao.findBySymbol(symbol)
 
     // FavoriteCoin table interaction

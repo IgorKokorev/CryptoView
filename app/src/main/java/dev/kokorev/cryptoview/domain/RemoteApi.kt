@@ -1,9 +1,6 @@
 package dev.kokorev.cryptoview.domain
 
 import android.content.Context
-import android.util.Log
-import android.view.View
-import android.widget.Toast
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.TopMoversEntity
 import dev.kokorev.binance_api.BinanceApi
@@ -20,8 +17,9 @@ import dev.kokorev.token_metrics_api.TokenMetricsApi
 import dev.kokorev.token_metrics_api.entity.AiAnswer
 import dev.kokorev.token_metrics_api.entity.AiQuestion
 import dev.kokorev.token_metrics_api.entity.AiReport
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.observers.DisposableObserver
+import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import retrofit2.HttpException
 
@@ -37,28 +35,36 @@ class RemoteApi(
     var progressBarState: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     // Binance API info
-    fun getBinanceInfo() : Observable<BinanceExchangeInfoDTO> = binanceApi.getExchangeInfo()
+    fun getBinanceInfo(): Observable<BinanceExchangeInfoDTO> = binanceApi.getExchangeInfo().addProgressBar()
 
-    fun getBinanceCurrentAvgPrice(symbol: String) : Observable<BinanceAvgPriceDTO> = binanceApi.getCurrentAvgPrice(symbol)
+    fun getBinanceCurrentAvgPrice(symbol: String): Observable<BinanceAvgPriceDTO> =
+        binanceApi.getCurrentAvgPrice(symbol).addProgressBar()
 
-    fun getBinance24hrstats(symbol: String, type: Binance24hrStatsType = Binance24hrStatsType.FULL) : Observable<Binance24hrStatsDTO> = binanceApi.get24hrStats(symbol, type)
+    fun getBinance24hrstats(
+        symbol: String,
+        type: Binance24hrStatsType = Binance24hrStatsType.FULL
+    ): Observable<Binance24hrStatsDTO> = binanceApi.get24hrStats(symbol, type).addProgressBar()
 
-    fun getBinance24hrstatsAll(type: Binance24hrStatsType = Binance24hrStatsType.MINI) : Observable<List<Binance24hrStatsDTO>> = binanceApi.get24hrStatsAll(type)
+    fun getBinance24hrstatsAll(type: Binance24hrStatsType = Binance24hrStatsType.MINI): Observable<List<Binance24hrStatsDTO>> =
+        binanceApi.get24hrStatsAll(type).addProgressBar()
 
 
     // CoinMarketCap API info
-    fun getCmcMetadata(symbol: String) : Observable<CmcMetadataDTO> = cmcApi.getMetadata(symbol)
+    fun getCmcMetadata(symbol: String): Observable<CmcMetadataDTO> = cmcApi.getMetadata(symbol).addProgressBar()
 
-    fun getCmcListingLatest() : Observable<CmcListingDTO> = cmcApi.getListingLatest()
+    fun getCmcListingLatest(): Observable<CmcListingDTO> = cmcApi.getListingLatest().addProgressBar()
 
 
     // CoinPaprika API info
-    fun getCoinPaprikaAllCoins() = coinPaprikaApi.getCoins()
-    fun getCoinPaprikaTop10Movers() : Observable<TopMoversEntity> = coinPaprikaApi.getTop10Movers()
-    fun getCoinPaprikaCoinInfo(id: String): Observable<CoinDetailsEntity> = coinPaprikaApi.getCoin(id)
-    fun getCoinPaprikaTicker(id: String) = coinPaprikaApi.getTicker(id)
-    fun getCoinPaprikaTickers() = coinPaprikaApi.getTickers()
-    fun getCoinPaprikaTickerHistorical(id: String) = coinPaprikaApi.getTickerHistoricalTicks(id)
+    fun getCoinPaprikaAllCoins() = coinPaprikaApi.getCoins().addProgressBar()
+    fun getCoinPaprikaTop10Movers(): Observable<TopMoversEntity> = coinPaprikaApi.getTop10Movers().addProgressBar()
+    fun getCoinPaprikaCoinInfo(id: String): Observable<CoinDetailsEntity> =
+        coinPaprikaApi.getCoin(id).addProgressBar()
+
+    fun getCoinPaprikaTicker(id: String) = coinPaprikaApi.getTicker(id).addProgressBar()
+    fun getCoinPaprikaTickers() = coinPaprikaApi.getTickers().addProgressBar()
+    fun getCoinPaprikaTickerHistorical(id: String) =
+        coinPaprikaApi.getTickerHistoricalTicks(id).addProgressBar()
 
     // TokenMetrics API
     fun getAIReport(symbol: String): Observable<AiReport> {
@@ -70,16 +76,19 @@ class RemoteApi(
                     length = 0
                 )
             }
+            .addProgressBar()
     }
+
     fun askAi(aiQuestion: AiQuestion): Observable<AiAnswer> {
-      return tokenMetricsApi.aiQuestion(aiQuestion)
-          .onErrorReturn { e ->
-              val emptyAnswer = AiAnswer().apply {
-                  success = false
-                  answer = exceptionToErrorText(e)
-              }
-              return@onErrorReturn emptyAnswer
-          }
+        return tokenMetricsApi.aiQuestion(aiQuestion)
+            .onErrorReturn { e ->
+                val emptyAnswer = AiAnswer().apply {
+                    success = false
+                    answer = exceptionToErrorText(e)
+                }
+                return@onErrorReturn emptyAnswer
+            }
+            .addProgressBar()
     }
 
     private fun exceptionToErrorText(e: Throwable) = if (e is HttpException) {
@@ -91,19 +100,16 @@ class RemoteApi(
         else if (code == 429) context.getString(R.string.http429)
         else if (code == 500) context.getString(R.string.http500)
         else context.getString(R.string.unknown_http_error)
-}
 
-abstract class TokenMetricsObserver(private val view: View): DisposableObserver<AiAnswer>() {
-    override fun onNext(t: AiAnswer) {
-        onSuccess(t)
+    private fun <T : Any> Observable<T>.addProgressBar(): Observable<T> {
+        return this
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                progressBarState.onNext(true)
+            }
+            .doAfterTerminate {
+                progressBarState.onNext(false)
+            }
     }
-    abstract fun onSuccess(t: AiAnswer)
-    override fun onComplete() {}
-    override fun onError(e: Throwable) {
-        if (e is HttpException) {
-            Toast.makeText(view.context, "Error code: " + e.code(), Toast.LENGTH_SHORT).show()
-            Log.d("RemoteApi Error handling", "Error code: "+ e.code())
-        }
-    }
-
 }
