@@ -8,23 +8,26 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dev.kokorev.cryptoview.databinding.FragmentMainBinding
-import dev.kokorev.cryptoview.databinding.MainCoinItemBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.views.MainActivity
 import dev.kokorev.cryptoview.views.rvadapters.MainAdapter
-import dev.kokorev.room_db.core_api.entity.TopMover
+import dev.kokorev.room_db.core_api.entity.TopMoverDB
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
+/**
+ * Main fragment which is started once app starts. Shows Global info about Crypto markets
+ */
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private val autoDisposable = AutoDisposable()
     private val viewModel: MainViewModel by viewModels()
     private lateinit var mainAdapter: MainAdapter
 
-    private var topMovers: List<TopMover> = listOf()
+    // Top movers - list of 10 gainers and losers for the last 24 hours
+    private var topMoverDBS: List<TopMoverDB> = listOf()
         set(value) {
             if (field == value) return
             field = value.sortedByDescending { it.percentChange }
@@ -53,18 +56,16 @@ class MainFragment : Fragment() {
 
     private fun initRecycler() {
         mainAdapter = MainAdapter(object : MainAdapter.OnItemClickListener {
-            override fun click(
-                topMover: TopMover,
-                position: Int,
-                binding: MainCoinItemBinding
-            ) {
-                (requireActivity() as MainActivity).launchInfoFragment(
-                    topMover.coinPaprikaId,
-                    topMover.symbol
+            override fun click(topMoverDB: TopMoverDB) {
+                // On item click Coin fragment opens
+                (requireActivity() as MainActivity).launchCoinFragment(
+                    topMoverDB.coinPaprikaId,
+                    topMoverDB.symbol,
+                    topMoverDB.name
                 )
             }
         }).apply {
-            addItems(topMovers)
+            addItems(topMoverDBS)
         }
         binding.mainRecycler.adapter = mainAdapter
         // Add item decoration if needed
@@ -73,12 +74,12 @@ class MainFragment : Fragment() {
 
     private fun setupDataFromViewModel() {
         viewModel.loadTopMovers()
-        viewModel.topMovers
+        viewModel.topMoversDB
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { dto ->
-                    topMovers = dto
+                    topMoverDBS = dto
                     binding.mainRecycler.scheduleLayoutAnimation()
                 },
                 {
@@ -86,6 +87,4 @@ class MainFragment : Fragment() {
                 })
             .addTo(autoDisposable)
     }
-
-
 }

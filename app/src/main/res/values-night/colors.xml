@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    Defining night theme colors -->
+    <color name="base1">@color/blue9</color>
+    <color name="base2">@color/blue8</color>
+    <color name="baseDarkTransparent">@color/blue8Transparent</color>
+    <color name="base3">@color/blue7</color>
+    <color name="base4">@color/blue6</color>
+    <color name="base5">@color/blue5</color>
+    <color name="base6">@color/blue4</color>
+    <color name="base7">@color/blue3</color>
+    <color name="base8">@color/blue2</color>
+    <color name="base9">@color/blue1</color>
+
+    <color name="accent8">@color/red1</color>
+    <color name="accent7">@color/red2</color>
+    <color name="accent6">@color/red3</color>
+    <color name="accent5">@color/red4</color>
+    <color name="accent4">@color/red5</color>
+    <color name="accent3">@color/red6</color>
+    <color name="accent2">@color/red7</color>
+    <color name="accent1">@color/red8</color>
+
+    <color name="green">@color/lightGreen</color>
+    <color name="red">@color/lightRed</color>
+
+    <color name="iconColor">@color/base8</color>
+    <color name="iconColor2">@color/base6</color>
+    <color name="menu_item_color">@color/white</color>
+    <color name="lineColor">@color/base8</color>
+    <color name="textColor">@color/white</color>
+
+    <color name="coinColor">@color/lightGolden</color>
+    <color name="tokenColor">@color/lightGrey</color>
+
+</resources>

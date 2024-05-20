@@ -16,3 +16,4 @@ local.properties
 cmc_api.key
 /cmc_api/src/main/java/dev/kokorev/cmc_api/CmcApiKey.kt
 /cmc_api/src/main/java/dev/kokorev/coin_paprika_api/CoinPaprikaApiKey.kt
+/token_metrics_api/src/main/java/dev/kokorev/token_metrics_api/TokenMetricsApiKey.kt

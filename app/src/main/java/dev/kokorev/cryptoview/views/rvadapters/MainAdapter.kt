@@ -6,15 +6,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import dev.kokorev.cryptoview.databinding.MainCoinItemBinding
 import dev.kokorev.cryptoview.views.rvviewholders.MainItemViewHolder
-import dev.kokorev.room_db.core_api.entity.TopMover
+import dev.kokorev.room_db.core_api.entity.TopMoverDB
 
 
 class MainAdapter(private val clickListener: OnItemClickListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        private val data = mutableListOf<TopMover>()
+        private val data = mutableListOf<TopMoverDB>()
 
     interface OnItemClickListener {
-        fun click(topMover: TopMover, position: Int, binding: MainCoinItemBinding)
+        fun click(topMoverDB: TopMoverDB)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -34,7 +34,7 @@ class MainAdapter(private val clickListener: OnItemClickListener) :
         }
     }
 
-    fun addItems(newList: List<TopMover>) {
+    fun addItems(newList: List<TopMoverDB>) {
         val numbersDiff = Diff(data, newList)
         val diffResult = DiffUtil.calculateDiff(numbersDiff)
         data.clear()

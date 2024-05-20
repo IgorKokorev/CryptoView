@@ -1,36 +1,38 @@
 package dev.kokorev.cryptoview.views.fragments
 
-import android.content.DialogInterface
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
+import com.coinpaprika.apiclient.entity.FavoriteCoinDB
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcCoinDataDTO
-import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cmc_api.entity.cmc_metadata.CmcMetadataDTO
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentInfoBinding
 import dev.kokorev.cryptoview.databinding.OneColumnItemViewBinding
 import dev.kokorev.cryptoview.databinding.TwoColumnItemViewBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
+import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.addTo
-import dev.kokorev.cryptoview.viewModel.InfoViewModel
-import dev.kokorev.cryptoview.views.MainActivity
+import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class InfoFragment : Fragment() {
     private lateinit var binding: FragmentInfoBinding
     private val autoDisposable = AutoDisposable()
-    private val viewModel: InfoViewModel by viewModels()
+    private val viewModel: CoinViewModel by viewModels<CoinViewModel>(
+        ownerProducer = { requireParentFragment() }
+    )
     private var cpDescription = ""
     private var cmcDescription = ""
+    private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,17 +44,17 @@ class InfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInfoBinding.inflate(layoutInflater)
-        val coinPaprikaId = arguments?.getString(Constants.ID) ?: return binding.root
-        val symbol = arguments?.getString(Constants.SYMBOL) ?: return binding.root
 
-            viewModel.remoteApi.getCoinPaprikaCoinInfo(coinPaprikaId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        viewModel.remoteApi.getCoinPaprikaCoinInfo(viewModel.coinPaprikaId)
             .subscribe(
                 {
+                    viewModel.cpInfo = it
                     setupCoinPaprikaData(it)
+                    val recentCoinDB = Converter.CoinDetailsEntityToRecentCoinDB(it)
+                    viewModel.repository.addRecent(recentCoinDB)
+                    setupFavoriteFab(it)
                 },
-                {t ->
+                { t ->
                     Log.d(
                         "InfoFragment",
                         "Error getting data from CoinPaparikaCoinInfo",
@@ -61,15 +63,14 @@ class InfoFragment : Fragment() {
                 })
             .addTo(autoDisposable)
 
-        viewModel.remoteApi.getCmcMetadata(symbol)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        viewModel.remoteApi.getCmcMetadata(viewModel.symbol)
             .subscribe(
                 {
-                    val cmcInfo = it.data.get(symbol)?.get(0) // Coin Info from CoinMarketCap
-                    if (cmcInfo != null) setupCmcData(cmcInfo!!)
+                    // Coin Info from CoinMarketCap
+                    findCoin(it)
+                    if (viewModel.cmcInfo != null) setupCmcData(viewModel.cmcInfo!!)
                 },
-                {t ->
+                { t ->
                     Log.d(
                         "InfoFragment",
                         "Error getting data from CmcMetaData",
@@ -77,9 +78,44 @@ class InfoFragment : Fragment() {
                     )
                 })
             .addTo(autoDisposable)
-
-
         return binding.root
+    }
+
+    private fun findCoin(it: CmcMetadataDTO) {
+        val list = it.data.get(viewModel.symbol)
+        if (list.isNullOrEmpty()) return
+        if (list.size == 1) {
+            viewModel.cmcInfo = list.get(0)
+            return
+        }
+        list.forEach {
+            if (it.name.lowercase() == viewModel.name.lowercase()) {
+                viewModel.cmcInfo = it
+                return
+            }
+        }
+    }
+
+    private fun setupFavoriteFab(coin: CoinDetailsEntity) {
+        binding.favoriteFab.setOnClickListener {
+            if (isFavorite) {
+                viewModel.repository.deleteFavorite(coin.id)
+            } else {
+                val favoriteCoinDB: FavoriteCoinDB =
+                    Converter.CoinDetailsEntityToFavoriteCoinDB(coin)
+                viewModel.repository.addFavorite(favoriteCoinDB)
+            }
+            isFavorite = !isFavorite
+            setFavoriteIcon()
+        }
+    }
+
+    // set 'add to favorites' fab icon depending on status
+    private fun setFavoriteIcon() {
+        binding.favoriteFab.setImageResource(
+            if (isFavorite) R.drawable.icon_star_fill
+            else R.drawable.icon_star_empty
+        )
     }
 
     private fun setupCmcData(cmcInfo: CmcCoinDataDTO) {
@@ -87,11 +123,21 @@ class InfoFragment : Fragment() {
         setDescription()
     }
 
-    private fun setupCoinPaprikaData(
-        cpInfo: CoinDetailsEntity
-    ) {
+    private fun setupCoinPaprikaData(cpInfo: CoinDetailsEntity) {
         val coinPaprikaId = cpInfo.id
-        val symbol = cpInfo.symbol
+
+        viewModel.repository.findFavoriteCoinByCoinPaprikaId(coinPaprikaId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                isFavorite = true
+                setFavoriteIcon()
+            },
+                {
+                    isFavorite = false
+                    setFavoriteIcon()
+                })
+            .addTo(autoDisposable)
 
         // Coin logo
         Glide.with(binding.root)
@@ -102,14 +148,6 @@ class InfoFragment : Fragment() {
         // Coin name and symbol
         val nameAndSymbol = cpInfo.name + " (" + cpInfo.symbol + ")"
         binding.name.text = nameAndSymbol
-
-        // Launch Chart fragment on click
-        binding.chartLink.setOnClickListener {
-            (requireActivity() as MainActivity).launchChartFragment(
-                coinPaprikaId,
-                symbol
-            )
-        }
 
         // Coin description from both APIs
         cpDescription = cpInfo.description ?: ""
@@ -125,21 +163,14 @@ class InfoFragment : Fragment() {
                 val itemViewBinding = OneColumnItemViewBinding.inflate(layoutInflater)
                 itemViewBinding.value.text = tag.name
                 itemViewBinding.root.setOnClickListener {
-                    val message =
-                        Html.fromHtml(
-                            "<font color='#FFFFFF'>Coins: " + tag.coinCounter + "<br>" + "ICOs: " + tag.icoCounter + "\n" + (tag.description
-                                ?: "") + "</font>", 0
-                        )
-                    val alert =
-                        AlertDialog.Builder(binding.root.context, R.style.MyDialogTheme)
-                            .setTitle(tag.name)
-                            .setMessage(message)
-                            .setPositiveButton(
-                                "Ok",
-                                DialogInterface.OnClickListener { dialog, which ->
-                                    dialog.cancel()
-                                })
-                    alert.show()
+                    val message = "Coins: " + tag.coinCounter + "\n" + "ICOs: " + tag.icoCounter
+                    MaterialAlertDialogBuilder(binding.root.context, R.style.DialogStyle)
+                        .setTitle(tag.name)
+                        .setMessage(message)
+                        .setPositiveButton("Ok") { dialog, which ->
+                            dialog.cancel()
+                        }
+                        .show()
 
                 }
                 binding.tagList.addView(itemViewBinding.root)
@@ -184,42 +215,43 @@ class InfoFragment : Fragment() {
 
         if (cpInfo.openSource != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Open source:"
-            itemViewBinding.value.text = if(cpInfo.openSource!!) "Yes" else "No"
+            itemViewBinding.name.text = getString(R.string.open_source)
+            itemViewBinding.value.text = if (cpInfo.openSource!!) getString(R.string.yes)
+            else getString(R.string.no)
             binding.infoList.addView(itemViewBinding.root)
         }
 
         if (cpInfo.developmentStatus != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Development status:"
+            itemViewBinding.name.text = getString(R.string.development_status)
             itemViewBinding.value.text = cpInfo.developmentStatus
             binding.infoList.addView(itemViewBinding.root)
         }
 
         if (cpInfo.proofType != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Proof type:"
+            itemViewBinding.name.text = getString(R.string.proof_type)
             itemViewBinding.value.text = cpInfo.proofType
             binding.infoList.addView(itemViewBinding.root)
         }
 
         if (cpInfo.organizationStructure != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Org structure:"
+            itemViewBinding.name.text = getString(R.string.org_structure)
             itemViewBinding.value.text = cpInfo.organizationStructure
             binding.infoList.addView(itemViewBinding.root)
         }
 
         if (cpInfo.algorithm != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Hash algorithm:"
+            itemViewBinding.name.text = getString(R.string.hash_algorithm)
             itemViewBinding.value.text = cpInfo.algorithm
             binding.infoList.addView(itemViewBinding.root)
         }
 
         if (cpInfo.startedAt != null) {
             val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-            itemViewBinding.name.text = "Started:"
+            itemViewBinding.name.text = getString(R.string.started)
             itemViewBinding.value.text = cpInfo.startedAt!!.substring(0, 10)
             binding.infoList.addView(itemViewBinding.root)
         }

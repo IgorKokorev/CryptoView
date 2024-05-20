@@ -4,19 +4,19 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import dev.kokorev.room_db.core_api.entity.TopMover
+import dev.kokorev.room_db.core_api.entity.TopMoverDB
 import io.reactivex.rxjava3.core.Observable
 
 @Dao
 interface TopMoverDao {
     @Query("SELECT * FROM top_movers_cache")
-    fun getAll(): Observable<List<TopMover>>
+    fun getAll(): Observable<List<TopMoverDB>>
 
     @Insert
-    fun insertTopMover(topMover: TopMover)
+    fun insertTopMover(topMoverDB: TopMoverDB)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(list: List<TopMover>)
+    fun insertAll(list: List<TopMoverDB>)
 
     @Query("DELETE FROM top_movers_cache")
     fun deleteAll()

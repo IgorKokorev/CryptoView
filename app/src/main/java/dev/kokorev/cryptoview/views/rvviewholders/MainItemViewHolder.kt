@@ -6,35 +6,35 @@ import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.MainCoinItemBinding
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.views.rvadapters.MainAdapter
-import dev.kokorev.room_db.core_api.entity.TopMover
+import dev.kokorev.room_db.core_api.entity.TopMoverDB
 import java.text.DecimalFormat
 
 class MainItemViewHolder(val binding: MainCoinItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun setData(
-        topMover: TopMover,
+        topMoverDB: TopMoverDB,
         clickListener: MainAdapter.OnItemClickListener,
         position: Int
     ) {
-        binding.coinName.text = topMover.name
-        binding.coinSymbol.text = topMover.symbol
+        binding.coinName.text = topMoverDB.name
+        binding.coinSymbol.text = topMoverDB.symbol
 
         val change = DecimalFormat("#,###.##").format(
             NumbersUtils.roundNumber(
-                topMover.percentChange,
+                topMoverDB.percentChange,
                 2
             )
         ) + "%"
         binding.coinChange.text = change
 
-        if (topMover.percentChange < 0) {
-            binding.coinChange.setTextColor(ContextCompat.getColor(binding.root.context, R.color.lightAccent))
+        if (topMoverDB.percentChange < 0) {
+            binding.coinChange.setTextColor(ContextCompat.getColor(binding.root.context, R.color.red))
         } else {
-            binding.coinChange.setTextColor(ContextCompat.getColor(binding.root.context, R.color.light))
+            binding.coinChange.setTextColor(ContextCompat.getColor(binding.root.context, R.color.green))
         }
 
         binding.root.setOnClickListener {
-            clickListener.click(topMover, position, binding)
+            clickListener.click(topMoverDB)
         }
     }
 }

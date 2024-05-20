@@ -29,7 +29,26 @@ android {
         }
     }
 
-    compileOptions.incremental = false
+    flavorDimensions += "version"
+
+    productFlavors {
+        create("basic") {
+            // Assigns this product flavor to the "version" flavor dimension.
+            // If you are using only one dimension, this property is optional,
+            // and the plugin automatically assigns all the module's flavors to
+            // that dimension.
+            dimension = "version"
+            applicationIdSuffix = ".basic"
+            versionNameSuffix = "-basic"
+        }
+        create("full") {
+            dimension = "version"
+            applicationIdSuffix = ".full"
+            versionNameSuffix = "-full"
+        }
+    }
+
+//    compileOptions.incremental = false
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -50,6 +69,7 @@ dependencies {
     implementation(project(":binance_api"))
     implementation(project(":cmc_api"))
     implementation(project(":coin_paprika_api"))
+    implementation(project(":token_metrics_api"))
     implementation(project(":room_db"))
 
     implementation(libs.androidx.core.ktx)
@@ -61,9 +81,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.viewPager2)
 
     implementation(libs.glide)
     kapt(libs.glide.annotation.processor)
+
+    // retrofit for error handling
+    implementation(libs.retrofit)
 
     implementation(libs.dagger)
     kapt(libs.daggerCompiler)

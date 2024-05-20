@@ -8,7 +8,7 @@
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
+        android:maxSdkVersion="28" />
 
     <application
         android:name=".App"
@@ -17,12 +17,13 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/cryptoview"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/cryptoview"
+        android:roundIcon="@drawable/cryptoview_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CryptoView"
         tools:targetApi="31">
         <activity
             android:name=".views.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

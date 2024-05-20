@@ -5,26 +5,24 @@ import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
-import dev.kokorev.cryptoview.utils.ConvertData
-import dev.kokorev.room_db.core_api.entity.TopMover
+import dev.kokorev.cryptoview.utils.Converter
+import dev.kokorev.room_db.core_api.entity.TopMoverDB
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 class MainViewModel : ViewModel() {
     @Inject
     lateinit var remoteApi: RemoteApi
-
     @Inject
     lateinit var repository: Repository
+    private var disposable: Disposable? = null
 
-    val topMovers: Observable<List<TopMover>>
-//    val showProgressBar: BehaviorSubject<Boolean>
+    val topMoversDB: Observable<List<TopMoverDB>>
 
     init {
         App.instance.dagger.inject(this)
-//        showProgressBar = interactor.progressBarState
-        topMovers = repository.getTopMovers()
+        topMoversDB = repository.getTopMovers()
         loadTopMovers()
     }
 
@@ -32,15 +30,17 @@ class MainViewModel : ViewModel() {
         val lastTime = repository.getLastTopMoversCallTime()
         // If enough time pasts call the API
         if (System.currentTimeMillis() > (lastTime + Constants.TOP_MOVERS_CALL_INTERVAL)) {
-            repository.clearTopMovers()
-            repository.saveLastTopMoversCallTime()
-            remoteApi.getCoinPaprikaTop10Movers()
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+            disposable = remoteApi.getCoinPaprikaTop10Movers()
                 .subscribe {
-                    val result = (it.losers + it.gainers).map { dto -> ConvertData.dtoToTopMover(dto) }
+                    repository.saveLastTopMoversCallTime()
+                    val result = (it.losers + it.gainers).map { dto -> Converter.dtoToTopMover(dto) }
                     repository.saveTopMovers(result)
                 }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposable?.dispose()
     }
 }

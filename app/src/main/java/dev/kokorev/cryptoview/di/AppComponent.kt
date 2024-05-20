@@ -6,12 +6,13 @@ import dev.kokorev.cmc_api.CmcProvider
 import dev.kokorev.coin_paprika_api.CoinPaprikaProvider
 import dev.kokorev.cryptoview.di.modules.DomainModule
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
-import dev.kokorev.cryptoview.viewModel.ChartViewModel
-import dev.kokorev.cryptoview.viewModel.FavoritesViewModel
-import dev.kokorev.cryptoview.viewModel.InfoViewModel
+import dev.kokorev.cryptoview.viewModel.AiChatViewModel
+import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import dev.kokorev.cryptoview.viewModel.MainViewModel
+import dev.kokorev.cryptoview.viewModel.SavedViewModel
 import dev.kokorev.cryptoview.viewModel.SearchViewModel
 import dev.kokorev.cryptoview.viewModel.SettingsViewModel
+import dev.kokorev.token_metrics_api.TokenMetricsProvider
 import javax.inject.Singleton
 
 @Singleton
@@ -19,16 +20,17 @@ import javax.inject.Singleton
     dependencies = [
         BinanceProvider::class,
         CoinPaprikaProvider::class,
-        CmcProvider::class
+        CmcProvider::class,
+        TokenMetricsProvider::class,
     ],
     modules = [DomainModule::class]
 )
 interface AppComponent {
     fun inject(activityViewModel: ActivityViewModel)
     fun inject(mainViewModel: MainViewModel)
-    fun inject(favoritesViewModel: FavoritesViewModel)
+    fun inject(savedViewModel: SavedViewModel)
     fun inject(settingsViewModel: SettingsViewModel)
-    fun inject(chartViewModel: ChartViewModel)
-    fun inject(infoViewModel: InfoViewModel)
     fun inject(searchViewModel: SearchViewModel)
+    fun inject(coinViewModel: CoinViewModel)
+    fun inject(aiChatViewModel: AiChatViewModel)
 }

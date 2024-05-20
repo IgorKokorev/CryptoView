@@ -1,27 +1,43 @@
 package dev.kokorev.cryptoview.domain
 
+import com.coinpaprika.apiclient.entity.FavoriteCoinDB
+import com.coinpaprika.apiclient.entity.MessageDB
+import com.coinpaprika.apiclient.entity.MessageType
+import com.coinpaprika.apiclient.entity.RecentCoinDB
 import dev.kokorev.cryptoview.App
+import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
-import dev.kokorev.room_db.core_api.entity.BinanceSymbol
-import dev.kokorev.room_db.core_api.entity.CoinPaprikaTicker
-import dev.kokorev.room_db.core_api.entity.TopMover
+import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
+import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
+import dev.kokorev.room_db.core_api.entity.TopMoverDB
+import io.reactivex.rxjava3.core.Observable
 import java.util.concurrent.Executors
 
 // Interactor to communicate with local db
-class Repository(val preferenceProvider: PreferenceProvider) {
-    val binanceSymbolDao: BinanceSymbolDao = App.instance.binanceSymbolDao
-    val topMoverDao = App.instance.topMoverDao
-    val coinPaprikaTickerDao = App.instance.coinPaprikaTickerDao
+class Repository(private val preferenceProvider: PreferenceProvider) {
+    private val binanceSymbolDao: BinanceSymbolDao = App.instance.binanceSymbolDao
+    private val topMoverDao = App.instance.topMoverDao
+    private val coinPaprikaTickerDao = App.instance.coinPaprikaTickerDao
+    private val favoriteCoinDao = App.instance.favoriteCoinDao
+    private val recentCoinDao = App.instance.recentCoinDao
+    private val messageDao = App.instance.messageDao
 
     // BinanceSymbol table interaction
-    fun addBinanceSymbol(binanceSymbol: BinanceSymbol) = binanceSymbolDao.insertBinanceSymbol(binanceSymbol)
-    fun addBinanceSymbols(list: List<BinanceSymbol>) = binanceSymbolDao.insertAll(list)
+    fun addBinanceSymbol(binanceSymbolDB: BinanceSymbolDB) = binanceSymbolDao.insertBinanceSymbol(binanceSymbolDB)
+    fun addBinanceSymbols(list: List<BinanceSymbolDB>) = binanceSymbolDao.insertAll(list)
     fun getAllBinanceSymbols() = binanceSymbolDao.getBinanceSymbols()
+    fun findBinanceSymbolsByBaseAsset(symbol: String) = binanceSymbolDao.findByBaseAsset(symbol)
+    fun findBinanceSymbolsByQuoteAsset(symbol: String) = binanceSymbolDao.findByQuoteAsset(symbol)
 
     // TopMover table interaction
     fun getTopMovers() = topMoverDao.getAll()
-    fun saveTopMovers(list: List<TopMover>) = topMoverDao.insertAll(list)
+    fun saveTopMovers(list: List<TopMoverDB>) {
+        Executors.newSingleThreadExecutor().execute {
+            topMoverDao.deleteAll()
+            topMoverDao.insertAll(list)
+        }
+    }
     fun clearTopMovers() {
         Executors.newSingleThreadExecutor().execute {
             topMoverDao.deleteAll()
@@ -30,15 +46,81 @@ class Repository(val preferenceProvider: PreferenceProvider) {
 
     // CoinPaprikaTicker table interaction
     fun getAllCoinPaprikaTickers() = coinPaprikaTickerDao.getCoinPaprikaTickers()
-    fun addCoinPaprikaTickers( list: List<CoinPaprikaTicker>) = coinPaprikaTickerDao.insertAll(list)
+    fun addCoinPaprikaTickers(list: List<CoinPaprikaTickerDB>) {
+        Executors.newSingleThreadExecutor().execute {
+            coinPaprikaTickerDao.insertAll(list)
+        }
+    }
     fun findCoinPaprikaTickerBySymbol(symbol: String) = coinPaprikaTickerDao.findBySymbol(symbol)
 
+    // FavoriteCoin table interaction
+    fun getFavoriteCoins() = favoriteCoinDao.getAll()
+    fun addFavorite(coinDB: FavoriteCoinDB) {
+        Executors.newSingleThreadExecutor().execute {
+            favoriteCoinDao.insertFavoriteCoin(coinDB)
+        }
+    }
+    fun deleteFavorite(coinPaprikaId: String) {
+        Executors.newSingleThreadExecutor().execute {
+            favoriteCoinDao.deleteByCoinPaprikaId(coinPaprikaId)
+        }
+    }
+    fun findFavoriteCoinByCoinPaprikaId(coinPaprikaId: String) = favoriteCoinDao.findByCoinPaprikaId(coinPaprikaId)
+
+    // RecentCoin table interaction
+    fun getRecentCoins() = recentCoinDao.getAll()
+    fun addRecent(coinDB: RecentCoinDB) {
+        Executors.newSingleThreadExecutor().execute {
+            recentCoinDao.insertRecentCoin(coinDB)
+        }
+    }
+    fun deleteAllRecents() {
+        Executors.newSingleThreadExecutor().execute {
+            recentCoinDao.deleteAll()
+        }
+    }
+
+    fun deleteOldRecents(time: Long) {
+        Executors.newSingleThreadExecutor().execute {
+            recentCoinDao.deleteOld(time)
+        }
+    }
 
     // Shared Preference interaction
     fun getLastTopMoversCallTime() = preferenceProvider.getLastTopMoversCallTime()
     fun saveLastTopMoversCallTime() = preferenceProvider.saveLastTopMoversCallTime()
     fun getLastCpTickersCallTime() = preferenceProvider.getLastCpTickersCallTime()
     fun saveLastCpTickersCallTime() = preferenceProvider.saveLastCpTickersCallTime()
+    fun getLastAppUpdateTime() = preferenceProvider.getLastAppUpdateTime()
+    fun saveLastAppUpdateTime() = preferenceProvider.saveLastAppUpdateTime()
 
+    // Ai chat q&a
+    fun saveQuestion(name: String, message: String) {
+        Executors.newSingleThreadExecutor().execute {
+            val messageDB: MessageDB = MessageDB(
+                time = System.currentTimeMillis(),
+                type = MessageType.OUT,
+                name = name,
+                message = message
+            )
+            messageDao.insertMessage(messageDB)
+        }
+    }
 
+    fun saveAnswer(name: String, message: String) {
+        Executors.newSingleThreadExecutor().execute {
+            val messageDB: MessageDB = MessageDB(
+                time = System.currentTimeMillis(),
+                type = MessageType.IN,
+                name = name,
+                message = message
+            )
+            messageDao.insertMessage(messageDB)
+        }
+    }
+
+    fun getNewMessages(): Observable<List<MessageDB>> {
+        val time = System.currentTimeMillis() - Constants.CHAT_SHOW_TIME
+        return messageDao.getNewMessages(time)
+    }
 }

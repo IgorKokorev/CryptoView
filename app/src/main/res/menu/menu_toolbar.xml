@@ -1,29 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
     <item
-        android:id="@+id/home"
+        android:id="@+id/main"
         android:enabled="true"
-        android:icon="@drawable/icon_up_down"
+        android:icon="@drawable/icon_home2"
+        android:iconTint="@color/iconColor"
         app:showAsAction="always"
         android:title="@string/menu_text_home"/>
     <item
         android:id="@+id/favorites"
         android:enabled="true"
-        android:icon="@drawable/icon_favorite"
+        android:icon="@drawable/icon_star_empty"
+        android:iconTint="@color/iconColor"
         app:showAsAction="always"
         android:title="@string/menu_text_favorites"/>
     <item
         android:id="@+id/search"
         android:enabled="true"
-        android:icon="@drawable/icon_search"
+        android:icon="@drawable/icon_search2"
+        android:iconTint="@color/iconColor"
         app:showAsAction="always"
         android:title="@string/menu_text_search"/>
     <item
+        android:id="@+id/chat"
+        android:enabled="true"
+        android:icon="@drawable/icon_chatbot"
+        android:iconTint="@color/iconColor"
+        app:showAsAction="always"
+        android:title="@string/menu_text_chat"/>
+    <item
         android:id="@+id/settings"
         android:enabled="true"
-        android:icon="@drawable/icon_settings"
+        android:icon="@drawable/icon_settings2"
+        android:iconTint="@color/iconColor"
         app:showAsAction="always"
         android:title="@string/menu_text_settings"/>
 

@@ -1,78 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background_gradient225"
-    android:padding="20dp"
-    tools:context=".views.fragments.MainFragment"
-    >
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:maxWidth="240dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="0dp"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/logo"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/chart_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="Market Information" />
-
-    <View
-        android:id="@+id/line_before_scroll"
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginTop="12dp"
-        android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/logo" />
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="false"
+        tools:context=".views.fragments.InfoFragment">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="12dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@+id/line_before_scroll"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/body"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="124dp"
+            android:fitsSystemWindows="false">
 
-            <TextView
-                android:id="@+id/description"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textSize="18sp"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="match_parent"
+                android:background="@color/base1"
+                android:padding="12dp"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <View
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:contentDescription="Logo"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:gravity="center"
+                    android:maxWidth="240dp"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/logo"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/favorite_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:backgroundTint="@color/base3"
+            android:contentDescription="@string/favorite"
+            app:borderWidth="0dp"
+            app:layout_anchor="@id/app_bar"
+            app:layout_anchorGravity="right|bottom"
+            app:srcCompat="@drawable/icon_star_empty" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="12dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/body"
                 android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginTop="12dp"
-                android:background="@color/white"
-                app:layout_constraintTop_toBottomOf="@+id/description" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/textColor"
+                    app:layout_constraintTop_toBottomOf="@+id/description" />
 
                 <TextView
                     android:id="@+id/info_title"
@@ -82,7 +99,7 @@
                     android:gravity="start"
                     android:text="@string/main_info"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@+id/description"/>
+                    app:layout_constraintTop_toBottomOf="@+id/description" />
 
                 <LinearLayout
                     android:id="@+id/info_list"
@@ -90,108 +107,121 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/info_title" >
+                    app:layout_constraintTop_toBottomOf="@+id/info_title">
 
                 </LinearLayout>
 
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginTop="12dp"
-                android:background="@color/white"
-                app:layout_constraintTop_toBottomOf="@+id/info_list" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/textColor"
+                    app:layout_constraintTop_toBottomOf="@+id/info_list" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/tags_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:layout_constraintTop_toBottomOf="@+id/info_list" >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tags_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/info_list">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tags"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:id="@+id/tag_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxWidth="200dp"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/textColor"
+                    app:layout_constraintTop_toBottomOf="@+id/tags_container" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/urls_title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/tags"
+                    android:layout_marginTop="24dp"
+                    android:gravity="start"
+                    android:text="@string/links"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/tags_container" />
 
                 <LinearLayout
-                    android:id="@+id/tag_list"
-                    android:layout_width="wrap_content"
-                    android:maxWidth="200dp"
+                    android:id="@+id/urls"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" >
+                    app:layout_constraintTop_toBottomOf="@id/urls_title">
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/textColor"
+                    app:layout_constraintTop_toBottomOf="@+id/urls" />
+
+                <TextView
+                    android:id="@+id/team_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="start"
+                    android:text="@string/team"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@+id/urls" />
+
+                <LinearLayout
+                    android:id="@+id/team"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@+id/team_title">
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/textColor"
+                    app:layout_constraintTop_toBottomOf="@+id/urls" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginTop="12dp"
-                android:background="@color/white"
-                app:layout_constraintTop_toBottomOf="@+id/tags_container" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-            <TextView
-                android:id="@+id/urls_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:gravity="start"
-                android:text="@string/links"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/tags_container" />
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:id="@+id/urls"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/urls_title">
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginTop="12dp"
-                android:background="@color/white"
-                app:layout_constraintTop_toBottomOf="@+id/urls" />
-
-            <TextView
-                android:id="@+id/team_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:layout_marginTop="24dp"
-                android:text="@string/team"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/urls" />
-
-            <LinearLayout
-                android:id="@+id/team"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:layout_constraintTop_toBottomOf="@+id/team_title"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginTop="12dp"
-                android:background="@color/white"
-                app:layout_constraintTop_toBottomOf="@+id/urls" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
