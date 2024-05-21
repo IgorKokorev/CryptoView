@@ -2,13 +2,12 @@ package dev.kokorev.cryptoview.viewModel
 
 import androidx.lifecycle.ViewModel
 import dev.kokorev.cryptoview.App
-import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
-import dev.kokorev.cryptoview.utils.Converter
-import dev.kokorev.room_db.core_api.entity.TopMoverDB
+import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class MainViewModel : ViewModel() {
@@ -16,31 +15,23 @@ class MainViewModel : ViewModel() {
     lateinit var remoteApi: RemoteApi
     @Inject
     lateinit var repository: Repository
-    private var disposable: Disposable? = null
+    @Inject
+    lateinit var preferences: PreferenceProvider
+    private val compositeDisposable = CompositeDisposable()
+//    val gainers: Observable<List<CoinPaprikaTickerDB>>
+//    val losers: Observable<List<CoinPaprikaTickerDB>>
+    val cpTickers: Observable<List<CoinPaprikaTickerDB>>
 
-    val topMoversDB: Observable<List<TopMoverDB>>
 
     init {
         App.instance.dagger.inject(this)
-        topMoversDB = repository.getTopMovers()
-        loadTopMovers()
-    }
-
-    fun loadTopMovers() {
-        val lastTime = repository.getLastTopMoversCallTime()
-        // If enough time pasts call the API
-        if (System.currentTimeMillis() > (lastTime + Constants.TOP_MOVERS_CALL_INTERVAL)) {
-            disposable = remoteApi.getCoinPaprikaTop10Movers()
-                .subscribe {
-                    repository.saveLastTopMoversCallTime()
-                    val result = (it.losers + it.gainers).map { dto -> Converter.dtoToTopMover(dto) }
-                    repository.saveTopMovers(result)
-                }
-        }
+//        gainers = repository.getCPGainers()
+//        losers = repository.getCPLosers()
+        cpTickers = repository.getAllCoinPaprikaTickersFiltered(repository.getMinMcap(), repository.getMinVol())
     }
 
     override fun onCleared() {
         super.onCleared()
-        disposable?.dispose()
+        compositeDisposable.dispose()
     }
 }

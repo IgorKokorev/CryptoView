@@ -45,7 +45,8 @@
     <string name="symbol">Symbol</string>
     <string name="name">Name</string>
     <string name="price">Price</string>
-    <string name="change_24h">%24hr</string>
+    <string name="change_24h">%</string>
     <string name="volume">Volume</string>
     <string name="mcap">MCap</string>
+    <string name="add_to_portfolio">Add to portfolio</string>
 </resources>

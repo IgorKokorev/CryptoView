@@ -365,12 +365,13 @@
 
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/interval_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/medium_padding"
         android:padding="@dimen/min_padding"
+        android:orientation="horizontal"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@+id/changes">
 
@@ -387,6 +388,7 @@
             android:text="1w"
             android:textSize="@dimen/medium_text"
             app:layout_constraintDimensionRatio="1:1"
+            android:layout_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -400,8 +402,8 @@
             android:gravity="center"
             android:padding="@dimen/min_padding"
             android:text="1m"
-
             android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
             app:layout_constraintStart_toEndOf="@+id/d7"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -416,6 +418,7 @@
             android:padding="@dimen/min_padding"
             android:text="3m"
             android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
             app:layout_constraintStart_toEndOf="@+id/m1"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -430,6 +433,7 @@
             android:padding="@dimen/min_padding"
             android:text="6m"
             android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
             app:layout_constraintStart_toEndOf="@+id/m3"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -444,6 +448,7 @@
             android:padding="@dimen/min_padding"
             android:text="YTD"
             android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
             app:layout_constraintStart_toEndOf="@+id/m6"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -458,11 +463,12 @@
             android:padding="@dimen/min_padding"
             android:text="Y"
             android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
             app:layout_constraintStart_toEndOf="@+id/ytd"
             app:layout_constraintTop_toTopOf="parent" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <com.highsoft.highcharts.core.HIChartView
         android:id="@+id/chart_view"

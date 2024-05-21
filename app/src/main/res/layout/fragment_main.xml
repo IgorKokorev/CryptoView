@@ -22,51 +22,117 @@
         android:paddingBottom="0dp"
         />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rv_headers"
+    <LinearLayout
+        android:id="@+id/interval_selector"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/base1"
-        android:elevation="@dimen/small_padding"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:layout_margin="10dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_padding"
+        android:padding="@dimen/min_padding"
+        android:orientation="horizontal"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@+id/main_header">
 
+
         <TextView
-            android:id="@+id/coin_name"
-            android:layout_width="wrap_content"
+            android:id="@+id/sorting_h1"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="Name"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
+            android:gravity="center"
+            android:padding="@dimen/min_padding"
+            android:text="1h"
+            android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/coin_symbol"
-            android:layout_width="wrap_content"
+            android:id="@+id/sorting_d1"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="Symbol"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/coin_change"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
+            android:gravity="center"
+            android:padding="@dimen/min_padding"
+            android:text="1d"
+            android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/sorting_h1"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/coin_change"
-            android:layout_width="80dp"
+            android:id="@+id/sorting_w1"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text="%24hr"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
+            android:gravity="center"
+            android:padding="@dimen/min_padding"
+            android:text="1w"
+            android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/sorting_d1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sorting_m1"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
+            android:gravity="center"
+            android:padding="@dimen/min_padding"
+            android:text="1m"
+            android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/sorting_w1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sorting_y1"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
+            android:gravity="center"
+            android:padding="@dimen/min_padding"
+            android:text="1y"
+            android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/sorting_m1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sorting_ath"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/min_padding"
+            android:background="@drawable/rounded_rectangle"
+            android:gravity="center"
+            android:padding="@dimen/min_padding"
+            android:text="ATH"
+            android:textSize="@dimen/medium_text"
+            android:layout_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/sorting_y1"
             app:layout_constraintTop_toTopOf="parent" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/gainer_coin_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/interval_selector"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/main_recycler"
@@ -79,7 +145,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_headers"
-        tools:listitem="@layout/main_coin_item" />
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        tools:listitem="@layout/gainer_coin_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

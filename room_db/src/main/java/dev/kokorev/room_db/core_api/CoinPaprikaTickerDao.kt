@@ -12,6 +12,15 @@ interface CoinPaprikaTickerDao {
     @Query("SELECT * FROM coin_paprika_ticker ORDER BY rank")
     fun getCoinPaprikaTickers(): Observable<List<CoinPaprikaTickerDB>>
 
+    @Query("SELECT * FROM coin_paprika_ticker WHERE market_cap >= :minMcap AND volume_24h >= :minVol ORDER BY rank")
+    fun getCoinPaprikaTickersFiltered(minMcap: Long, minVol: Long): Observable<List<CoinPaprikaTickerDB>>
+
+    @Query("SELECT * FROM coin_paprika_ticker WHERE market_cap >= :minMcap AND volume_24h >= :minVol ORDER BY :field ASC LIMIT :limit")
+    fun getCoinPaprikaTickersSortedAsc(minMcap: Long, minVol: Long, field: String, limit: Int): Observable<List<CoinPaprikaTickerDB>>
+
+    @Query("SELECT * FROM coin_paprika_ticker WHERE market_cap >= :minMcap AND volume_24h >= :minVol ORDER BY :field DESC LIMIT :limit")
+    fun getCoinPaprikaTickersSortedDesc(minMcap: Long, minVol: Long, field: String, limit: Int): Observable<List<CoinPaprikaTickerDB>>
+
     @Query("SELECT * FROM coin_paprika_ticker WHERE symbol = :symbol")
     fun findBySymbol(symbol: String): Observable<List<CoinPaprikaTickerDB>>
 

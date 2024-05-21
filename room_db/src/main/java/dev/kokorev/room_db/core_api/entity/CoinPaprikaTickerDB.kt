@@ -12,7 +12,6 @@ data class CoinPaprikaTickerDB(
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "symbol") var symbol: String,
     @ColumnInfo(name = "rank") var rank: Int = -1,
-
     @ColumnInfo(name = "price") val price: Double?,
     @ColumnInfo(name = "volume_24h") val dailyVolume: Double?,
     @ColumnInfo(name = "market_cap") val marketCap: Double?,

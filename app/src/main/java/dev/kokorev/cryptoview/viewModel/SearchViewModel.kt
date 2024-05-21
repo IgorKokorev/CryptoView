@@ -22,19 +22,17 @@ class SearchViewModel : ViewModel() {
     val cpTickers: Observable<List<CoinPaprikaTickerDB>>
     var sorting = Sorting.NONE // field for RV sorting
     var direction = 1 // sorting direction
-//    val showProgressBar: BehaviorSubject<Boolean>
 
     init {
         App.instance.dagger.inject(this)
-//        showProgressBar = interactor.progressBarState
-        cpTickers = repository.getAllCoinPaprikaTickers()
+        cpTickers = repository.getAllCoinPaprikaTickersFiltered(repository.getMinMcap(), repository.getMinVol())
         loadTickers()
     }
 
     fun loadTickers() {
         val lastTime = repository.getLastCpTickersCallTime()
         // If enough time pasts call the API
-        if (System.currentTimeMillis() > (lastTime + Constants.CP_TICKERS_CALL_INTERVAL)) {
+        if (System.currentTimeMillis() > (lastTime + Constants.CP_TICKERS_UPDATE_INTERVAL)) {
             repository.saveLastCpTickersCallTime()
 
             val disposable = remoteApi.getCoinPaprikaTickers()

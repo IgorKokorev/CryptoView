@@ -28,7 +28,6 @@ import dev.kokorev.cryptoview.views.fragments.MainFragment
 import dev.kokorev.cryptoview.views.fragments.SavedFragment
 import dev.kokorev.cryptoview.views.fragments.SearchFragment
 import dev.kokorev.cryptoview.views.fragments.SettingsFragment
-import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -44,7 +43,8 @@ class MainActivity : AppCompatActivity() {
             // System Bars' Insets
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             //  System Bars' and Keyboard's insets combined
-            val systemBarsIMEInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars() + WindowInsetsCompat.Type.ime())
+            val systemBarsIMEInsets =
+                insets.getInsets(WindowInsetsCompat.Type.systemBars() + WindowInsetsCompat.Type.ime())
             // We use the combined bottom inset of the System Bars and Keyboard to move the view so it doesn't get covered up by the keyboard
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
@@ -67,9 +67,9 @@ class MainActivity : AppCompatActivity() {
     private fun setupProgressBar() {
         viewModel.remoteApi.progressBarState
             .onErrorComplete()
-            .subscribe{
-            binding.progressBar.isVisible = it
-        }
+            .subscribe {
+                binding.progressBar.isVisible = it
+            }
             .addTo(autoDisposable)
     }
 
@@ -110,7 +110,6 @@ class MainActivity : AppCompatActivity() {
                     val fragment =
                         supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
                     replaceFragment(fragment, tag)
-                    Toast.makeText(this, R.string.settings_toast, Toast.LENGTH_SHORT).show()
                     true
                 }
 
@@ -120,26 +119,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupOnBackPressed() {
+        // if enabled the callback finishes the app
         val onBackPressedExitCallback = object : OnBackPressedCallback(enabled = false) {
             override fun handleOnBackPressed() {
-                Log.d("MainActivity", "onBackPressedExitCallback")
                 finish()
             }
         }
 
+        // if enabled the callback shows the toast and enables the exit callback for the defined in constants time
         val onBackPressedToastCallback = object : OnBackPressedCallback(enabled = false) {
             override fun handleOnBackPressed() {
+                // Show the toast
                 Toast.makeText(
                     binding.root.context,
                     getString(R.string.double_tap_toast),
                     Toast.LENGTH_SHORT
                 )
                     .show()
-                Log.d(
-                    "MainActivity",
-                    "onBackPressedToastCallback setting onBackPressedExitCallback.isEnabled = true"
-                )
+                // Enable exit callback
                 onBackPressedExitCallback.isEnabled = true
+                // Disable it after the interval
                 Handler(Looper.getMainLooper()).postDelayed({
                     Log.d(
                         "MainActivity",
@@ -150,12 +149,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // if only 1 fragment left in the backstack we enable the "Toast" callback
         supportFragmentManager.addOnBackStackChangedListener {
-            Log.d("MainActivity",
-                "BackStackEntryCount = " + supportFragmentManager.backStackEntryCount + ". Fragments:")
-            supportFragmentManager.fragments.forEach {
-                Log.d("MainActivity", "Tag: " + it.tag + ", " + it.toString())
-            }
             onBackPressedToastCallback.isEnabled = supportFragmentManager.backStackEntryCount <= 1
         }
 
@@ -163,52 +158,52 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedExitCallback)
     }
 
-/*    private fun initMenuButtons() {
+    /*    private fun initMenuButtons() {
 
-        binding.topAppBar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.main -> {
-                    val tag = Constants.MAIN_FRAGMENT_TAG
-                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: MainFragment()
-                    replaceFragment(fragment, tag)
-                    true
+            binding.topAppBar.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.main -> {
+                        val tag = Constants.MAIN_FRAGMENT_TAG
+                        val fragment = supportFragmentManager.findFragmentByTag(tag) ?: MainFragment()
+                        replaceFragment(fragment, tag)
+                        true
+                    }
+
+                    R.id.favorites -> {
+                        val tag = Constants.FAVORITES_FRAGMENT_TAG
+                        val fragment =
+                            supportFragmentManager.findFragmentByTag(tag) ?: SavedFragment()
+                        replaceFragment(fragment, tag)
+                        true
+                    }
+
+                    R.id.search -> {
+                        val tag = Constants.SEARCH_FRAGMENT_TAG
+                        val fragment = supportFragmentManager.findFragmentByTag(tag) ?: SearchFragment()
+                        replaceFragment(fragment, tag)
+                        true
+                    }
+
+                    R.id.chat -> {
+                        val tag = Constants.CHAT_FRAGMENT_TAG
+                        val fragment = supportFragmentManager.findFragmentByTag(tag) ?: AiChatFragment()
+                        replaceFragment(fragment, tag)
+                        true
+                    }
+
+                    R.id.settings -> {
+                        val tag = Constants.SETTINGS_FRAGMENT_TAG
+                        val fragment =
+                            supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
+                        replaceFragment(fragment, tag)
+                        Toast.makeText(this, R.string.settings_toast, Toast.LENGTH_SHORT).show()
+                        true
+                    }
+
+                    else -> false
                 }
-
-                R.id.favorites -> {
-                    val tag = Constants.FAVORITES_FRAGMENT_TAG
-                    val fragment =
-                        supportFragmentManager.findFragmentByTag(tag) ?: SavedFragment()
-                    replaceFragment(fragment, tag)
-                    true
-                }
-
-                R.id.search -> {
-                    val tag = Constants.SEARCH_FRAGMENT_TAG
-                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: SearchFragment()
-                    replaceFragment(fragment, tag)
-                    true
-                }
-
-                R.id.chat -> {
-                    val tag = Constants.CHAT_FRAGMENT_TAG
-                    val fragment = supportFragmentManager.findFragmentByTag(tag) ?: AiChatFragment()
-                    replaceFragment(fragment, tag)
-                    true
-                }
-
-                R.id.settings -> {
-                    val tag = Constants.SETTINGS_FRAGMENT_TAG
-                    val fragment =
-                        supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
-                    replaceFragment(fragment, tag)
-                    Toast.makeText(this, R.string.settings_toast, Toast.LENGTH_SHORT).show()
-                    true
-                }
-
-                else -> false
             }
-        }
-    }*/
+        }*/
 
     fun launchCoinFragment(coinPaprikaId: String, symbol: String, name: String) {
         val bundle = Bundle()
@@ -251,7 +246,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateCoinPaprikaAllCoins() {
         viewModel.remoteApi.getCoinPaprikaAllCoins()
-            .observeOn(Schedulers.io())
             .subscribe {
                 Log.d("MainActivity", "SetupApp: total CoinPaprika coins: ${it.size}")
                 Log.d("MainActivity", "SetupApp: total CoinPaprika ranked coins: ${
@@ -275,20 +269,42 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateCoinPaprikaTickers() {
-        viewModel.remoteApi.getCoinPaprikaTickers()
-            .observeOn(Schedulers.io())
-            .subscribe {
-                val tickers = it
-                    .map { dto -> Converter.dtoToCoinPaprikaTicker(dto) }
-                    .toList()
-                viewModel.repository.addCoinPaprikaTickers(tickers)
-            }
-            .addTo(autoDisposable)
+        val lastAppUpdateTime = viewModel.repository.getLastCpTickersCallTime()
+        val currentTime = System.currentTimeMillis()
+        if (lastAppUpdateTime + Constants.CP_TICKERS_UPDATE_INTERVAL < currentTime) {
+            viewModel.remoteApi.getCoinPaprikaTickers()
+                .subscribe { list ->
+                    Log.d(
+                        this.localClassName,
+                        "Total number of CoinPaprika tickers received: ${list.size}"
+                    )
+                    val minMcap = Constants.minMCaps.get(0)
+                    val minVol = Constants.minVols.get(0)
+                    val tickers = list
+                        .filter { ticker ->
+                            val quote = ticker.quotes?.get("USD")
+                            if (quote == null) false
+                            else {
+                                ticker.rank > 0 &&
+                                        quote.marketCap >= minMcap &&
+                                        quote.dailyVolume >= minVol
+                            }
+                        }
+                        .map { dto -> Converter.dtoToCoinPaprikaTicker(dto) }
+                        .toList()
+                    Log.d(
+                        this.localClassName,
+                        "Total number of CoinPaprika tickers saved: ${tickers.size}"
+                    )
+                    viewModel.repository.addCoinPaprikaTickers(tickers)
+                }
+                .addTo(autoDisposable)
+        }
     }
 
     private fun updateBinanceInfo() {
+        Log.d(this.localClassName, "Start updating Binance data")
         viewModel.remoteApi.getBinanceInfo()
-            .observeOn(Schedulers.io())
             .subscribe {
                 val symbols = it.binanceSymbolDTOS.asSequence()
                     .map { dto -> Converter.dtoToBinanceSymbol(dto) }

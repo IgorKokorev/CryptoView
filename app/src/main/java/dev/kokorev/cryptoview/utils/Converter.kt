@@ -7,7 +7,9 @@ import com.coinpaprika.apiclient.entity.RecentCoinDB
 import com.coinpaprika.apiclient.entity.TickerEntity
 import dev.kokorev.binance_api.entity.BinanceSymbolDTO
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
+import dev.kokorev.cryptoview.data.entity.GainerCoin
 import dev.kokorev.cryptoview.data.entity.RecentCoin
+import dev.kokorev.cryptoview.views.fragments.TickerPriceSorting
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import dev.kokorev.room_db.core_api.entity.TopMoverDB
@@ -83,7 +85,7 @@ object Converter {
     }
 
     fun favoriteCoinDBToFavoriteCoin(db: FavoriteCoinDB, tikers: List<CoinPaprikaTickerDB>) : FavoriteCoin {
-        val tiker = tikers.find { tiker -> tiker.coinPaprikaId == db.coinPaprikaId }
+        val tiker = tikers.find { ticker -> ticker.coinPaprikaId == db.coinPaprikaId }
         return FavoriteCoin(
             id = db.id,
             coinPaprikaId = db.coinPaprikaId,
@@ -95,7 +97,7 @@ object Converter {
             price = tiker?.price,
             dailyVolume = tiker?.dailyVolume,
             marketCap = tiker?.marketCap,
-            percentChange24h = tiker?.percentChange24h
+            percentChange = tiker?.percentChange24h
         )
     }
 
@@ -113,7 +115,28 @@ object Converter {
             price = tiker?.price,
             dailyVolume = tiker?.dailyVolume,
             marketCap = tiker?.marketCap,
-            percentChange24h = tiker?.percentChange24h
+            percentChange = tiker?.percentChange24h
+        )
+    }
+
+    fun cpTickerDBToGainerCoin(ticker: CoinPaprikaTickerDB, sorting: TickerPriceSorting): GainerCoin {
+        return GainerCoin(
+            id = ticker.id,
+            coinPaprikaId = ticker.coinPaprikaId,
+            name = ticker.name,
+            symbol = ticker.symbol,
+            rank = ticker.rank,
+            price = ticker.price,
+            dailyVolume = ticker.dailyVolume,
+            marketCap = ticker.marketCap,
+            percentChange = when (sorting) {
+                TickerPriceSorting.H1 -> ticker.percentChange1h
+                TickerPriceSorting.H24 -> ticker.percentChange24h
+                TickerPriceSorting.D7 -> ticker.percentChange7d
+                TickerPriceSorting.D30 -> ticker.percentChange30d
+                TickerPriceSorting.Y1 -> ticker.percentChange1y
+                TickerPriceSorting.ATH -> ticker.percentFromPriceAth
+            }
         )
     }
 

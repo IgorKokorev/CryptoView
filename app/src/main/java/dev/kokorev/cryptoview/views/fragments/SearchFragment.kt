@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.databinding.FragmentSearchBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
@@ -101,10 +100,7 @@ class SearchFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { dto ->
-                    tickers = dto.filter { ticker ->
-                        (ticker.dailyVolume ?: 0.0) > Constants.MIN_VOLUME &&
-                                (ticker.marketCap ?: 0.0) > Constants.MIN_MCAP
-                    }
+                    tickers = dto
                 },
                 {
                     Log.d(

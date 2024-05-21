@@ -11,5 +11,5 @@ data class FavoriteCoin(
     override val price: Double?,
     override val dailyVolume: Double?,
     override val marketCap: Double?,
-    override val percentChange24h: Double?,
+    override val percentChange: Double?,
 ): SavedCoin
