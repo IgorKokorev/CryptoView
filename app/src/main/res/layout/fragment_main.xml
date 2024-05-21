@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -8,144 +8,148 @@
     android:background="@drawable/background_gradient45"
     tools:context=".views.fragments.MainFragment">
 
-    <TextView
-        android:id="@+id/main_header"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/top_gainers_and_losers"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:paddingTop="12dp"
-        android:paddingBottom="0dp"
-        />
-
-    <LinearLayout
-        android:id="@+id/interval_selector"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_padding"
-        android:padding="@dimen/min_padding"
-        android:orientation="horizontal"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintTop_toBottomOf="@+id/main_header">
-
+        android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/sorting_h1"
-            android:layout_width="50dp"
+            android:id="@+id/main_header"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
             android:gravity="center"
-            android:padding="@dimen/min_padding"
-            android:text="1h"
-            android:textSize="@dimen/medium_text"
-            android:layout_weight="1"
-            app:layout_constraintDimensionRatio="1:1"
+            android:paddingTop="12dp"
+            android:paddingBottom="0dp"
+            android:text="@string/top_gainers_and_losers"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/sorting_d1"
-            android:layout_width="50dp"
+        <LinearLayout
+            android:id="@+id/interval_selector"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
-            android:gravity="center"
+            android:layout_marginTop="@dimen/medium_padding"
+            android:orientation="horizontal"
             android:padding="@dimen/min_padding"
-            android:text="1d"
-            android:textSize="@dimen/medium_text"
-            android:layout_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/sorting_h1"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toBottomOf="@+id/main_header">
 
-        <TextView
-            android:id="@+id/sorting_w1"
-            android:layout_width="50dp"
+
+            <TextView
+                android:id="@+id/sorting_h1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="1h"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sorting_d1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="1d"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintStart_toEndOf="@+id/sorting_h1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sorting_w1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="1w"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintStart_toEndOf="@+id/sorting_d1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sorting_m1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="1m"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintStart_toEndOf="@+id/sorting_w1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sorting_y1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="1y"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintStart_toEndOf="@+id/sorting_m1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sorting_ath"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="ATH"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintStart_toEndOf="@+id/sorting_y1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/header"
+            layout="@layout/gainer_coin_header"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
-            android:gravity="center"
-            android:padding="@dimen/min_padding"
-            android:text="1w"
-            android:textSize="@dimen/medium_text"
-            android:layout_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/sorting_d1"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/interval_selector" />
 
-        <TextView
-            android:id="@+id/sorting_m1"
-            android:layout_width="50dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/main_recycler"
+            android:nestedScrollingEnabled="false"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
-            android:gravity="center"
-            android:padding="@dimen/min_padding"
-            android:text="1m"
-            android:textSize="@dimen/medium_text"
-            android:layout_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/sorting_w1"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/sorting_y1"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
-            android:gravity="center"
-            android:padding="@dimen/min_padding"
-            android:text="1y"
-            android:textSize="@dimen/medium_text"
-            android:layout_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/sorting_m1"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/sorting_ath"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
-            android:gravity="center"
-            android:padding="@dimen/min_padding"
-            android:text="ATH"
-            android:textSize="@dimen/medium_text"
-            android:layout_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/sorting_y1"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-    </LinearLayout>
-
-    <include
-        android:id="@+id/header"
-        layout="@layout/gainer_coin_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/interval_selector"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/main_recycler"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header"
-        tools:listitem="@layout/gainer_coin_item" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/header"
+            tools:listitem="@layout/gainer_coin_item" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

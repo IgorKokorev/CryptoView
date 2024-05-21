@@ -39,6 +39,6 @@ class DomainModule(val context: Context) {
 
     @Singleton
     @Provides
-    fun provideRepository(preferenceProvider: PreferenceProvider) = Repository(preferenceProvider)
+    fun provideRepository() = Repository()
 
 }

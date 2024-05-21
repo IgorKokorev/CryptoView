@@ -18,6 +18,10 @@ object Constants {
         1_000L, 10_000L, 100_000L, 1_000_000L, 10_000_000L, 100_000_000L, 1_000_000_000L
     )   // List of possible "min mcap" values
 
+    const val TOP_COINS_FROM = 3
+    const val TOP_COINS_TO = 20
+    const val TOP_COINS_DEFAULT = 10
+
     const val MAIN_FRAGMENT_TAG = "main"
     const val COIN_FRAGMENT_TAG = "coin"
     const val FAVORITES_FRAGMENT_TAG = "favorites"

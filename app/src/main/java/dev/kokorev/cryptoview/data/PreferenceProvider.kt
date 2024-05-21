@@ -71,10 +71,10 @@ class PreferenceProvider(context: Context) {
     }
 
     // Number of gainers and losers to show on main
-    fun getNumGainers(): Int = preference.getInt(KEY_NUM_GAINERS, DEFAULT_NUM_GAINERS)
-    fun saveNumGainers(num: Int) {
-        if (num in 1..20)
-            preference.edit().putInt(KEY_NUM_GAINERS, num).apply()
+    fun getNumTopCoins(): Int = preference.getInt(KEY_NUM_TOP_COINS, Constants.TOP_COINS_DEFAULT)
+    fun saveNumTopCoins(num: Int) {
+        if (num in Constants.TOP_COINS_FROM .. Constants.TOP_COINS_TO)
+            preference.edit().putInt(KEY_NUM_TOP_COINS, num).apply()
     }
 
     // Constants
@@ -95,7 +95,6 @@ class PreferenceProvider(context: Context) {
         private const val KEY_MAIN_PRICE_SORTING = "main_price_sorting"
         private val DEFAULT_MAIN_PRICE_SORTING = TickerPriceSorting.H24
 
-        private const val KEY_NUM_GAINERS = "number_of_gainers"
-        private const val DEFAULT_NUM_GAINERS = 10
+        private const val KEY_NUM_TOP_COINS = "number_of_gainers"
     }
 }

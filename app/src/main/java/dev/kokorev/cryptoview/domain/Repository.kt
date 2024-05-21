@@ -7,8 +7,6 @@ import com.coinpaprika.apiclient.entity.MessageType
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.Constants
-import dev.kokorev.cryptoview.data.PreferenceProvider
-import dev.kokorev.cryptoview.views.fragments.TickerPriceSorting
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
@@ -19,7 +17,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.Executors
 
 // Interactor to communicate with local db
-class Repository(private val preferenceProvider: PreferenceProvider) {
+class Repository() {
     private val binanceSymbolDao: BinanceSymbolDao = App.instance.binanceSymbolDao
     private val topMoverDao = App.instance.topMoverDao
     private val coinPaprikaTickerDao = App.instance.coinPaprikaTickerDao
@@ -67,18 +65,18 @@ class Repository(private val preferenceProvider: PreferenceProvider) {
     fun getAllCoinPaprikaTickers() =
         coinPaprikaTickerDao.getCoinPaprikaTickers().addSettings()
 
-    fun getCPGainers(field: String = "percent_change_24h", limit: Int = 5): Observable<List<CoinPaprikaTickerDB>> =
+    fun getCPGainers(minMcap: Long, minVol: Long, field: String = "percent_change_24h", limit: Int = 5): Observable<List<CoinPaprikaTickerDB>> =
         coinPaprikaTickerDao.getCoinPaprikaTickersSortedDesc(
-            minMcap = getMinMcap(),
-            minVol = getMinVol(),
+            minMcap = minMcap,
+            minVol = minVol,
             field = field,
             limit = limit
         ).addSettings()
 
-    fun getCPLosers(field: String = "percent_change_24h", limit: Int = 5): Observable<List<CoinPaprikaTickerDB>> =
+    fun getCPLosers(minMcap: Long, minVol: Long, field: String = "percent_change_24h", limit: Int = 5): Observable<List<CoinPaprikaTickerDB>> =
         coinPaprikaTickerDao.getCoinPaprikaTickersSortedAsc(
-            minMcap = getMinMcap(),
-            minVol = getMinVol(),
+            minMcap = minMcap,
+            minVol = minVol,
             field = field,
             limit = limit
         ).addSettings()
@@ -132,22 +130,6 @@ class Repository(private val preferenceProvider: PreferenceProvider) {
             recentCoinDao.deleteOld(time)
         }
     }
-
-    // Shared Preference interaction
-    fun getLastTopMoversCallTime() = preferenceProvider.getLastTopMoversCallTime()
-    fun saveLastTopMoversCallTime() = preferenceProvider.saveLastTopMoversCallTime()
-    fun getLastCpTickersCallTime() = preferenceProvider.getLastCpTickersCallTime()
-    fun saveLastCpTickersCallTime() = preferenceProvider.saveLastCpTickersCallTime()
-    fun getLastAppUpdateTime() = preferenceProvider.getLastAppUpdateTime()
-    fun saveLastAppUpdateTime() = preferenceProvider.saveLastAppUpdateTime()
-    fun getCPTickersUpdateTime() = preferenceProvider.getCPTickersUpdateTime()
-    fun saveCPTickersUpdateTime() = preferenceProvider.saveCPTickersUpdateTime()
-    fun getMinMcap() = preferenceProvider.getMinMcap()
-    fun saveMinMcap(mcap: Long) = preferenceProvider.saveMinMcap(mcap)
-    fun getMinVol() = preferenceProvider.getMinVol()
-    fun saveMinVol(vol: Long) = preferenceProvider.saveMinVol(vol)
-    fun getMainPriceSorting() = preferenceProvider.getMainPriceSorting()
-    fun saveMainPriceSorting(sorting: TickerPriceSorting) = preferenceProvider.saveMainPriceSorting(sorting)
 
     // Ai chat q&a
     fun saveQuestion(name: String, message: String) {

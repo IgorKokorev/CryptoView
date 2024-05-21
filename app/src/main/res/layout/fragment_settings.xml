@@ -5,90 +5,177 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/settings_background_gradient"
-    tools:context=".views.fragments.SettingsFragment"
-    android:padding="@dimen/medium_padding">
+    android:background="@drawable/background_gradient45"
+    android:padding="@dimen/medium_padding"
+    tools:context=".views.fragments.SettingsFragment">
 
     <TextView
         android:id="@+id/settings_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="Settings"
+        android:paddingBottom="@dimen/medium_padding"
+        android:text="@string/settings"
+        android:textSize="@dimen/big_text"
         android:textStyle="bold"
-        android:textSize="@dimen/big_text"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/mcap_container"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/coins_filter_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/settings_header">
+        android:background="@drawable/rounded_rectangle_base"
+        android:paddingStart="@dimen/medium_padding"
+        android:paddingEnd="@dimen/medium_padding"
+        app:layout_constraintTop_toBottomOf="@+id/settings_header"
+        android:orientation="vertical" >
+
 
         <TextView
-            android:id="@+id/mcap_header"
-            android:layout_width="wrap_content"
+            android:id="@+id/filter_header"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Min MCap"
-            android:paddingEnd="@dimen/medium_padding"/>
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:paddingTop="@dimen/medium_padding"
+            android:paddingBottom="@dimen/small_padding"
+            android:text="@string/coins_filters"
+            android:textSize="@dimen/medium_text"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.slider.Slider
-            android:id="@+id/mcap_slider"
-            android:layout_width="0dp"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/textColor"
+            app:layout_constraintTop_toBottomOf="@+id/filter_header"/>
+
+        <LinearLayout
+            android:id="@+id/mcap_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="Minimum market cap"
-            android:valueFrom="0"
-            android:valueTo="6"
-            android:stepSize="1"
-            />
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_header">
 
-        <TextView
-            android:id="@+id/mcap_text"
-            android:layout_width="150dp"
+            <TextView
+                android:id="@+id/mcap_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="25"
+                android:paddingEnd="@dimen/medium_padding"
+                android:text="@string/min_mcap" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/mcap_slider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="40"
+                android:contentDescription="@string/minimum_market_cap"
+                android:stepSize="1"
+                android:valueFrom="0"
+                android:valueTo="6" />
+
+            <TextView
+                android:id="@+id/mcap_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_weight="15"
+                android:paddingStart="@dimen/medium_padding"
+                android:textAlignment="viewEnd"
+                tools:text="Number" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/vol_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="viewEnd"
-            android:layout_gravity="end|center_vertical"
-            tools:text="Number"
-            android:paddingStart="@dimen/medium_padding"/>
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mcap_container">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/vol_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="25"
+                android:paddingEnd="@dimen/medium_padding"
+                android:text="@string/min_volume" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/vol_slider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="40"
+                android:contentDescription="@string/minimum_daily_volume"
+                android:stepSize="1"
+                android:valueFrom="0"
+                android:valueTo="6" />
+
+            <TextView
+                android:id="@+id/vol_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_weight="15"
+                android:paddingStart="@dimen/medium_padding"
+                android:textAlignment="viewEnd"
+                tools:text="Number" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/vol_container"
+        android:id="@+id/num_gainers_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/mcap_container">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coins_filter_container">
 
         <TextView
-            android:id="@+id/vol_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Min Volume"
-            android:paddingEnd="@dimen/medium_padding"/>
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/vol_slider"
+            android:id="@+id/num_top_coins_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="Minimum market cap"
-            android:valueFrom="0"
-            android:valueTo="6"
+            android:layout_weight="25"
+            android:paddingEnd="@dimen/medium_padding"
+            android:text="@string/top_coins" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/num_top_coins_slider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="40"
+            android:contentDescription="@string/minimum_daily_volume"
             android:stepSize="1"
-            />
+            android:valueFrom="3"
+            android:valueTo="20" />
 
         <TextView
-            android:id="@+id/vol_text"
-            android:layout_width="150dp"
+            android:id="@+id/num_top_coins_text"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAlignment="viewEnd"
             android:layout_gravity="end|center_vertical"
-            tools:text="Number"
-            android:paddingStart="@dimen/medium_padding"/>
+            android:layout_weight="15"
+            android:paddingStart="@dimen/medium_padding"
+            android:textAlignment="viewEnd"
+            tools:text="Number" />
 
     </LinearLayout>
 

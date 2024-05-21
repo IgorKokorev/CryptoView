@@ -40,7 +40,7 @@ object NumbersUtils {
 
     fun setPriceChange(percentChange: Double?, context: Context, view: TextView) {
         val changeNumber = percentChange ?: 0.0
-        var changeString = DecimalFormat("#,##0.0").format(
+        var changeString = DecimalFormat("#,##0.00").format(
             NumbersUtils.roundNumber(
                 changeNumber,
                 2
@@ -63,5 +63,12 @@ object NumbersUtils {
             )
         }
         view.text = changeString
+    }
+
+    fun formatBigNumberShort(number: Long): String {
+        if (number >= 1_000_000_000) return DecimalFormat("#,###B").format(number / 1_000_000_000)
+        if (number >= 1_000_000) return DecimalFormat("#,###M").format(number / 1_000_000)
+        if (number >= 1_000) return DecimalFormat("#,###T").format(number / 1_000)
+        return DecimalFormat("#,###").format(number)
     }
 }

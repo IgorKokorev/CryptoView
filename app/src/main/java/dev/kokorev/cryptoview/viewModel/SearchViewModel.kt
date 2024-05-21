@@ -3,6 +3,7 @@ package dev.kokorev.cryptoview.viewModel
 import androidx.lifecycle.ViewModel
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter
@@ -18,6 +19,8 @@ class SearchViewModel : ViewModel() {
     lateinit var remoteApi: RemoteApi
     @Inject
     lateinit var repository: Repository
+    @Inject
+    lateinit var preferences: PreferenceProvider
     private val compositeDisposable = CompositeDisposable()
     val cpTickers: Observable<List<CoinPaprikaTickerDB>>
     var sorting = Sorting.NONE // field for RV sorting
@@ -25,15 +28,15 @@ class SearchViewModel : ViewModel() {
 
     init {
         App.instance.dagger.inject(this)
-        cpTickers = repository.getAllCoinPaprikaTickersFiltered(repository.getMinMcap(), repository.getMinVol())
+        cpTickers = repository.getAllCoinPaprikaTickersFiltered(preferences.getMinMcap(), preferences.getMinVol())
         loadTickers()
     }
 
     fun loadTickers() {
-        val lastTime = repository.getLastCpTickersCallTime()
+        val lastTime = preferences.getLastCpTickersCallTime()
         // If enough time pasts call the API
         if (System.currentTimeMillis() > (lastTime + Constants.CP_TICKERS_UPDATE_INTERVAL)) {
-            repository.saveLastCpTickersCallTime()
+            preferences.saveLastCpTickersCallTime()
 
             val disposable = remoteApi.getCoinPaprikaTickers()
                 .observeOn(Schedulers.io())

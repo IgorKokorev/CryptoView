@@ -49,4 +49,11 @@
     <string name="volume">Volume</string>
     <string name="mcap">MCap</string>
     <string name="add_to_portfolio">Add to portfolio</string>
+    <string name="settings">Settings</string>
+    <string name="coins_filters">Coins filters</string>
+    <string name="min_mcap">Min MCap</string>
+    <string name="minimum_market_cap">Minimum market cap</string>
+    <string name="min_volume">Min Volume</string>
+    <string name="minimum_daily_volume">Minimum daily volume</string>
+    <string name="top_coins">Top coins</string>
 </resources>

@@ -233,11 +233,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setupApp() {
-        val lastAppUpdateTime = viewModel.repository.getLastAppUpdateTime()
+        val lastAppUpdateTime = viewModel.preferences.getLastAppUpdateTime()
         val currentTime = System.currentTimeMillis()
         if (lastAppUpdateTime + Constants.APP_UPDATE_INTERVAL < currentTime) {
             Log.d(this.localClassName, "Setting Application data")
-            viewModel.repository.saveLastAppUpdateTime()
+            viewModel.preferences.saveLastAppUpdateTime()
             updateBinanceInfo()
             updateCoinPaprikaTickers()
             updateCoinPaprikaAllCoins()
@@ -269,7 +269,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateCoinPaprikaTickers() {
-        val lastAppUpdateTime = viewModel.repository.getLastCpTickersCallTime()
+        val lastAppUpdateTime = viewModel.preferences.getLastCpTickersCallTime()
         val currentTime = System.currentTimeMillis()
         if (lastAppUpdateTime + Constants.CP_TICKERS_UPDATE_INTERVAL < currentTime) {
             viewModel.remoteApi.getCoinPaprikaTickers()
