@@ -16,7 +16,8 @@ import dev.kokorev.cryptoview.R
 import dev.kokorev.token_metrics_api.TokenMetricsApi
 import dev.kokorev.token_metrics_api.entity.AiAnswer
 import dev.kokorev.token_metrics_api.entity.AiQuestion
-import dev.kokorev.token_metrics_api.entity.AiReport
+import dev.kokorev.token_metrics_api.entity.AiReportData
+import dev.kokorev.token_metrics_api.entity.TMResponse
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -67,10 +68,10 @@ class RemoteApi(
         coinPaprikaApi.getTickerHistoricalTicks(id).addProgressBar()
 
     // TokenMetrics API
-    fun getAIReport(symbol: String): Observable<AiReport> {
+    fun getAIReport(symbol: String): Observable<TMResponse<AiReportData>> {
         return tokenMetricsApi.getAiReports(symbol = symbol)
             .onErrorReturn { e ->
-                return@onErrorReturn AiReport(
+                return@onErrorReturn TMResponse(
                     success = false,
                     message = exceptionToErrorText(e),
                     length = 0

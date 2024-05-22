@@ -56,4 +56,5 @@
     <string name="min_volume">Min Volume</string>
     <string name="minimum_daily_volume">Minimum daily volume</string>
     <string name="top_coins">Top coins</string>
+    <string name="no_report_found">No report found</string>
 </resources>

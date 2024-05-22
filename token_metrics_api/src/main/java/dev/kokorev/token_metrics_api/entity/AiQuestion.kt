@@ -5,3 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class AiQuestion(
     @SerializedName("messages" ) var messages : ArrayList<AiQuestionMessage> = arrayListOf()
 )
+
+data class AiQuestionMessage(
+    @SerializedName("user" ) var user : String? = null
+)
