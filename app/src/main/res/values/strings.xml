@@ -15,9 +15,9 @@
     <string name="double_tap_toast">Please press back twice to exit the app</string>
     <string name="favorite">Add to Favorite</string>
     <string name="menu_text_chat">Ai chat</string>
-    <string name="http429">Too many requests performed, please try again after some time</string>
-    <string name="http400">Sorry, I can\'t find any reasonable response to your question</string>
-    <string name="http500">I\'m experiencing some technical difficulties right now, please come back a bit later</string>
+    <string name="http429">Too many requests performed, please try again after some time.</string>
+    <string name="http400">Sorry, I can\'t find any reasonable response to your question.</string>
+    <string name="http500">Sorry, I don\'t have a response to such a question or maybe I\'m just experiencing some technical difficulties right now. Please reformulate your question or come back later.</string>
     <string name="unknown_http_error">Unknown Http error</string>
     <string name="fundamental_report">FUNDAMENTAL REPORT</string>
     <string name="trader_report">TRADER REPORT</string>
@@ -57,4 +57,8 @@
     <string name="minimum_daily_volume">Minimum daily volume</string>
     <string name="top_coins">Top coins</string>
     <string name="no_report_found">No report found</string>
+    <string name="favorites_notification">Favorite coins notifications</string>
+    <string name="favorite_change_text">I want to receive notifications if market price of one of my favorites changes more than:</string>
+    <string name="minimum_favorite_price_change">Minimum favorite coin price change</string>
+    <string name="favorite_coin_price_change">Favorite coin price change</string>
 </resources>

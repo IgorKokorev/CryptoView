@@ -1,5 +1,6 @@
 package dev.kokorev.room_db.core_impl
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
@@ -18,6 +19,9 @@ import dev.kokorev.room_db.core_api.entity.TopMoverDB
         FavoriteCoinDB::class,
         RecentCoinDB::class,
         MessageDB::class,
-    ], version = 1, exportSchema = true
+    ],
+    version = 2,
+    exportSchema = true,
+    autoMigrations = [AutoMigration(from = 1, to = 2)]
 )
 abstract class CoinViewDb : RoomDatabase(), DbContract

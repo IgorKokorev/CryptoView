@@ -9,7 +9,7 @@ import dev.kokorev.token_metrics_api.entity.TMPricePredictionData
 import dev.kokorev.token_metrics_api.entity.TMResponse
 import dev.kokorev.token_metrics_api.entity.TMSentiment
 import dev.kokorev.token_metrics_api.entity.TMTraderGrade
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Maybe
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -22,12 +22,12 @@ interface TokenMetricsApi {
         @Query("symbol") symbol: String? = null,
         @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null,
-    ): Observable<TMResponse<AiReportData>>
+    ): Maybe<TMResponse<AiReportData>>
 
     @POST("tmai")
     fun aiQuestion(
         @Body aiQuestion: AiQuestion
-    ) : Observable<AiAnswer>
+    ) : Maybe<AiAnswer>
 
     @GET("market-metrics")
     fun getMarketMetrics(
@@ -35,7 +35,7 @@ interface TokenMetricsApi {
         @Query("endDate") endDate: String? = null,
         @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null,
-    ): Observable<TMResponse<TMMarketMetricsData>>
+    ): Maybe<TMResponse<TMMarketMetricsData>>
 
     @GET("price-prediction")
     fun getPricePrediction(
@@ -45,7 +45,7 @@ interface TokenMetricsApi {
         @Query("exchange") exchange: String? = null,
         @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null,
-    ): Observable<TMResponse<TMPricePredictionData>>
+    ): Maybe<TMResponse<TMPricePredictionData>>
 
     @GET("trader-grades")
     fun getTraderGrades(
@@ -62,7 +62,7 @@ interface TokenMetricsApi {
         @Query("traderGradePercentChange") traderGradePercentChange: Double? = null,
         @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null,
-    ): Observable<TMResponse<TMTraderGrade>>
+    ): Maybe<TMResponse<TMTraderGrade>>
 
     @GET("investor-grades")
     fun getInvestorGrades(
@@ -78,8 +78,8 @@ interface TokenMetricsApi {
         @Query("investorGrade") traderGrade: Double? = null,
         @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null,
-    ): Observable<TMResponse<TMInvestorGrade>>
+    ): Maybe<TMResponse<TMInvestorGrade>>
 
     @GET("sentiments")
-    fun getSentiment(): Observable<TMResponse<TMSentiment>>
+    fun getSentiment(): Maybe<TMResponse<TMSentiment>>
 }

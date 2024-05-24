@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kapt)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -83,9 +84,16 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.viewPager2)
 
+    implementation(libs.work)
+    implementation(libs.work.rxjava3)
+
     implementation(libs.glide)
     kapt(libs.glide.annotation.processor)
 
+    // airbnb paris lets you change view style programmatically
+    implementation(libs.airbnb.paris)
+    kapt(libs.airbnb.paris.processor)
+    
     // retrofit for error handling
     implementation(libs.retrofit)
 

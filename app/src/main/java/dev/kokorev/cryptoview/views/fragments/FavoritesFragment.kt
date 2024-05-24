@@ -1,7 +1,6 @@
 package dev.kokorev.cryptoview.views.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,12 +76,9 @@ class FavoritesFragment : Fragment() {
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+            .subscribe{
                 recyclerData = it
-            },
-                {
-                    Log.d("MainFragment", "Error getting data from CoinPaparikaTop10Movers", it)
-                })
+            }
             .addTo(autoDisposable)
     }
 }

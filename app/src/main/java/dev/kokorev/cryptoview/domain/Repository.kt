@@ -6,7 +6,8 @@ import com.coinpaprika.apiclient.entity.MessageDB
 import com.coinpaprika.apiclient.entity.MessageType
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import dev.kokorev.cryptoview.App
-import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cryptoview.data.Constants
+import dev.kokorev.cryptoview.data.entity.FavoriteCoin
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
@@ -86,6 +87,7 @@ class Repository() {
 
     fun addCoinPaprikaTickers(list: List<CoinPaprikaTickerDB>) {
         Executors.newSingleThreadExecutor().execute {
+            Log.d(this.javaClass.simpleName, "addCoinPaprikaTickers in thread: " + Thread.currentThread().name)
             coinPaprikaTickerDao.deleteAll()
             coinPaprikaTickerDao.insertAll(list)
         }
@@ -96,6 +98,7 @@ class Repository() {
 
     // FavoriteCoin table interaction
     fun getFavoriteCoins() = favoriteCoinDao.getAll().addSettings()
+    fun getFavoriteCoinsSingle() = favoriteCoinDao.getAllSingle()
     fun addFavorite(coinDB: FavoriteCoinDB) {
         Executors.newSingleThreadExecutor().execute {
             favoriteCoinDao.insertFavoriteCoin(coinDB)
@@ -110,6 +113,12 @@ class Repository() {
 
     fun findFavoriteCoinByCoinPaprikaId(coinPaprikaId: String) =
         favoriteCoinDao.findByCoinPaprikaId(coinPaprikaId).addSettings()
+
+    fun setFavoriteTimeNotified(coin: FavoriteCoin) {
+        Executors.newSingleThreadExecutor().execute {
+            favoriteCoinDao.updateTimeNotified(coin.id, System.currentTimeMillis())
+        }
+    }
 
     // RecentCoin table interaction
     fun getRecentCoins() = recentCoinDao.getAll().addSettings()
@@ -173,5 +182,4 @@ class Repository() {
                 true
             }
     }
-
 }

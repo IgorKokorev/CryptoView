@@ -5,6 +5,7 @@ import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.domain.Repository
+import dev.kokorev.cryptoview.backgroundService.NotificationManager
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -13,6 +14,9 @@ import javax.inject.Inject
 class SavedViewModel : ViewModel() {
     @Inject
     lateinit var repository: Repository
+    @Inject
+    lateinit var notificationManager: NotificationManager
+
     private var disposable: Disposable? = null
     val favorites: Observable<List<FavoriteCoinDB>>
     val recents: Observable<List<RecentCoinDB>>

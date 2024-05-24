@@ -4,10 +4,12 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
     <application
@@ -15,15 +17,20 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/cryptoview"
+        android:icon="@drawable/cryptoview_blue_square"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/cryptoview_round"
+        android:roundIcon="@drawable/cryptoview_blue_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CryptoView"
         tools:targetApi="31">
+        <service
+            android:name=".backgroundService.FavoritesCheckService"
+            android:enabled="true"
+            android:icon="@drawable/cryptoview_blue_square"
+            android:roundIcon="@drawable/cryptoview_blue_round"
+            android:exported="false" />
         <activity
             android:name=".views.MainActivity"
-            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

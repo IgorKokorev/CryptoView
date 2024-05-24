@@ -6,11 +6,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface FavoriteCoinDao {
     @Query("SELECT * FROM favorite_coin")
     fun getAll(): Observable<List<FavoriteCoinDB>>
+
+    @Query("SELECT * FROM favorite_coin")
+    fun getAllSingle(): Single<List<FavoriteCoinDB>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFavoriteCoin(favoriteCoinDB: FavoriteCoinDB)
@@ -29,4 +33,7 @@ interface FavoriteCoinDao {
 
     @Query("SELECT * FROM favorite_coin WHERE coin_paprika_id = :coinPaprikaId")
     fun findByCoinPaprikaId(coinPaprikaId: String): Observable<FavoriteCoinDB>
+
+    @Query("UPDATE favorite_coin SET time_notified = :time WHERE id = :id")
+    fun updateTimeNotified(id: Int, time: Long)
 }

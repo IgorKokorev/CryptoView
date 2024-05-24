@@ -5,6 +5,7 @@
         <item name="android:alertDialogStyle">@style/DialogStyle</item>
         <item name="bottomNavigationStyle">@style/BottomBar</item>
         <item name="sliderStyle">@style/CVSliderStyle</item>
+        <item name="checkboxStyle">@style/CVCheckBox</item>
     </style>
 
     <style name="Theme.CryptoView" parent="Base.Theme.CryptoView" />

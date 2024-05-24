@@ -3,8 +3,8 @@
 <!--    Defining color set-->
     <color name="black">#FF000000</color>
     <color name="grey">#808080</color>
-    <color name="darkGrey">#303030</color>
-    <color name="lightGrey">#d0d0d0</color>
+    <color name="darkGrey">#606060</color>
+    <color name="lightGrey">#a0a0a0</color>
     <color name="white">#FFFFFFFF</color>
     <color name="darkGreen">#008000</color>
     <color name="darkRed">#FF0000</color>
@@ -45,6 +45,9 @@
     <color name="red8">#2b0c01</color>
 
 <!--    Defining light theme colors-->
+    <color name="grey1">@color/darkGrey</color>
+    <color name="grey2">@color/lightGrey</color>
+
     <color name="base1">@color/white</color>
     <color name="base2">@color/blue1</color>
     <color name="base3">@color/blue2</color>

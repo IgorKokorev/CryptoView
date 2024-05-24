@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentCoinBinding
 import dev.kokorev.cryptoview.viewModel.CoinViewModel

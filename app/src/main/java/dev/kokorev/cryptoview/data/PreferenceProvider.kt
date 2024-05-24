@@ -2,11 +2,11 @@ package dev.kokorev.cryptoview.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.views.fragments.TickerPriceSorting
 
 // Working with SharedPreferences of the app
 class PreferenceProvider(context: Context) {
+
     // Application context
     private val appContext = context.applicationContext
 
@@ -73,8 +73,26 @@ class PreferenceProvider(context: Context) {
     // Number of gainers and losers to show on main
     fun getNumTopCoins(): Int = preference.getInt(KEY_NUM_TOP_COINS, Constants.TOP_COINS_DEFAULT)
     fun saveNumTopCoins(num: Int) {
-        if (num in Constants.TOP_COINS_FROM .. Constants.TOP_COINS_TO)
+        if (num in Constants.TOP_COINS_FROM..Constants.TOP_COINS_TO)
             preference.edit().putInt(KEY_NUM_TOP_COINS, num).apply()
+    }
+
+    // Does user want to get notifications about his favorites changes
+    fun toCheckFavorites(): Boolean {
+        return preference.getBoolean(KEY_TO_CHECK_FAVORITES, true)
+    }
+
+    fun saveCheckFaforites(toCheck: Boolean) {
+        preference.edit().putBoolean(KEY_TO_CHECK_FAVORITES, toCheck).apply()
+    }
+
+    // Favorites min change in % to send notifications
+    fun getFavoriteMinChange(): Float =
+        preference.getFloat(KEY_FAVORITE_MIN_CHANGE, DEFAULT_FAVORITE_MIN_CHANGE)
+
+    fun saveFavoriteMinChange(change: Float) {
+        if (change in Constants.FAVORITE_CHECK_MIN_CHANGE..Constants.FAVORITE_CHECK_MAX_CHANGE)
+            preference.edit().putFloat(KEY_FAVORITE_MIN_CHANGE, change).apply()
     }
 
     // Constants
@@ -96,5 +114,9 @@ class PreferenceProvider(context: Context) {
         private val DEFAULT_MAIN_PRICE_SORTING = TickerPriceSorting.H24
 
         private const val KEY_NUM_TOP_COINS = "number_of_gainers"
+
+        private const val KEY_TO_CHECK_FAVORITES: String = "to_check_favorites"
+        private const val KEY_FAVORITE_MIN_CHANGE = "favorite_min_change"
+        private const val DEFAULT_FAVORITE_MIN_CHANGE = 5.0f
     }
 }

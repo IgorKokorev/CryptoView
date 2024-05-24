@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.data.entity.GainerCoin
 import dev.kokorev.cryptoview.databinding.FragmentMainBinding

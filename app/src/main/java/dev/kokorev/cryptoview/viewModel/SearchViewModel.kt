@@ -2,7 +2,7 @@ package dev.kokorev.cryptoview.viewModel
 
 import androidx.lifecycle.ViewModel
 import dev.kokorev.cryptoview.App
-import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
@@ -39,13 +39,19 @@ class SearchViewModel : ViewModel() {
             preferences.saveLastCpTickersCallTime()
 
             val disposable = remoteApi.getCoinPaprikaTickers()
+                .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe {
+                .doOnSuccess {
                     val tickers = it
                         .map { dto -> Converter.dtoToCoinPaprikaTicker(dto) }
                         .toList()
                     repository.addCoinPaprikaTickers(tickers)
                 }
+                .doOnError {
+
+                }
+                .subscribe()
+
             compositeDisposable.add(disposable)
         }
     }

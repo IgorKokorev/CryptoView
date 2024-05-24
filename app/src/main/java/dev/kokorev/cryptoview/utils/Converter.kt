@@ -68,7 +68,8 @@ object Converter {
             hardwareWallet = coin.hardwareWallet,
             proofType = coin.proofType,
             organizationStructure = coin.organizationStructure,
-            algorithm = coin.algorithm
+            algorithm = coin.algorithm,
+            timeNotified = System.currentTimeMillis()
         )
     }
 
@@ -97,7 +98,8 @@ object Converter {
             price = tiker?.price,
             dailyVolume = tiker?.dailyVolume,
             marketCap = tiker?.marketCap,
-            percentChange = tiker?.percentChange24h
+            percentChange = tiker?.percentChange24h,
+            timeNotified = db.timeNotified,
         )
     }
 

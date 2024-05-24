@@ -1,5 +1,9 @@
 package dev.kokorev.cryptoview.views
 
+import android.Manifest
+import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,17 +13,19 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.coinpaprika.apiclient.entity.CoinType
-import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
+import dev.kokorev.cryptoview.data.Constants
+import dev.kokorev.cryptoview.data.entity.FavoriteCoin
 import dev.kokorev.cryptoview.databinding.ActivityMainBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
-import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
 import dev.kokorev.cryptoview.views.fragments.AiChatFragment
@@ -28,6 +34,8 @@ import dev.kokorev.cryptoview.views.fragments.MainFragment
 import dev.kokorev.cryptoview.views.fragments.SavedFragment
 import dev.kokorev.cryptoview.views.fragments.SearchFragment
 import dev.kokorev.cryptoview.views.fragments.SettingsFragment
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -39,6 +47,34 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge() // To check wth is this
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Set portrait orientation while landscape layouts are not ready yet
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        autoDisposable.bindTo(lifecycle)
+        setInsets()
+        setupOnBackPressed()
+        initBottomBarButtons()
+        setupProgressBar()
+
+        // If notifications are disabled do not check favorites price change
+        if(!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+            viewModel.preferences.saveCheckFaforites(false)
+        }
+
+        addFragment(MainFragment(), Constants.MAIN_FRAGMENT_TAG)
+
+        val coin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent?.getParcelableExtra(Constants.INTENT_EXTRA_FAVORITE_COIN, FavoriteCoin::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent?.getParcelableExtra(Constants.INTENT_EXTRA_FAVORITE_COIN) as FavoriteCoin?
+        }
+
+        if (coin != null) launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name)
+    }
+
+    private fun setInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             // System Bars' Insets
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -49,24 +85,12 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
-
-
-
-        autoDisposable.bindTo(lifecycle)
-
-        setupOnBackPressed()
-        setupApp()
-//        initMenuButtons()
-        initBottomBarButtons()
-        setupProgressBar()
-
-        addFragment(MainFragment(), Constants.MAIN_FRAGMENT_TAG)
-
     }
 
     private fun setupProgressBar() {
         viewModel.remoteApi.progressBarState
-            .onErrorComplete()
+            .observeOn(AndroidSchedulers.mainThread())
+            .onErrorReturnItem(false)
             .subscribe {
                 binding.progressBar.isVisible = it
             }
@@ -168,38 +192,6 @@ class MainActivity : AppCompatActivity() {
                         replaceFragment(fragment, tag)
                         true
                     }
-
-                    R.id.favorites -> {
-                        val tag = Constants.FAVORITES_FRAGMENT_TAG
-                        val fragment =
-                            supportFragmentManager.findFragmentByTag(tag) ?: SavedFragment()
-                        replaceFragment(fragment, tag)
-                        true
-                    }
-
-                    R.id.search -> {
-                        val tag = Constants.SEARCH_FRAGMENT_TAG
-                        val fragment = supportFragmentManager.findFragmentByTag(tag) ?: SearchFragment()
-                        replaceFragment(fragment, tag)
-                        true
-                    }
-
-                    R.id.chat -> {
-                        val tag = Constants.CHAT_FRAGMENT_TAG
-                        val fragment = supportFragmentManager.findFragmentByTag(tag) ?: AiChatFragment()
-                        replaceFragment(fragment, tag)
-                        true
-                    }
-
-                    R.id.settings -> {
-                        val tag = Constants.SETTINGS_FRAGMENT_TAG
-                        val fragment =
-                            supportFragmentManager.findFragmentByTag(tag) ?: SettingsFragment()
-                        replaceFragment(fragment, tag)
-                        Toast.makeText(this, R.string.settings_toast, Toast.LENGTH_SHORT).show()
-                        true
-                    }
-
                     else -> false
                 }
             }
@@ -232,89 +224,47 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    fun setupApp() {
-        val lastAppUpdateTime = viewModel.preferences.getLastAppUpdateTime()
-        val currentTime = System.currentTimeMillis()
-        if (lastAppUpdateTime + Constants.APP_UPDATE_INTERVAL < currentTime) {
-            Log.d(this.localClassName, "Setting Application data")
-            viewModel.preferences.saveLastAppUpdateTime()
-            updateBinanceInfo()
-            updateCoinPaprikaTickers()
-            updateCoinPaprikaAllCoins()
+    fun askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.d(this.javaClass.simpleName, "Notification permission is already granted")
+                viewModel.notificationManager.notificationPermission.onNext(true)
+            } else {
+                Log.d(this.javaClass.simpleName, "Asking for notification permission")
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    Constants.NOTIFICATION_PERMISSION_REQUEST_CODE)
+            }
         }
     }
 
-    private fun updateCoinPaprikaAllCoins() {
-        viewModel.remoteApi.getCoinPaprikaAllCoins()
-            .subscribe {
-                Log.d("MainActivity", "SetupApp: total CoinPaprika coins: ${it.size}")
-                Log.d("MainActivity", "SetupApp: total CoinPaprika ranked coins: ${
-                    it.filter { c -> c.rank > 0 }
-                        .size
-                }")
-                Log.d("MainActivity", "SetupApp: total CoinPaprika active coins: ${
-                    it.filter { c -> c.isActive }
-                        .size
-                }")
-                Log.d("MainActivity", "SetupApp: total CoinPaprika ranked \"coins\": ${
-                    it.filter { c -> c.rank > 0 && c.type == CoinType.Coin }
-                        .size
-                }")
-                Log.d("MainActivity", "SetupApp: total CoinPaprika ranked \"tokens\": ${
-                    it.filter { c -> c.rank > 0 && c.type == CoinType.Token }
-                        .size
-                }")
-            }
-            .addTo(autoDisposable)
-    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Constants.NOTIFICATION_PERMISSION_REQUEST_CODE) {
+            Log.d(this.javaClass.simpleName, "onRequestPermissionsResult. Number of permissions = ${permissions.size}, results: ${grantResults.size}")
 
-    fun updateCoinPaprikaTickers() {
-        val lastAppUpdateTime = viewModel.preferences.getLastCpTickersCallTime()
-        val currentTime = System.currentTimeMillis()
-        if (lastAppUpdateTime + Constants.CP_TICKERS_UPDATE_INTERVAL < currentTime) {
-            viewModel.remoteApi.getCoinPaprikaTickers()
-                .subscribe { list ->
-                    Log.d(
-                        this.localClassName,
-                        "Total number of CoinPaprika tickers received: ${list.size}"
-                    )
-                    val minMcap = Constants.minMCaps.get(0)
-                    val minVol = Constants.minVols.get(0)
-                    val tickers = list
-                        .filter { ticker ->
-                            val quote = ticker.quotes?.get("USD")
-                            if (quote == null) false
-                            else {
-                                ticker.rank > 0 &&
-                                        quote.marketCap >= minMcap &&
-                                        quote.dailyVolume >= minVol
-                            }
-                        }
-                        .map { dto -> Converter.dtoToCoinPaprikaTicker(dto) }
-                        .toList()
-                    Log.d(
-                        this.localClassName,
-                        "Total number of CoinPaprika tickers saved: ${tickers.size}"
-                    )
-                    viewModel.repository.addCoinPaprikaTickers(tickers)
+            for (i in 0 until permissions.size) {
+                val permission = permissions[i]
+                val grantResult = grantResults[i]
+
+                if (permission == Manifest.permission.POST_NOTIFICATIONS) {
+                    if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                        Log.d(this.javaClass.simpleName, "Notification permission granted")
+                        viewModel.notificationManager.notificationPermission.onNext(true)
+                    } else {
+                        Log.d(this.javaClass.simpleName, "Notification permission rejected")
+                        viewModel.notificationManager.notificationPermission.onNext(false)
+                    }
                 }
-                .addTo(autoDisposable)
-        }
-    }
-
-    private fun updateBinanceInfo() {
-        Log.d(this.localClassName, "Start updating Binance data")
-        viewModel.remoteApi.getBinanceInfo()
-            .subscribe {
-                val symbols = it.binanceSymbolDTOS.asSequence()
-                    .map { dto -> Converter.dtoToBinanceSymbol(dto) }
-                    .toList()
-                viewModel.repository.addBinanceSymbols(symbols)
-                Log.d(
-                    "MainActivity",
-                    "SetupApp: ${symbols.size} symbols were read from API and added to db"
-                )
             }
-            .addTo(autoDisposable)
+        }
     }
 }

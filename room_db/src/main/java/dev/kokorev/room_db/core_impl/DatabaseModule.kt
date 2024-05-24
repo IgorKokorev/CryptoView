@@ -1,6 +1,7 @@
 package dev.kokorev.room_db.core_impl
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -11,6 +12,7 @@ import dev.kokorev.room_db.core_api.MessageDao
 import dev.kokorev.room_db.core_api.RecentCoinDao
 import dev.kokorev.room_db.core_api.TopMoverDao
 import dev.kokorev.room_db.core_api.db.DbContract
+import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 private const val DATABASE_NAME = "coin_view_db"
@@ -60,7 +62,11 @@ class DatabaseModule {
             context,
             CoinViewDb::class.java, DATABASE_NAME
         )
-//            .fallbackToDestructiveMigration()
+            .setQueryCallback(
+                { sqlQuery, bindArgs ->
+                    Log.d(this.javaClass.simpleName, "SQL Query: $sqlQuery SQL Args: $bindArgs")
+                }, Executors.newSingleThreadExecutor()
+            )
             .build()
     }
 }

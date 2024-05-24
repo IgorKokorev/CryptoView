@@ -6,6 +6,7 @@
         <item name="android:alertDialogStyle">@style/DialogStyle</item>
         <item name="bottomNavigationStyle">@style/BottomBar</item>
         <item name="sliderStyle">@style/CVSliderStyle</item>
+        <item name="checkboxStyle">@style/CVCheckBox</item>
     </style>
 
     <style name="CVTextAppearance" parent="TextAppearance.AppCompat">
@@ -26,6 +27,11 @@
         <item name="color">@color/textColor</item>
         <item name="android:textColor">@color/textColor</item>
         <item name="android:textColorLink">@color/textColor</item>
+    </style>
+
+    <style name="CVCheckBox" parent="Widget.Material3.CompoundButton.CheckBox">
+        <item name="buttonTint">@color/accent3</item>
+        <item name="buttonIconTint">@color/textColor</item>
     </style>
 
     <style name="BottomBar" parent="Widget.Material3.BottomNavigationView">
@@ -55,7 +61,7 @@
         <item name="backgroundTint">@color/base1</item>
         <item name="labelStyle">@style/Widget.App.Tooltip</item>
         <item name="labelBehavior">gone</item>
-        <item name="thumbColor">@color/accent6</item>
+        <item name="thumbColor">@color/accent6_state_list</item>
         <item name="thumbRadius">20dp</item>
         <item name="thumbWidth">20dp</item>
         <item name="thumbHeight">20dp</item>
@@ -64,12 +70,12 @@
         <item name="haloColor">@color/baseDarkTransparent</item>
         <item name="haloRadius">20dp</item>
         <item name="trackHeight">5dp</item>
-        <item name="trackColorInactive">@color/accent3</item>
-        <item name="trackColorActive">@color/accent6</item>
+        <item name="trackColorInactive">@color/accent3_state_list</item>
+        <item name="trackColorActive">@color/accent6_state_list</item>
         <item name="trackStopIndicatorSize">0dp</item>
         <item name="tickVisible">false</item>
-        <item name="tickColorInactive">@color/accent3</item>
-        <item name="tickColorActive">@color/accent6</item>
+        <item name="tickColorInactive">@color/accent3_state_list</item>
+        <item name="tickColorActive">@color/accent6_state_list</item>
     </style>
 
     <style name="Widget.App.Tooltip" parent="Widget.MaterialComponents.Tooltip">

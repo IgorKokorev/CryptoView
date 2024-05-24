@@ -1,9 +1,17 @@
 package dev.kokorev.cryptoview
 
 import android.app.Application
+import android.content.Intent
+import android.util.Log
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import dev.kokorev.binance_api.DaggerBinanceComponent
 import dev.kokorev.cmc_api.DaggerCmcComponent
 import dev.kokorev.coin_paprika_api.DaggerCoinPaprikaComponent
+import dev.kokorev.cryptoview.backgroundService.FavoritesCheckService
+import dev.kokorev.cryptoview.backgroundService.TickersLoaderWorker
+import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.di.AppComponent
 import dev.kokorev.cryptoview.di.DaggerAppComponent
 import dev.kokorev.cryptoview.di.DbFacadeComponent
@@ -15,6 +23,7 @@ import dev.kokorev.room_db.core_api.MessageDao
 import dev.kokorev.room_db.core_api.RecentCoinDao
 import dev.kokorev.room_db.core_api.TopMoverDao
 import dev.kokorev.token_metrics_api.DaggerTokenMetricsComponent
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -32,6 +41,7 @@ class App : Application() {
     lateinit var recentCoinDao: RecentCoinDao
     @Inject
     lateinit var messageDao: MessageDao
+    private lateinit var intent: Intent
 
     override fun onCreate() {
         super.onCreate()
@@ -48,6 +58,29 @@ class App : Application() {
 
         // initialising room db
         getDbFacade().inject(this)
+
+        // periodic work request to check Favorites coins and Portfolio state
+        val workRequest = PeriodicWorkRequestBuilder<TickersLoaderWorker>(15, TimeUnit.MINUTES)
+            .addTag(Constants.TICKER_LOADER_TAG)
+            .build()
+
+        WorkManager.getInstance(this)
+            .enqueueUniquePeriodicWork(Constants.FAVORITE_CHECKER_WORK, ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, workRequest)
+
+        // start service to periodically check favorites
+        intent = Intent(this, FavoritesCheckService::class.java)
+//        startFavoriteCheckService()
+        stopFavoriteCheckService()
+    }
+
+    fun startFavoriteCheckService() {
+        Log.d(this.javaClass.simpleName, "Starting FavoriteCheckService")
+        startService(intent)
+    }
+
+    fun stopFavoriteCheckService() {
+        Log.d(this.javaClass.simpleName, "Stopping FavoriteCheckService")
+        stopService(intent)
     }
 
     private fun getDbFacade(): DbFacadeComponent {
