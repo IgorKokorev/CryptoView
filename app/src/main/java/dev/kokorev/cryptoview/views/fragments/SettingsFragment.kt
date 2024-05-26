@@ -60,7 +60,7 @@ class SettingsFragment : Fragment() {
 
         toCheckFavorites = viewModel.preferences.toCheckFavorites()
         binding.favoriteChangeCheckbox.isChecked = toCheckFavorites
-        viewModel.notificationManager.notificationPermission
+        viewModel.notificationService.notificationPermission
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.favoriteChangeCheckbox.isChecked = it
@@ -107,7 +107,7 @@ class SettingsFragment : Fragment() {
 
     private fun setFavoriteChangeValueText() {
         binding.favoriteChangeValueText.text =
-            DecimalFormat("0.00%").format(favoriteChange / 100f)
+            DecimalFormat("0%").format(favoriteChange / 100f)
     }
 
     private fun setNumTopCoinsText() {

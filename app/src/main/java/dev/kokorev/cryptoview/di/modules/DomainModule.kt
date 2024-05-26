@@ -6,7 +6,7 @@ import dagger.Provides
 import dev.kokorev.binance_api.BinanceApi
 import dev.kokorev.cmc_api.CmcApi
 import dev.kokorev.coin_paprika_api.CoinPaprikaApi
-import dev.kokorev.cryptoview.backgroundService.NotificationManager
+import dev.kokorev.cryptoview.backgroundService.NotificationService
 import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
@@ -24,7 +24,7 @@ class DomainModule(val context: Context) {
 
     @Singleton
     @Provides
-    fun provideNotificationManager(context: Context) = NotificationManager(context)
+    fun provideNotificationManager(context: Context) = NotificationService(context)
 
     @Singleton
     @Provides

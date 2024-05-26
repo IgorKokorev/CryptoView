@@ -14,13 +14,14 @@ import dev.kokorev.cryptoview.views.MainActivity
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 // Service for push notifications
-class NotificationManager(val context: Context) {
+class NotificationService(val context: Context) {
     private val CHANNEL_ID = "coin_view_channel"
     private val CHANNEL_NAME = "CoinView"
     private val CHANNEL_DESCRIPTION = "CoinView Notification channel"
     private val importance = NotificationManager.IMPORTANCE_DEFAULT
-    private val notificationManager: NotificationManager?
     private val icon = R.drawable.icon_coin_light
+
+    private val notificationManager: NotificationManager?
 
     val notificationPermission: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
@@ -50,6 +51,7 @@ class NotificationManager(val context: Context) {
     fun send(title: String, text: String, extra: Parcelable, id: Int = Constants.NOTIFICATION_ID) {
         val intent = Intent(context, MainActivity::class.java)
         intent.putExtra(Constants.INTENT_EXTRA_FAVORITE_COIN, extra)
+        intent.action = id.toString()
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,

@@ -20,7 +20,7 @@ import kotlin.math.abs
 class FavoritesCheckService : Service() {
     private val compositeDisposable = CompositeDisposable()
     @Inject
-    lateinit var notificationManager: NotificationManager
+    lateinit var notificationService: NotificationService
     @Inject
     lateinit var repository: Repository
     @Inject
@@ -61,7 +61,7 @@ class FavoritesCheckService : Service() {
                     ) {
                         Log.d(this.javaClass.simpleName, "Sending notification")
                         repository.setFavoriteTimeNotified(coin)
-                        notificationManager.send(
+                        notificationService.send(
                             getString(R.string.favorite_coin_price_change),
                             "Your favorite coin ${coin.symbol} has ${if (change > 0) "grown" else "fallen"} by $change%",
                             coin,

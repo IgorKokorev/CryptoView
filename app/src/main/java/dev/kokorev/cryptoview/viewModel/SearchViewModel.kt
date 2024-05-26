@@ -22,13 +22,13 @@ class SearchViewModel : ViewModel() {
     @Inject
     lateinit var preferences: PreferenceProvider
     private val compositeDisposable = CompositeDisposable()
-    val cpTickers: Observable<List<CoinPaprikaTickerDB>>
+    var allTickers: Observable<List<CoinPaprikaTickerDB>>
     var sorting = Sorting.NONE // field for RV sorting
     var direction = 1 // sorting direction
 
     init {
         App.instance.dagger.inject(this)
-        cpTickers = repository.getAllCoinPaprikaTickersFiltered(preferences.getMinMcap(), preferences.getMinVol())
+        allTickers = repository.getAllCoinPaprikaTickersFiltered(preferences.getMinMcap(), preferences.getMinVol())
         loadTickers()
     }
 
@@ -60,4 +60,5 @@ class SearchViewModel : ViewModel() {
         super.onCleared()
         compositeDisposable.dispose()
     }
+
 }

@@ -25,7 +25,7 @@ class TickersLoaderWorker(
     @Inject
     lateinit var remoteApi: RemoteApi
     @Inject
-    lateinit var notificationManager: NotificationManager
+    lateinit var notificationService: NotificationService
     @Inject
     lateinit var preferences: PreferenceProvider
 
@@ -85,7 +85,7 @@ class TickersLoaderWorker(
                         ) {
                             Log.d(this.javaClass.simpleName, "Sending notification")
                             repository.setFavoriteTimeNotified(coin)
-                            notificationManager.send(
+                            notificationService.send(
                                 context.getString(R.string.favorite_coin_price_change),
                                 "Your favorite coin ${coin.symbol} has ${if (change > 0) "grown" else "fallen"} by $change%",
                                 coin,

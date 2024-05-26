@@ -71,7 +71,9 @@ class MainActivity : AppCompatActivity() {
             intent?.getParcelableExtra(Constants.INTENT_EXTRA_FAVORITE_COIN) as FavoriteCoin?
         }
 
-        if (coin != null) launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name)
+        if (coin != null) {
+            launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name)
+        }
     }
 
     private fun setInsets() {
@@ -231,7 +233,7 @@ class MainActivity : AppCompatActivity() {
                 PackageManager.PERMISSION_GRANTED
             ) {
                 Log.d(this.javaClass.simpleName, "Notification permission is already granted")
-                viewModel.notificationManager.notificationPermission.onNext(true)
+                viewModel.notificationService.notificationPermission.onNext(true)
             } else {
                 Log.d(this.javaClass.simpleName, "Asking for notification permission")
                 ActivityCompat.requestPermissions(
@@ -258,10 +260,10 @@ class MainActivity : AppCompatActivity() {
                 if (permission == Manifest.permission.POST_NOTIFICATIONS) {
                     if (grantResult == PackageManager.PERMISSION_GRANTED) {
                         Log.d(this.javaClass.simpleName, "Notification permission granted")
-                        viewModel.notificationManager.notificationPermission.onNext(true)
+                        viewModel.notificationService.notificationPermission.onNext(true)
                     } else {
                         Log.d(this.javaClass.simpleName, "Notification permission rejected")
-                        viewModel.notificationManager.notificationPermission.onNext(false)
+                        viewModel.notificationService.notificationPermission.onNext(false)
                     }
                 }
             }
