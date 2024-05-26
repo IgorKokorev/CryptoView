@@ -2,6 +2,7 @@ package dev.kokorev.cryptoview.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import dev.kokorev.cryptoview.views.fragments.SearchSorting
 import dev.kokorev.cryptoview.views.fragments.TickerPriceSorting
 
 // Working with SharedPreferences of the app
@@ -95,6 +96,21 @@ class PreferenceProvider(context: Context) {
             preference.edit().putFloat(KEY_FAVORITE_MIN_CHANGE, change).apply()
     }
 
+    fun getSearchSorting(): SearchSorting {
+        val str = preference.getString(KEY_SEARCH_SORTING, DEFAULT_SEARCH_SORTING.str)
+        val sorting: SearchSorting =
+            (SearchSorting from str) ?: DEFAULT_SEARCH_SORTING
+        return sorting
+    }
+    fun saveSearchSorting(sorting: SearchSorting) {
+        preference.edit().putString(KEY_SEARCH_SORTING, sorting.str).apply()
+    }
+
+    fun getSearchSortingDirection(): Int = preference.getInt(KEY_SEARCH_SORTING_DIRECTION, DEFAULT_SEARCH_SORTING_DIRECTION)
+    fun saveSearchSortingDirection(direction: Int) {
+        if (direction != 0) preference.edit().putInt(KEY_SEARCH_SORTING_DIRECTION, direction).apply()
+    }
+
     // Constants
     companion object {
         private const val SETTINGS = "settings"
@@ -118,5 +134,10 @@ class PreferenceProvider(context: Context) {
         private const val KEY_TO_CHECK_FAVORITES: String = "to_check_favorites"
         private const val KEY_FAVORITE_MIN_CHANGE = "favorite_min_change"
         private const val DEFAULT_FAVORITE_MIN_CHANGE = 5.0f
+
+        private const val KEY_SEARCH_SORTING = "search_sorting"
+        private val DEFAULT_SEARCH_SORTING = SearchSorting.NONE
+        private const val KEY_SEARCH_SORTING_DIRECTION = "search_sorting_direction"
+        private const val DEFAULT_SEARCH_SORTING_DIRECTION = 1
     }
 }

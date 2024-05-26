@@ -14,14 +14,14 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.SearchViewModel
 import dev.kokorev.cryptoview.views.MainActivity
-import dev.kokorev.cryptoview.views.fragments.Sorting.ATH
-import dev.kokorev.cryptoview.views.fragments.Sorting.ATH_CHANGE
-import dev.kokorev.cryptoview.views.fragments.Sorting.CHANGE24HR
-import dev.kokorev.cryptoview.views.fragments.Sorting.MCAP
-import dev.kokorev.cryptoview.views.fragments.Sorting.NAME
-import dev.kokorev.cryptoview.views.fragments.Sorting.PRICE
-import dev.kokorev.cryptoview.views.fragments.Sorting.SYMBOL
-import dev.kokorev.cryptoview.views.fragments.Sorting.VOLUME
+import dev.kokorev.cryptoview.views.fragments.SearchSorting.ATH
+import dev.kokorev.cryptoview.views.fragments.SearchSorting.ATH_CHANGE
+import dev.kokorev.cryptoview.views.fragments.SearchSorting.CHANGE24HR
+import dev.kokorev.cryptoview.views.fragments.SearchSorting.MCAP
+import dev.kokorev.cryptoview.views.fragments.SearchSorting.NAME
+import dev.kokorev.cryptoview.views.fragments.SearchSorting.PRICE
+import dev.kokorev.cryptoview.views.fragments.SearchSorting.SYMBOL
+import dev.kokorev.cryptoview.views.fragments.SearchSorting.VOLUME
 import dev.kokorev.cryptoview.views.rvadapters.SearchAdapter
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -34,6 +34,10 @@ class SearchFragment : Fragment() {
     private val viewModel: SearchViewModel by viewModels()
     private lateinit var searchAdapter: SearchAdapter
     private var tickers: List<CoinPaprikaTickerDB> = listOf()
+
+    var searchSorting = SearchSorting.NONE // field for tickers sorting
+    var direction = 1 // sorting direction
+    
     private var tickersToShow: List<CoinPaprikaTickerDB> = listOf()
         set(value) {
             if (field == value) return
@@ -58,6 +62,8 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        searchSorting = viewModel.preferences.getSearchSorting()
+        direction= viewModel.preferences.getSearchSortingDirection()
         setupDataFromViewModel()
         initRecycler()
         setupSorting()
@@ -66,6 +72,21 @@ class SearchFragment : Fragment() {
         binding.searchView.setOnClickListener {
             binding.searchView.isIconified = false
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        savePreferences()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        savePreferences()
+    }
+
+    private fun savePreferences() {
+        viewModel.preferences.saveSearchSorting(sorting = searchSorting)
+        viewModel.preferences.saveSearchSortingDirection(direction)
     }
 
     // initializing RV
@@ -82,7 +103,7 @@ class SearchFragment : Fragment() {
         binding.mainRecycler.adapter = searchAdapter
     }
 
-    //setup viewModel.sorting on click on headers
+    //setup sorting on click on headers
     private fun setupSorting() {
         binding.headerMcap.setOnClickListener { sortTickers(MCAP) }
         binding.headerVolume.setOnClickListener { sortTickers(VOLUME) }
@@ -137,9 +158,9 @@ class SearchFragment : Fragment() {
     }
 
     // check if the sorting field was clicked first time
-    private fun sortTickers(toSort: Sorting) {
-        viewModel.direction = if (viewModel.sorting == toSort) -viewModel.direction else 1
-        viewModel.sorting = toSort
+    private fun sortTickers(toSort: SearchSorting) {
+        direction = if (searchSorting == toSort) -direction else 1
+        searchSorting = toSort
         tickersToShow = setArrowAndSort(tickersToShow)
     }
 
@@ -150,8 +171,8 @@ class SearchFragment : Fragment() {
 
         clearArrows()
 
-        return if (viewModel.direction > 0) {
-            when (viewModel.sorting) {
+        return if (direction > 0) {
+            when (searchSorting) {
                 MCAP -> tickersToSort.sortedByDescending {
                     binding.headerMcapArrow.setImageIcon(iconDown)
                     it.marketCap
@@ -181,7 +202,7 @@ class SearchFragment : Fragment() {
                 else -> tickersToSort
             }
         } else {
-            when (viewModel.sorting) {
+            when (searchSorting) {
                 MCAP -> tickersToSort.sortedBy {
                     binding.headerMcapArrow.setImageIcon(iconUp)
                     it.marketCap
@@ -213,7 +234,7 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun setupDataFromViewModel() {
+    private fun  setupDataFromViewModel() {
         viewModel.allTickers
             .subscribe()
                 { dto ->
