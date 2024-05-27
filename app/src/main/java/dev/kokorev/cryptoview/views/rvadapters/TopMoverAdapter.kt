@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import dev.kokorev.cryptoview.data.entity.GainerCoin
 import dev.kokorev.cryptoview.databinding.GainerCoinItemBinding
-import dev.kokorev.cryptoview.views.rvviewholders.GainerItemViewHolder
+import dev.kokorev.cryptoview.views.rvviewholders.TopMoverItemViewHolder
 
 
-class GainerAdapter(
+class TopMoverAdapter(
     private val clickListener: OnItemClickListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -20,7 +20,7 @@ class GainerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return GainerItemViewHolder(
+        return TopMoverItemViewHolder(
             GainerCoinItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -35,7 +35,7 @@ class GainerAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is GainerItemViewHolder -> {
+            is TopMoverItemViewHolder -> {
                 val gainerCoin = data[position]
                 holder.setData(gainerCoin, clickListener, position)
             }

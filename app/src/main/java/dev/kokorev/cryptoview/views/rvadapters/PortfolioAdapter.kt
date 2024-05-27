@@ -4,24 +4,25 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import dev.kokorev.cryptoview.data.entity.SavedCoin
-import dev.kokorev.cryptoview.databinding.SavedCoinItemBinding
-import dev.kokorev.cryptoview.views.rvviewholders.SavedItemViewHolder
+import com.coinpaprika.apiclient.entity.PortfolioCoinDB
+import dev.kokorev.cryptoview.databinding.PortfolioCoinItemBinding
+import dev.kokorev.cryptoview.views.rvviewholders.PortfolioItemViewHolder
 
 
-class SavedAdapter(
+class PortfolioAdapter(
     private val clickListener: OnItemClickListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val data = mutableListOf<SavedCoin>()
+    private val data = mutableListOf<PortfolioCoinDB>()
 
     interface OnItemClickListener {
-        fun click(savedCoin: SavedCoin)
+        fun click(portfolioCoinDB: PortfolioCoinDB)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return SavedItemViewHolder(
-            SavedCoinItemBinding.inflate(
+        val i = 0
+        return PortfolioItemViewHolder(
+            PortfolioCoinItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -34,16 +35,15 @@ class SavedAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
         when (holder) {
-            is SavedItemViewHolder -> {
-                val savedCoin = data[position]
-                holder.setData(savedCoin, clickListener, position)
+            is PortfolioItemViewHolder -> {
+                val portfolioCoinDB = data[position]
+                holder.setData(portfolioCoinDB, clickListener, position)
             }
         }
     }
 
-    fun addItems(newList: List<SavedCoin>) {
+    fun addItems(newList: List<PortfolioCoinDB>) {
         val numbersDiff = Diff(data, newList)
         val diffResult = DiffUtil.calculateDiff(numbersDiff)
         data.clear()

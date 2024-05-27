@@ -1,10 +1,10 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools">
     <style name="Base.Theme.CryptoView" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:textViewStyle">@style/TextViewStyle</item>
+        <item name="android:textViewStyle">@style/CVTextViewStyle</item>
         <item name="android:textAppearance">@style/CVTextAppearance</item>
-        <item name="android:alertDialogStyle">@style/DialogStyle</item>
-        <item name="bottomNavigationStyle">@style/BottomBar</item>
+        <item name="android:alertDialogStyle">@style/CVDialogStyle</item>
+        <item name="bottomNavigationStyle">@style/CVBottomBar</item>
         <item name="sliderStyle">@style/CVSliderStyle</item>
         <item name="checkboxStyle">@style/CVCheckBox</item>
     </style>
@@ -21,7 +21,7 @@
         <item name="android:background">@color/base1</item>
     </style>
 
-    <style name="TextViewStyle" parent="android:Widget.TextView">
+    <style name="CVTextViewStyle" parent="android:Widget.TextView">
         <item name="fontFamily">@font/roboto</item>
         <item name="android:textSize">12sp</item>
         <item name="color">@color/textColor</item>
@@ -34,32 +34,39 @@
         <item name="buttonIconTint">@color/textColor</item>
     </style>
 
-    <style name="BottomBar" parent="Widget.Material3.BottomNavigationView">
+    <style name="CVBottomBar" parent="Widget.Material3.BottomNavigationView">
         <item name="android:background">@color/base1</item>
         <item name="itemTextColor">@color/iconColor</item>
+        <item name="itemActiveIndicatorStyle">@style/CVActiveIndicatorStyle</item>
         <item name="itemIconTint">@color/iconColor</item>
     </style>
 
-    <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/base2</item>
-        <item name="android:textColor">@color/textColor</item>
-        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    <style name="CVActiveIndicatorStyle" parent="Widget.Material3.BottomNavigationView.ActiveIndicator" >
+
     </style>
 
-    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+    <style name="CVDialogStyle" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:background">@color/base2</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="color">@color/textColor</item>
+        <item name="android:colorAccent">@color/textColor</item>
+        <item name="buttonBarNegativeButtonStyle">@style/CVNegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/CVPositiveButtonStyle</item>
+    </style>
+
+    <style name="CVNegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="backgroundTint">@color/base1</item>
         <item name="android:textColor">@color/textColor</item>
     </style>
 
-    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+    <style name="CVPositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="backgroundTint">@color/base1</item>
         <item name="android:textColor">@color/textColor</item>
     </style>
 
     <style name="CVSliderStyle" parent="Widget.Material3.Slider">
         <item name="backgroundTint">@color/base1</item>
-        <item name="labelStyle">@style/Widget.App.Tooltip</item>
+        <item name="labelStyle">@style/CVTooltip</item>
         <item name="labelBehavior">gone</item>
         <item name="thumbColor">@color/accent6_state_list</item>
         <item name="thumbRadius">20dp</item>
@@ -78,15 +85,9 @@
         <item name="tickColorActive">@color/accent6_state_list</item>
     </style>
 
-    <style name="Widget.App.Tooltip" parent="Widget.MaterialComponents.Tooltip">
-        <item name="android:textAppearance">@style/TextAppearance.App.Tooltip</item>
+    <style name="CVTooltip" parent="Widget.MaterialComponents.Tooltip">
+        <item name="android:textAppearance">@style/CVTextAppearance</item>
         <item name="backgroundTint">@color/base5</item>
-    </style>
-
-    <style name="TextAppearance.App.Tooltip" parent="TextAppearance.MaterialComponents.Tooltip">
-        <item name="android:textColor">@color/accent4</item>
-        <item name="fontFamily">@font/roboto</item>
-        <item name="android:fontFamily">@font/roboto</item>
     </style>
 
     <style name="Theme.CryptoView" parent="Base.Theme.CryptoView" />

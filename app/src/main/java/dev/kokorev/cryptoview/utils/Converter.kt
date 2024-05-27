@@ -3,6 +3,7 @@ package dev.kokorev.cryptoview.utils
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import com.coinpaprika.apiclient.entity.MoverEntity
+import com.coinpaprika.apiclient.entity.PortfolioCoinDB
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import com.coinpaprika.apiclient.entity.TickerEntity
 import dev.kokorev.binance_api.entity.BinanceSymbolDTO
@@ -139,6 +140,21 @@ object Converter {
                 TickerPriceSorting.Y1 -> ticker.percentChange1y
                 TickerPriceSorting.ATH -> ticker.percentFromPriceAth
             }
+        )
+    }
+
+    fun createPortfolioCoin(coin: CoinDetailsEntity, price: Double, qty: Double): PortfolioCoinDB {
+        val currentTime = System.currentTimeMillis()
+        return PortfolioCoinDB(
+            coinPaprikaId = coin.id,
+            name = coin.name,
+            symbol = coin.symbol,
+            logo = coin.logo,
+            timeOpen = currentTime,
+            quantity = qty,
+            priceOpen = price,
+            timeLastEvaluation = currentTime,
+            priceLastEvaluation = price
         )
     }
 

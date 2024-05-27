@@ -23,8 +23,11 @@ class SavedFragment : Fragment() {
         binding.savedPager.adapter = adapter
         TabLayoutMediator(binding.savedTab, binding.savedPager) { tab, position ->
             when (position) {
-                0 -> tab.text = "Favorites"
-                1 -> tab.text = "Recent"
+                0 -> {
+                    tab.text = "Favorites"
+                }
+                1 -> tab.text = "Portfolio"
+                2 -> tab.text = "Recent"
                 else -> {}
             }
         }.attach()
@@ -46,11 +49,12 @@ class SavedFragment : Fragment() {
 
 
 class SavedPagerAdapter(fragment: Fragment, val args: Bundle?): FragmentStateAdapter(fragment) {
-    override fun getItemCount(): Int = 2
+    override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {
         val fragment = when (position) {
-            1 -> RecentFragment()
+            1 -> PortfolioFragment()
+            2 -> RecentFragment()
             else -> FavoritesFragment()
         }
         fragment.arguments = args

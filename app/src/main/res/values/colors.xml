@@ -44,6 +44,8 @@
     <color name="red7">#571b05</color>
     <color name="red8">#2b0c01</color>
 
+    <color name="colorAccent">@color/textColor</color>
+
 <!--    Defining light theme colors-->
     <color name="grey1">@color/darkGrey</color>
     <color name="grey2">@color/lightGrey</color>

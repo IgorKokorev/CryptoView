@@ -1,12 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Base.Theme.CryptoView" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:textViewStyle">@style/TextViewStyle</item>
+        <item name="android:textViewStyle">@style/CVTextViewStyle</item>
         <item name="android:textAppearance">@style/CVTextAppearance</item>
-        <item name="android:alertDialogStyle">@style/DialogStyle</item>
-        <item name="bottomNavigationStyle">@style/BottomBar</item>
+        <item name="android:alertDialogStyle">@style/CVDialogStyle</item>
+        <item name="bottomNavigationStyle">@style/CVBottomBar</item>
         <item name="sliderStyle">@style/CVSliderStyle</item>
         <item name="checkboxStyle">@style/CVCheckBox</item>
     </style>
+
 
     <style name="Theme.CryptoView" parent="Base.Theme.CryptoView" />
 </resources>

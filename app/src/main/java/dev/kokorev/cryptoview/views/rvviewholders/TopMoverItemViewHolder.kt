@@ -4,24 +4,25 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.kokorev.cryptoview.data.entity.GainerCoin
 import dev.kokorev.cryptoview.databinding.GainerCoinItemBinding
 import dev.kokorev.cryptoview.utils.NumbersUtils
+import dev.kokorev.cryptoview.utils.NumbersUtils.setChange
 import dev.kokorev.cryptoview.utils.NumbersUtils.setPrice
-import dev.kokorev.cryptoview.utils.NumbersUtils.setPriceChange
-import dev.kokorev.cryptoview.views.rvadapters.GainerAdapter
+import dev.kokorev.cryptoview.views.rvadapters.TopMoverAdapter
 
-class GainerItemViewHolder(val binding: GainerCoinItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class TopMoverItemViewHolder(val binding: GainerCoinItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun setData(
         coin: GainerCoin,
-        clickListener: GainerAdapter.OnItemClickListener,
+        clickListener: TopMoverAdapter.OnItemClickListener,
         position: Int
     ) {
         binding.coinName.text = coin.name
         binding.coinSymbol.text = coin.symbol
         binding.coinPrice.text = setPrice(coin.price)
-        setPriceChange(
+        setChange(
             coin.percentChange,
             binding.root.context,
-            binding.coinChange
+            binding.coinChange,
+            "%"
         )
         val volume = NumbersUtils.formatBigNumber(coin.dailyVolume ?: 0.0)
         binding.coinVolume.text = volume

@@ -4,6 +4,7 @@ import android.util.Log
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import com.coinpaprika.apiclient.entity.MessageDB
 import com.coinpaprika.apiclient.entity.MessageType
+import com.coinpaprika.apiclient.entity.PortfolioCoinDB
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.data.Constants
@@ -13,7 +14,9 @@ import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import dev.kokorev.room_db.core_api.entity.TopMoverDB
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.Executors
 
@@ -23,6 +26,7 @@ class Repository() {
     private val topMoverDao = App.instance.topMoverDao
     private val coinPaprikaTickerDao = App.instance.coinPaprikaTickerDao
     private val favoriteCoinDao = App.instance.favoriteCoinDao
+    private val portfolioCoinDao = App.instance.portfolioCoinDao
     private val recentCoinDao = App.instance.recentCoinDao
     private val messageDao = App.instance.messageDao
 
@@ -51,14 +55,7 @@ class Repository() {
     fun getTopMovers() = topMoverDao.getAll().addSettings()
     fun saveTopMovers(list: List<TopMoverDB>) {
         Executors.newSingleThreadExecutor().execute {
-            topMoverDao.deleteAll()
-            topMoverDao.insertAll(list)
-        }
-    }
-
-    fun clearTopMovers() {
-        Executors.newSingleThreadExecutor().execute {
-            topMoverDao.deleteAll()
+            topMoverDao.updateAll(list)
         }
     }
 
@@ -85,11 +82,11 @@ class Repository() {
     fun getAllCoinPaprikaTickersFiltered(minMcap: Long, minVol: Long) =
         coinPaprikaTickerDao.getCoinPaprikaTickersFiltered(minMcap, minVol).addSettings()
 
+    fun getCPTickerById(cpId: String) = coinPaprikaTickerDao.findById(cpId).addSettings()
+
     fun addCoinPaprikaTickers(list: List<CoinPaprikaTickerDB>) {
         Executors.newSingleThreadExecutor().execute {
-            Log.d(this.javaClass.simpleName, "addCoinPaprikaTickers in thread: " + Thread.currentThread().name)
-            coinPaprikaTickerDao.deleteAll()
-            coinPaprikaTickerDao.insertAll(list)
+            coinPaprikaTickerDao.updateAll(list)
         }
     }
 
@@ -98,7 +95,7 @@ class Repository() {
 
     // FavoriteCoin table interaction
     fun getFavoriteCoins() = favoriteCoinDao.getAll().addSettings()
-    fun getFavoriteCoinsSingle() = favoriteCoinDao.getAllSingle()
+    fun getFavoriteCoinsSingle() = favoriteCoinDao.getAllSingle().addSettings()
     fun addFavorite(coinDB: FavoriteCoinDB) {
         Executors.newSingleThreadExecutor().execute {
             favoriteCoinDao.insertFavoriteCoin(coinDB)
@@ -120,6 +117,17 @@ class Repository() {
         }
     }
 
+
+    // Portfolio coins
+    fun getPortfolioCoinByCPId(cpId: String) = portfolioCoinDao.findByCoinPaprikaId(cpId).addSettings()
+    fun savePortfolioCoin(portfolioCoinDB: PortfolioCoinDB) {
+        Executors.newSingleThreadExecutor().execute {
+            portfolioCoinDao.insertPortfolioCoin(portfolioCoinDB)
+        }
+    }
+    fun getAllPortfolioCoins(): Observable<List<PortfolioCoinDB>> = portfolioCoinDao.getAll().addSettings()
+
+
     // RecentCoin table interaction
     fun getRecentCoins() = recentCoinDao.getAll().addSettings()
     fun addRecent(coinDB: RecentCoinDB) {
@@ -139,6 +147,8 @@ class Repository() {
             recentCoinDao.deleteOld(time)
         }
     }
+
+
 
     // Ai chat q&a
     fun saveQuestion(name: String, message: String) {
@@ -172,6 +182,8 @@ class Repository() {
         return messageDao.getNewMessages(time).addSettings()
     }
 
+
+
     // common settings for all local db request to get some data
     private fun <T : Any> Observable<T>.addSettings(): Observable<T> {
         return this
@@ -182,4 +194,22 @@ class Repository() {
                 true
             }
     }
+    private fun <T : Any> Single<T>.addSettings(): Single<T> {
+        return this
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnError {
+                Log.d(this.javaClass.simpleName, "Error calling local db: ${it.localizedMessage}")
+            }
+    }
+    private fun <T : Any> Maybe<T>.addSettings(): Maybe<T> {
+        return this
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnError {
+                Log.d(this.javaClass.simpleName, "Error calling local db: ${it.localizedMessage}")
+            }
+    }
+
+
 }

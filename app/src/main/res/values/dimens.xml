@@ -10,4 +10,5 @@
     <dimen name="medium_padding">12dp</dimen>
     <dimen name="big_padding">24dp</dimen>
     <dimen name="tiny_text">10sp</dimen>
+    <dimen name="logo_min_width">24dp</dimen>
 </resources>

@@ -12,12 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/base1"
-        android:contentDescription="Saved coins"
+        android:contentDescription="@string/saved_coins"
         app:tabMode="fixed"
         app:tabTextColor="@color/base8"
         app:tabIconTint="@color/base8"
         app:tabBackground="@drawable/rounded_up_rectangle"
-        app:tabIndicatorColor="@color/base8"
+        app:tabIndicatorColor="@color/accent6"
         app:tabIndicatorFullWidth="true"
         />
 

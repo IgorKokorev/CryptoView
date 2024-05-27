@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="6dp"
+    android:layout_marginTop="@dimen/small_padding"
     android:background="@color/base1"
     android:orientation="horizontal"
-    android:paddingStart="12dp"
-    android:paddingTop="6dp"
-    android:paddingEnd="12dp"
-    android:paddingBottom="6dp">
+    android:padding="@dimen/small_padding">
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="@dimen/logo_min_width"
         android:layout_height="match_parent"
         android:gravity="start|center_vertical"
+        android:contentDescription="@string/logo"
+        tools:src="@drawable/cryptoview_blue_square"
         android:scaleType="centerInside" />
 
     <LinearLayout
@@ -23,25 +23,27 @@
         android:layout_height="wrap_content"
         android:layout_weight="15"
         android:orientation="vertical"
-        android:paddingStart="12dp">
+        android:paddingStart="@dimen/small_padding">
 
         <TextView
             android:id="@+id/coin_symbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
+            android:padding="@dimen/min_padding"
             android:textAlignment="viewStart"
-            android:textSize="14sp" />
+            tools:text="SYMBOL"
+            android:textSize="@dimen/small_text" />
 
         <TextView
             android:id="@+id/coin_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
+            android:padding="@dimen/min_padding"
+            tools:text="Name"
             android:textAlignment="viewStart"
-            android:textSize="11sp" />
+            android:textSize="@dimen/tiny_text" />
     </LinearLayout>
 
     <LinearLayout
@@ -56,18 +58,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
+            android:padding="@dimen/min_padding"
+            tools:text="Price"
             android:textAlignment="viewEnd"
-            android:textSize="14sp" />
+            android:textSize="@dimen/small_text" />
 
         <TextView
             android:id="@+id/coin_change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
+            android:padding="@dimen/min_padding"
+            tools:text="Change"
             android:textAlignment="viewEnd"
-            android:textSize="11sp" />
+            android:textSize="@dimen/tiny_text" />
     </LinearLayout>
 
     <LinearLayout
@@ -78,45 +82,53 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/coin_volume"
+            android:id="@+id/coin_qty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
+            android:padding="@dimen/min_padding"
+            tools:text="Quantity"
             android:textAlignment="viewEnd"
-            android:textSize="14sp" />
+            android:textSize="@dimen/small_text" />
 
         <TextView
-            android:id="@+id/coin_mcap"
+            android:id="@+id/coin_qty_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="3dp"
+            android:padding="@dimen/min_padding"
+            tools:text="coins"
+            android:text="coins"
             android:textAlignment="viewEnd"
-            android:textSize="11sp" />
+            android:textSize="@dimen/tiny_text" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/coin_rank"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="7"
-        android:layout_gravity="center_vertical|end"
-        android:maxLines="1"
-        android:padding="3dp"
-        android:textAlignment="viewEnd"
-        android:textSize="14sp" />
+        android:layout_weight="13"
+        android:gravity="end"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/coin_type"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="5"
-        android:layout_gravity="center_vertical|end"
-        android:maxLines="1"
-        android:padding="3dp"
-        android:textColor="@color/coinColor"
-        android:textAlignment="viewEnd"
-        android:textSize="14sp" />
+        <TextView
+            android:id="@+id/coin_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:padding="@dimen/min_padding"
+            tools:text="Value"
+            android:textAlignment="viewEnd"
+            android:textSize="@dimen/small_text" />
+
+        <TextView
+            android:id="@+id/coin_pnl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:padding="@dimen/min_padding"
+            tools:text="coins"
+            android:textAlignment="viewEnd"
+            android:textSize="@dimen/tiny_text" />
+    </LinearLayout>
 
 </LinearLayout>

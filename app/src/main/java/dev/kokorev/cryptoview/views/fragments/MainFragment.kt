@@ -16,7 +16,7 @@ import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.views.MainActivity
-import dev.kokorev.cryptoview.views.rvadapters.GainerAdapter
+import dev.kokorev.cryptoview.views.rvadapters.TopMoverAdapter
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 
@@ -27,7 +27,7 @@ class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private val autoDisposable = AutoDisposable()
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var gainerAdapter: GainerAdapter
+    private lateinit var topMoverAdapter: TopMoverAdapter
     private lateinit var sorting: TickerPriceSorting
     private var numTopCoins = Constants.TOP_COINS_DEFAULT
     private var sortingBS: BehaviorSubject<TickerPriceSorting> = BehaviorSubject.create()
@@ -37,7 +37,7 @@ class MainFragment : Fragment() {
         set(value) {
             if (field == value) return
             field = value.sortedByDescending { it.percentChange }
-            gainerAdapter.addItems(field)
+            topMoverAdapter.addItems(field)
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,7 +127,7 @@ class MainFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        gainerAdapter = GainerAdapter(object : GainerAdapter.OnItemClickListener {
+        topMoverAdapter = TopMoverAdapter(object : TopMoverAdapter.OnItemClickListener {
             override fun click(gainerCoin: GainerCoin) {
                 // On item click Coin fragment opens
                 (requireActivity() as MainActivity).launchCoinFragment(
@@ -139,7 +139,7 @@ class MainFragment : Fragment() {
         }).apply {
             addItems(topMovers)
         }
-        binding.mainRecycler.adapter = gainerAdapter
+        binding.mainRecycler.adapter = topMoverAdapter
     }
 
     private fun setupDataFromViewModel() {

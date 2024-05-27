@@ -1,14 +1,10 @@
 package dev.kokorev.cryptoview.domain
 
 import android.content.Context
+import android.util.Log
 import dev.kokorev.binance_api.BinanceApi
-import dev.kokorev.binance_api.entity.Binance24hrStatsDTO
 import dev.kokorev.binance_api.entity.Binance24hrStatsType
-import dev.kokorev.binance_api.entity.BinanceAvgPriceDTO
-import dev.kokorev.binance_api.entity.BinanceExchangeInfoDTO
 import dev.kokorev.cmc_api.CmcApi
-import dev.kokorev.cmc_api.entity.cmc_listing.CmcListingDTO
-import dev.kokorev.cmc_api.entity.cmc_metadata.CmcMetadataDTO
 import dev.kokorev.coin_paprika_api.CoinPaprikaApi
 import dev.kokorev.cryptoview.R
 import dev.kokorev.token_metrics_api.TokenMetricsApi
@@ -36,24 +32,24 @@ class RemoteApi(
     var progressBarState: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     // Binance API info
-    fun getBinanceInfo(): Maybe<BinanceExchangeInfoDTO> = binanceApi.getExchangeInfo().addProgressBar()
+    fun getBinanceInfo() = binanceApi.getExchangeInfo().addProgressBar()
 
-    fun getBinanceCurrentAvgPrice(symbol: String): Maybe<BinanceAvgPriceDTO> =
+    fun getBinanceCurrentAvgPrice(symbol: String) =
         binanceApi.getCurrentAvgPrice(symbol).addProgressBar()
 
     fun getBinance24hrstats(
         symbol: String,
         type: Binance24hrStatsType = Binance24hrStatsType.FULL
-    ): Maybe<Binance24hrStatsDTO> = binanceApi.get24hrStats(symbol, type).addProgressBar()
+    ) = binanceApi.get24hrStats(symbol, type).addProgressBar()
 
-    fun getBinance24hrstatsAll(type: Binance24hrStatsType = Binance24hrStatsType.MINI): Maybe<List<Binance24hrStatsDTO>> =
+    fun getBinance24hrstatsAll(type: Binance24hrStatsType = Binance24hrStatsType.MINI) =
         binanceApi.get24hrStatsAll(type).addProgressBar()
 
 
     // CoinMarketCap API info
-    fun getCmcMetadata(symbol: String): Maybe<CmcMetadataDTO> = cmcApi.getMetadata(symbol).addProgressBar()
+    fun getCmcMetadata(symbol: String) = cmcApi.getMetadata(symbol).addProgressBar()
 
-    fun getCmcListingLatest(): Maybe<CmcListingDTO> = cmcApi.getListingLatest().addProgressBar()
+    fun getCmcListingLatest() = cmcApi.getListingLatest().addProgressBar()
 
 
     // CoinPaprika API info
@@ -113,6 +109,9 @@ class RemoteApi(
             .doAfterTerminate {
                 progressBarState.onNext(false)
             }
+            .doOnError {
+                Log.d(this.javaClass.simpleName, "Error calling local db: ${it.localizedMessage}")
+            }
     }
 
     private fun <T: Any> Single<T>.addProgressBar(): Single<T> {
@@ -125,6 +124,9 @@ class RemoteApi(
             .doAfterTerminate {
                 progressBarState.onNext(false)
             }
+            .doOnError {
+                Log.d(this.javaClass.simpleName, "Error calling local db: ${it.localizedMessage}")
+            }
     }
 
     private fun <T: Any> Observable<T>.addProgressBar(): Observable<T> {
@@ -136,6 +138,9 @@ class RemoteApi(
             }
             .doAfterTerminate {
                 progressBarState.onNext(false)
+            }
+            .doOnError {
+                Log.d(this.javaClass.simpleName, "Error calling local db: ${it.localizedMessage}")
             }
     }
 }

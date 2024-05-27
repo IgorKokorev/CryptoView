@@ -20,6 +20,7 @@ import dev.kokorev.room_db.core_api.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.CoinPaprikaTickerDao
 import dev.kokorev.room_db.core_api.FavoriteCoinDao
 import dev.kokorev.room_db.core_api.MessageDao
+import dev.kokorev.room_db.core_api.PortfolioCoinDao
 import dev.kokorev.room_db.core_api.RecentCoinDao
 import dev.kokorev.room_db.core_api.TopMoverDao
 import dev.kokorev.token_metrics_api.DaggerTokenMetricsComponent
@@ -37,6 +38,8 @@ class App : Application() {
     lateinit var coinPaprikaTickerDao: CoinPaprikaTickerDao
     @Inject
     lateinit var favoriteCoinDao: FavoriteCoinDao
+    @Inject
+    lateinit var portfolioCoinDao: PortfolioCoinDao
     @Inject
     lateinit var recentCoinDao: RecentCoinDao
     @Inject

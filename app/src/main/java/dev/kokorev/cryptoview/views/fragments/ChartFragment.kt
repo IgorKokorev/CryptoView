@@ -35,7 +35,6 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
-import java.text.DecimalFormat
 import java.time.LocalDate
 import java.util.Locale
 
@@ -304,8 +303,8 @@ class ChartFragment : Fragment() {
             .centerCrop()
             .into(binding.logo)
 
-        binding.price.text = formatPrice(quotes.price)
-        binding.ath.text = formatPrice(quotes.athPrice)
+        binding.price.text = NumbersUtils.formatPrice(quotes.price)
+        binding.ath.text = NumbersUtils.formatPrice(quotes.athPrice)
 
         showChange(quotes.percentChange1h, binding.change1h)
         showChange(quotes.percentChange12h, binding.change12h)
@@ -333,14 +332,7 @@ class ChartFragment : Fragment() {
         }
     }
 
-    private fun formatPrice(price: Double?): String =
-        if (price == null) "-"
-        else DecimalFormat("#,###.########$").format(
-            NumbersUtils.roundNumber(
-                price,
-                3
-            )
-        )
+
 
     companion object {
         const val D7_INTERVAL = 7

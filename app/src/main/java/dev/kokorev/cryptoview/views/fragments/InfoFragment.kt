@@ -1,28 +1,33 @@
 package dev.kokorev.cryptoview.views.fragments
 
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
+import com.coinpaprika.apiclient.entity.PortfolioCoinDB
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcCoinDataDTO
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcMetadataDTO
 import dev.kokorev.cryptoview.R
+import dev.kokorev.cryptoview.databinding.AlertViewOpenPositionBinding
 import dev.kokorev.cryptoview.databinding.FragmentInfoBinding
 import dev.kokorev.cryptoview.databinding.OneColumnItemViewBinding
 import dev.kokorev.cryptoview.databinding.TwoColumnItemViewBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
+import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 
 class InfoFragment : Fragment() {
     private lateinit var binding: FragmentInfoBinding
@@ -45,42 +50,175 @@ class InfoFragment : Fragment() {
     ): View {
         binding = FragmentInfoBinding.inflate(layoutInflater)
 
-        viewModel.remoteApi.getCoinPaprikaCoinInfo(viewModel.coinPaprikaId)
-            .subscribe(
-                {
-                    viewModel.cpInfo = it
-                    setupCoinPaprikaData(it)
-                    val recentCoinDB = Converter.CoinDetailsEntityToRecentCoinDB(it)
-                    viewModel.repository.addRecent(recentCoinDB)
-                    setupFavoriteFab(it)
-                },
-                { t ->
-                    Log.d(
-                        "InfoFragment",
-                        "Error getting data from CoinPaparikaCoinInfo",
-                        t
-                    )
-                })
-            .addTo(autoDisposable)
+        setCoinPaprikaInfo()
+        setCmcInfo()
 
-        viewModel.remoteApi.getCmcMetadata(viewModel.symbol)
-            .subscribe(
-                {
-                    // Coin Info from CoinMarketCap
-                    findCoin(it)
-                    if (viewModel.cmcInfo != null) setupCmcData(viewModel.cmcInfo!!)
-                },
-                { t ->
-                    Log.d(
-                        "InfoFragment",
-                        "Error getting data from CmcMetaData",
-                        t
-                    )
-                })
-            .addTo(autoDisposable)
         return binding.root
     }
 
+    // get coin info from CoinMarketCap API and set to view. In fact we need only description
+    private fun setCmcInfo() {
+        viewModel.remoteApi.getCmcMetadata(viewModel.symbol)
+            .doOnSuccess {
+                // Coin Info from CoinMarketCap
+                findCoin(it)
+                if (viewModel.cmcInfo != null) setupCmcData(viewModel.cmcInfo!!)
+            }
+            .subscribe()
+            .addTo(autoDisposable)
+    }
+
+    // get coin info from CoinPaprika API and set to view
+    private fun setCoinPaprikaInfo() {
+        viewModel.remoteApi.getCoinPaprikaCoinInfo(viewModel.coinPaprikaId)
+            .doOnSuccess {
+                viewModel.cpInfo = it
+                setupCoinPaprikaData(it)
+                val recentCoinDB = Converter.CoinDetailsEntityToRecentCoinDB(it)
+                viewModel.repository.addRecent(recentCoinDB)
+                setupFavoriteFab(it)
+                setupPortfolioFab(it)
+            }
+            .subscribe()
+            .addTo(autoDisposable)
+    }
+
+    private fun setupPortfolioFab(coin: CoinDetailsEntity) {
+        binding.portfolioFab.setOnClickListener {
+            Log.d(this.javaClass.simpleName, "Looking for ${coin.symbol} in Portfolio db")
+
+            viewModel.repository.getPortfolioCoinByCPId(coin.id)
+                .doOnSuccess {
+                    Log.d(this.javaClass.simpleName, it.symbol)
+                    changePosition(it)
+                }
+                .doOnError {
+                    Log.d(this.javaClass.simpleName, it.localizedMessage ?: "No message found")
+                }
+                .doOnComplete {
+                    Log.d(this.javaClass.simpleName, "Empty response")
+                    openPosition(coin)
+                }
+                .subscribe()
+                .addTo(autoDisposable)
+
+        }
+    }
+
+    private fun openPosition(coin: CoinDetailsEntity) {
+        viewModel.repository.getCPTickerById(coin.id)
+            .doOnSuccess { ticker ->
+                val price = ticker.price ?: 0.0
+                Log.d(
+                    this.javaClass.simpleName,
+                    "Opening position coin: ${coin.symbol}, price: $price"
+                )
+                askUserQtyToOpenPosition(coin, price)
+            }
+            .doOnError {
+                Log.d(
+                    this.javaClass.simpleName,
+                    "getPortfolioCoinByCPId error: ${it.localizedMessage}"
+                )
+            }
+            .doOnComplete {
+                Snackbar.make(
+                    binding.root,
+                    "Price for ${coin.symbol} hasn't been found",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+            .subscribe()
+            .addTo(autoDisposable)
+    }
+
+    private fun askUserQtyToOpenPosition(
+        coin: CoinDetailsEntity,
+        price: Double
+    ) {
+        if (price == 0.0) return
+        val inputViewBinding = AlertViewOpenPositionBinding.inflate(layoutInflater)
+        inputViewBinding.price.text = NumbersUtils.formatPrice(price)
+        inputViewBinding.symbol.text = coin.symbol
+        inputViewBinding.input.addTextChangedListener {
+            val num = try {
+                it.toString().toDouble()
+            } catch (e: NumberFormatException) {
+                0.0
+            }
+            inputViewBinding.inputValue.text = NumbersUtils.formatPrice(num * price)
+        }
+
+        MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
+            .setTitle(getString(R.string.portfolio_operation))
+            .setView(inputViewBinding.root)
+            .setPositiveButton("Ok") { dialog, which ->
+                val qty = try {
+                    inputViewBinding.input.text.toString().toDouble()
+                } catch (e: NumberFormatException) {
+                    0.0
+                }
+                // If 0 is entered - no position created
+                if (qty == 0.0) {
+                    MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
+                        .setTitle(getString(R.string.portfolio_operation))
+                        .setMessage(getString(R.string.no_quantity_entered_the_position_isn_t_saved))
+                        .setPositiveButton("Ok") { dialogEmptyInput, whichEmptyInput ->
+                            dialogEmptyInput.cancel()
+                        }
+                        .show()
+                } else {
+                    val portfolioCoinDB: PortfolioCoinDB = Converter.createPortfolioCoin(coin, price, qty)
+                    viewModel.repository.savePortfolioCoin(portfolioCoinDB)
+                    Log.d(this.javaClass.simpleName, "askUserQtyToOpenPosition added to portfolio: ${portfolioCoinDB}")
+                }
+                Log.d(this.javaClass.simpleName, "askUserQtyToOpenPosition user input: ${qty}")
+                dialog.cancel()
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.cancel()
+            }
+            .show()
+        return
+    }
+
+    private fun changePosition(portfolioCoinDB: PortfolioCoinDB) {
+        viewModel.repository.getCPTickerById(portfolioCoinDB.coinPaprikaId)
+            .doOnSuccess { ticker ->
+                Log.d(
+                    this.javaClass.simpleName,
+                    "Changing position coin: ${portfolioCoinDB.symbol}, price: ${ticker.price}"
+                )
+
+                val qty: Double = askUserQtyToChangePosition(portfolioCoinDB, ticker)
+
+            }
+            .doOnError {
+                Log.d(
+                    this.javaClass.simpleName,
+                    "getPortfolioCoinByCPId error: ${it.localizedMessage}"
+                )
+            }
+            .doOnComplete {
+                Snackbar.make(
+                    binding.root,
+                    "Price for ${portfolioCoinDB.symbol} hasn't been found",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+            .subscribe()
+            .addTo(autoDisposable)
+    }
+
+    private fun askUserQtyToChangePosition(
+        portfolioCoinDB: PortfolioCoinDB,
+        ticker: CoinPaprikaTickerDB
+    ): Double {
+
+        return 0.0
+    }
+
+    // select correct coin in data list in CMC info
     private fun findCoin(it: CmcMetadataDTO) {
         val list = it.data.get(viewModel.symbol)
         if (list.isNullOrEmpty()) return
@@ -126,17 +264,12 @@ class InfoFragment : Fragment() {
     private fun setupCoinPaprikaData(cpInfo: CoinDetailsEntity) {
         val coinPaprikaId = cpInfo.id
 
+        // check if coin is in favorites
         viewModel.repository.findFavoriteCoinByCoinPaprikaId(coinPaprikaId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+            .subscribe() {
                 isFavorite = true
                 setFavoriteIcon()
-            },
-                {
-                    isFavorite = false
-                    setFavoriteIcon()
-                })
+            }
             .addTo(autoDisposable)
 
         // Coin logo
@@ -164,7 +297,7 @@ class InfoFragment : Fragment() {
                 itemViewBinding.value.text = tag.name
                 itemViewBinding.root.setOnClickListener {
                     val message = "Coins: " + tag.coinCounter + "\n" + "ICOs: " + tag.icoCounter
-                    MaterialAlertDialogBuilder(binding.root.context, R.style.DialogStyle)
+                    MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
                         .setTitle(tag.name)
                         .setMessage(message)
                         .setPositiveButton("Ok") { dialog, which ->
@@ -264,3 +397,6 @@ class InfoFragment : Fragment() {
     }
 
 }
+
+
+fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)

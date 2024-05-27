@@ -61,4 +61,10 @@
     <string name="favorite_change_text">I want to receive notifications if market price of one of my favorites changes more than:</string>
     <string name="minimum_favorite_price_change">Minimum favorite coin price change</string>
     <string name="favorite_coin_price_change">Favorite coin price change</string>
+    <string name="open_position_text">Please enter a positive number if you want to open a long position or negative number for short position.</string>
+    <string name="enter_a_number">Enter a number</string>
+    <string name="portfolio_operation">Portfolio operation</string>
+    <string name="no_quantity_entered_the_position_isn_t_saved">No quantity entered, the position isn\'t saved.</string>
+    <string name="saved_coins">Saved coins</string>
+    <string name="logo">Logo</string>
 </resources>

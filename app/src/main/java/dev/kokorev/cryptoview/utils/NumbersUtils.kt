@@ -7,8 +7,18 @@ import dev.kokorev.cryptoview.R
 import java.text.DecimalFormat
 
 object NumbersUtils {
+    fun formatPrice(price: Double?): String =
+        if (price == null) "-"
+        else DecimalFormat("#,###.########$").format(
+            roundNumber(
+                price,
+                3
+            )
+        )
     fun roundNumber(number: Double, precision: Int): Double {
-        if (number <= 0) return number
+        if (number == 0.0) return number
+        if (number < 0) return -roundNumber(-number, precision)
+        if (number > 10 && precision > 2) return Math.round(number * 100.0) / 100.0
         if (number >= 1) {
             val pow10 = Math.pow(10.0, precision.toDouble())
             return Math.round(number * pow10) / pow10
@@ -31,21 +41,21 @@ object NumbersUtils {
     fun setPrice(price: Double?): String {
         return if (price == null) "-"
         else DecimalFormat("#,###.########").format(
-            NumbersUtils.roundNumber(
+            roundNumber(
                 price,
                 3
             )
         )
     }
 
-    fun setPriceChange(percentChange: Double?, context: Context, view: TextView) {
-        val changeNumber = percentChange ?: 0.0
+    fun setChange(change: Double?, context: Context, view: TextView, suffix: String) {
+        val changeNumber = change ?: 0.0
         var changeString = DecimalFormat("#,##0.00").format(
             NumbersUtils.roundNumber(
                 changeNumber,
                 2
             )
-        ) + "%"
+        ) + suffix
         if (changeNumber < 0) {
             view.setTextColor(
                 ContextCompat.getColor(
