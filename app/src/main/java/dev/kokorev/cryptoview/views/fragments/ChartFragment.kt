@@ -303,8 +303,8 @@ class ChartFragment : Fragment() {
             .centerCrop()
             .into(binding.logo)
 
-        binding.price.text = NumbersUtils.formatPrice(quotes.price)
-        binding.ath.text = NumbersUtils.formatPrice(quotes.athPrice)
+        binding.price.text = NumbersUtils.formatPriceUSD(quotes.price)
+        binding.ath.text = NumbersUtils.formatPriceUSD(quotes.athPrice)
 
         showChange(quotes.percentChange1h, binding.change1h)
         showChange(quotes.percentChange12h, binding.change12h)

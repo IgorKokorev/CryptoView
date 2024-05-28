@@ -7,8 +7,8 @@ import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.data.entity.SavedCoin
 import dev.kokorev.cryptoview.databinding.SavedCoinItemBinding
 import dev.kokorev.cryptoview.utils.NumbersUtils
-import dev.kokorev.cryptoview.utils.NumbersUtils.setChange
-import dev.kokorev.cryptoview.utils.NumbersUtils.setPrice
+import dev.kokorev.cryptoview.utils.NumbersUtils.setChangeView
+import dev.kokorev.cryptoview.utils.NumbersUtils.formatPrice
 import dev.kokorev.cryptoview.views.rvadapters.SavedAdapter
 
 class SavedItemViewHolder(val binding: SavedCoinItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -23,8 +23,8 @@ class SavedItemViewHolder(val binding: SavedCoinItemBinding) : RecyclerView.View
             .into(binding.logo)
         binding.coinName.text = coin.name
         binding.coinSymbol.text = coin.symbol
-        binding.coinPrice.text = setPrice(coin.price)
-        setChange(
+        binding.coinPrice.text = formatPrice(coin.price)
+        setChangeView(
             coin.percentChange,
             binding.root.context,
             binding.coinChange,

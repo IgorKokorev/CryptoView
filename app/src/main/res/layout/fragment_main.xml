@@ -12,6 +12,292 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/sentiment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/sentiment_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingTop="@dimen/medium_padding"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/big_text"
+                android:text="Sentiment summary"
+                android:layout_margin="@dimen/medium_padding"/>
+
+            <TextView
+                android:id="@+id/sentiment_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingTop="@dimen/medium_padding"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/big_text"
+                tools:text="Date"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <include
+                android:id="@+id/line"
+                layout="@layout/horizontal_line"
+                app:layout_constraintTop_toBottomOf="@+id/sentiment_header"
+                android:layout_height="1dp"
+                android:layout_width="match_parent"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <TextView
+                android:id="@+id/market_sentiment_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/line"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/big_text"
+                android:text="Market sentiment grade:"
+                android:layout_margin="@dimen/medium_padding"/>
+
+            <TextView
+                android:id="@+id/market_sentiment_grade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/line"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/big_text"
+                tools:text="Market"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <TextView
+                android:id="@+id/market_sentiment_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/market_sentiment_grade"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/small_text"
+                android:paddingEnd="@dimen/medium_padding"
+                tools:text="label" />
+
+            <TextView
+                android:id="@+id/news_sentiment_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/market_sentiment_label"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/big_text"
+                android:text="News sentiment grade:"
+                android:layout_margin="@dimen/medium_padding"/>
+
+            <TextView
+                android:id="@+id/news_sentiment_grade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/market_sentiment_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/big_text"
+                tools:text="News"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <TextView
+                android:id="@+id/news_sentiment_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/news_sentiment_grade"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/small_text"
+                android:paddingEnd="@dimen/medium_padding"
+                tools:text="label" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/news_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_padding"
+                app:cardCornerRadius="@dimen/medium_padding"
+                app:cardElevation="@dimen/medium_padding"
+                app:contentPadding="@dimen/medium_padding"
+                app:layout_constraintTop_toBottomOf="@+id/news_sentiment_label">
+
+                <LinearLayout
+                    android:id="@+id/news_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/news_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/news_summary"
+                        android:textSize="@dimen/big_text"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:id="@+id/news_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_report_found"
+                        android:paddingTop="@dimen/medium_padding"
+                        android:textSize="@dimen/medium_text"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/reddit_sentiment_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/news_container"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/big_text"
+                android:text="Reddit sentiment grade:"
+                android:layout_margin="@dimen/medium_padding"/>
+
+            <TextView
+                android:id="@+id/reddit_sentiment_grade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/news_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/big_text"
+                tools:text="Reddit"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <TextView
+                android:id="@+id/reddit_sentiment_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/reddit_sentiment_grade"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/small_text"
+                android:paddingEnd="@dimen/medium_padding"
+                tools:text="label" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/reddit_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_padding"
+                app:cardCornerRadius="@dimen/medium_padding"
+                app:cardElevation="@dimen/medium_padding"
+                app:contentPadding="@dimen/medium_padding"
+                app:layout_constraintTop_toBottomOf="@+id/reddit_sentiment_label">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/reddit_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reddit_summary"
+                        android:textSize="@dimen/big_text"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:id="@+id/reddit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_report_found"
+                        android:paddingTop="@dimen/medium_padding"
+                        android:textSize="@dimen/medium_text"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/twitter_sentiment_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/reddit_container"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/big_text"
+                android:text="Twitter sentiment grade:"
+                android:layout_margin="@dimen/medium_padding"/>
+
+            <TextView
+                android:id="@+id/twitter_sentiment_grade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/reddit_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/big_text"
+                tools:text="Twitter"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <TextView
+                android:id="@+id/twitter_sentiment_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/twitter_sentiment_grade"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/small_text"
+                android:paddingEnd="@dimen/medium_padding"
+                tools:text="label" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/twitter_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_padding"
+                app:cardCornerRadius="@dimen/medium_padding"
+                app:cardElevation="@dimen/medium_padding"
+                app:contentPadding="@dimen/medium_padding"
+                android:layout_marginBottom="@dimen/big_padding"
+                app:layout_constraintTop_toBottomOf="@+id/twitter_sentiment_label">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/twitter_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/twitter_summary"
+                        android:textSize="@dimen/big_text"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:id="@+id/twitter_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_report_found"
+                        android:paddingTop="@dimen/medium_padding"
+                        android:textSize="@dimen/medium_text"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_marginTop="@dimen/medium_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/twitter_container"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         <TextView
             android:id="@+id/main_header"
             android:layout_width="match_parent"
@@ -23,7 +309,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/sentiment_container" />
 
         <LinearLayout
             android:id="@+id/interval_selector"
@@ -131,7 +417,7 @@
         </LinearLayout>
 
         <include
-            android:id="@+id/header"
+            android:id="@+id/alert_text"
             layout="@layout/gainer_coin_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -149,7 +435,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/header"
+            app:layout_constraintTop_toBottomOf="@+id/alert_text"
             tools:listitem="@layout/gainer_coin_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

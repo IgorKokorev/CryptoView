@@ -124,15 +124,15 @@ class SettingsFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        savePreferernces()
+        savePreferences()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        savePreferernces()
+        savePreferences()
     }
 
-    private fun savePreferernces() {
+    private fun savePreferences() {
         viewModel.preferences.saveMinMcap(minMcap)
         viewModel.preferences.saveMinVol(minVol)
         viewModel.preferences.saveNumTopCoins(numTopCoins)

@@ -89,6 +89,12 @@ class RemoteApi(
             .addProgressBar()
     }
 
+    fun getSentiment() = tokenMetricsApi.getSentiment().addProgressBar()
+
+
+
+
+    // Service functions
     private fun exceptionToErrorText(e: Throwable) = if (e is HttpException) {
         httpCodeToError(e.code())
     } else "Unknown error"

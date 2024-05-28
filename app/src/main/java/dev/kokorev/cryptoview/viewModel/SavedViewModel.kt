@@ -29,7 +29,7 @@ class SavedViewModel : ViewModel() {
         favorites = repository.getFavoriteCoins()
         recents = repository.getRecentCoins()
         tickers = repository.getAllCoinPaprikaTickers()
-        portfolio = repository.getAllPortfolioCoins()
+        portfolio = repository.getAllPortfolioPositions()
     }
     override fun onCleared() {
         super.onCleared()

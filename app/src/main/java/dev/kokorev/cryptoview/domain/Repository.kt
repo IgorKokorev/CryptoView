@@ -119,13 +119,18 @@ class Repository() {
 
 
     // Portfolio coins
-    fun getPortfolioCoinByCPId(cpId: String) = portfolioCoinDao.findByCoinPaprikaId(cpId).addSettings()
-    fun savePortfolioCoin(portfolioCoinDB: PortfolioCoinDB) {
+    fun getPortfolioPositionByCPId(cpId: String) = portfolioCoinDao.findByCoinPaprikaId(cpId).addSettings()
+    fun savePortfolioPosition(portfolioCoinDB: PortfolioCoinDB) {
         Executors.newSingleThreadExecutor().execute {
             portfolioCoinDao.insertPortfolioCoin(portfolioCoinDB)
         }
     }
-    fun getAllPortfolioCoins(): Observable<List<PortfolioCoinDB>> = portfolioCoinDao.getAll().addSettings()
+    fun getAllPortfolioPositions(): Observable<List<PortfolioCoinDB>> = portfolioCoinDao.getAll().addSettings()
+    fun deletePortfolioPosition(id: Int) {
+        Executors.newSingleThreadExecutor().execute {
+            portfolioCoinDao.deleteById(id)
+        }
+    }
 
 
     // RecentCoin table interaction

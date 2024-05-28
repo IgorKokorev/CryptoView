@@ -1,15 +1,12 @@
 package dev.kokorev.cryptoview
 
 import android.app.Application
-import android.content.Intent
-import android.util.Log
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import dev.kokorev.binance_api.DaggerBinanceComponent
 import dev.kokorev.cmc_api.DaggerCmcComponent
 import dev.kokorev.coin_paprika_api.DaggerCoinPaprikaComponent
-import dev.kokorev.cryptoview.backgroundService.FavoritesCheckService
 import dev.kokorev.cryptoview.backgroundService.TickersLoaderWorker
 import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.di.AppComponent
@@ -44,7 +41,7 @@ class App : Application() {
     lateinit var recentCoinDao: RecentCoinDao
     @Inject
     lateinit var messageDao: MessageDao
-    private lateinit var intent: Intent
+//    private lateinit var favoriteCheckIntent: Intent
 
     override fun onCreate() {
         super.onCreate()
@@ -71,20 +68,20 @@ class App : Application() {
             .enqueueUniquePeriodicWork(Constants.FAVORITE_CHECKER_WORK, ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, workRequest)
 
         // start service to periodically check favorites
-        intent = Intent(this, FavoritesCheckService::class.java)
+//        favoriteCheckIntent = Intent(this, FavoritesCheckService::class.java)
 //        startFavoriteCheckService()
-        stopFavoriteCheckService()
+//        stopFavoriteCheckService()
     }
 
-    fun startFavoriteCheckService() {
+/*    fun startFavoriteCheckService() {
         Log.d(this.javaClass.simpleName, "Starting FavoriteCheckService")
-        startService(intent)
+        startService(favoriteCheckIntent)
     }
 
     fun stopFavoriteCheckService() {
         Log.d(this.javaClass.simpleName, "Stopping FavoriteCheckService")
-        stopService(intent)
-    }
+        stopService(favoriteCheckIntent)
+    }*/
 
     private fun getDbFacade(): DbFacadeComponent {
         return dbFacadeComponent ?: DbFacadeComponent.init(this).also {

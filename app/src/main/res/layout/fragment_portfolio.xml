@@ -74,12 +74,21 @@
                 android:textSize="@dimen/medium_text"
                 android:layout_gravity="end"
                 android:textAlignment="viewEnd" />
+
+            <TextView
+                android:id="@+id/total_pnl_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="P/L:"
+                android:textSize="@dimen/medium_text"
+                android:layout_gravity="end"
+                android:textAlignment="viewEnd" />
         </LinearLayout>
 
     </LinearLayout>
 
     <include
-        android:id="@+id/header"
+        android:id="@+id/alert_text"
         layout="@layout/portfolio_coin_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -95,7 +104,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header"
+        app:layout_constraintTop_toBottomOf="@+id/alert_text"
         tools:listitem="@layout/portfolio_coin_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,11 +10,11 @@ import androidx.fragment.app.viewModels
 import com.coinpaprika.apiclient.entity.PortfolioCoinDB
 import dev.kokorev.cryptoview.databinding.FragmentPortfolioBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
-import dev.kokorev.cryptoview.utils.NumbersUtils.setChange
-import dev.kokorev.cryptoview.utils.NumbersUtils.setPrice
+import dev.kokorev.cryptoview.utils.NumbersUtils.formatPrice
+import dev.kokorev.cryptoview.utils.NumbersUtils.setChangeView
+import dev.kokorev.cryptoview.utils.PortfolioInteractor
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.SavedViewModel
-import dev.kokorev.cryptoview.views.MainActivity
 import dev.kokorev.cryptoview.views.rvadapters.PortfolioAdapter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -22,6 +22,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class PortfolioFragment : Fragment() {
     private lateinit var binding: FragmentPortfolioBinding
+    private lateinit var portfolioInteractor: PortfolioInteractor
     private val autoDisposable = AutoDisposable()
     private val viewModel: SavedViewModel by viewModels<SavedViewModel>(
         ownerProducer = { requireParentFragment() }
@@ -42,8 +43,9 @@ class PortfolioFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentPortfolioBinding.inflate(layoutInflater)
+        portfolioInteractor = PortfolioInteractor(binding.root, autoDisposable)
         return binding.root
     }
 
@@ -57,11 +59,7 @@ class PortfolioFragment : Fragment() {
         portfolioAdapter = PortfolioAdapter(
             object : PortfolioAdapter.OnItemClickListener {
                 override fun click(portfolioCoinDB: PortfolioCoinDB) { // On item click Coin fragment opens
-                    (requireActivity() as MainActivity).launchCoinFragment(
-                        portfolioCoinDB.coinPaprikaId,
-                        portfolioCoinDB.symbol,
-                        portfolioCoinDB.name
-                    )
+                    portfolioInteractor.changePosition(portfolioCoinDB)
                 }
             }).apply {
             addItems(recyclerData)
@@ -70,7 +68,7 @@ class PortfolioFragment : Fragment() {
     }
 
     private fun setupDataFromViewModel() {
-        Observable.zip(viewModel.portfolio, viewModel.tickers) { portfolio, tickers ->
+        Observable.combineLatest(viewModel.portfolio, viewModel.tickers) { portfolio, tickers ->
             portfolio.forEach { portfolioCoin ->
                 val cpTicker = tickers.find { ticker ->
                     ticker.coinPaprikaId == portfolioCoin.coinPaprikaId
@@ -93,9 +91,19 @@ class PortfolioFragment : Fragment() {
                     .map { coin -> coin.quantity * coin.priceOpen }
                     .reduce { acc, d -> acc + d }
 
-                val valueStr = setPrice(value) + "$"
+                val valueStr = formatPrice(value) + "$"
                 binding.totalValue.text = valueStr
-                setChange(value - cost, binding.root.context, binding.totalPnl, "$")
+
+                val pnl = value - cost
+                setChangeView(pnl, binding.root.context, binding.totalPnl, "$")
+
+                val percentChange = if (cost == 0.0) 0.0 else (pnl / cost) * 100.0
+                setChangeView(
+                    percentChange,
+                    binding.root.context,
+                    binding.totalPnlPercent,
+                    "%"
+                )
 
                 recyclerData = list
             },

@@ -7,6 +7,7 @@ import dev.kokorev.coin_paprika_api.CoinPaprikaProvider
 import dev.kokorev.cryptoview.backgroundService.FavoritesCheckService
 import dev.kokorev.cryptoview.backgroundService.TickersLoaderWorker
 import dev.kokorev.cryptoview.di.modules.DomainModule
+import dev.kokorev.cryptoview.utils.PortfolioInteractor
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
 import dev.kokorev.cryptoview.viewModel.AiChatViewModel
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
@@ -37,4 +38,5 @@ interface AppComponent {
     fun inject(aiChatViewModel: AiChatViewModel)
     fun inject(tickersLoaderWorker: TickersLoaderWorker)
     fun inject(favoritesCheckService: FavoritesCheckService)
+    fun inject(portfolioInteractor: PortfolioInteractor)
 }
