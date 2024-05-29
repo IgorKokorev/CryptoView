@@ -32,7 +32,13 @@ anychart_version = "1.1.5"
 androidplot_version = "1.5.10"
 highcharts_version = "11.4.1"
 
+moshi_version = "1.15.1"
+gson_version = "2.11.0"
+
 airbnb_paris_version = "2.0.0"
+
+kotlin_parcelize_version = "2.0.0"
+kotlinx_serialization_json_version = "1.6.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -85,11 +91,15 @@ highcharts = { group = "com.github.highcharts", name = "highcharts-android", ver
 airbnb_paris = { group = "com.airbnb.android", name = "paris", version.ref = "airbnb_paris_version" }
 airbnb_paris_processor = { group = "com.airbnb.android", name = "paris-processor", version.ref = "airbnb_paris_version" }
 
+moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi_version" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson_version" }
+kotlinx_json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx_serialization_json_version"}
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-parcelize = { id = "kotlin-parcelize" }
+parcelize = { id = "kotlin-parcelize", version.ref = "kotlin_parcelize_version" }
 

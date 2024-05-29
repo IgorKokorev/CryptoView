@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kapt)
     id("kotlin-parcelize")
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
@@ -103,6 +104,9 @@ dependencies {
     implementation(libs.rxandroid)
 
     implementation(libs.highcharts)
+
+    implementation(libs.moshi)
+    implementation(libs.kotlinx.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

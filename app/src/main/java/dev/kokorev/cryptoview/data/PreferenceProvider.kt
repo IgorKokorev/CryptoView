@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import dev.kokorev.cryptoview.views.fragments.SearchSorting
 import dev.kokorev.cryptoview.views.fragments.TickerPriceSorting
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 
 // Working with SharedPreferences of the app
 class PreferenceProvider(context: Context) {
@@ -18,31 +21,31 @@ class PreferenceProvider(context: Context) {
     // Last time in millis when remote API was accessed to get Top Movers
     fun saveLastTopMoversCallTime() {
         val time = System.currentTimeMillis()
-        preference.edit().putLong(KEY_LAST_TOP_MOVERS_CALL_TIME, time).apply()
+        preference.edit().putLong(KEY_TOP_MOVERS_LAST_CALL_TIME, time).apply()
     }
 
-    fun getLastTopMoversCallTime(): Long = preference.getLong(KEY_LAST_TOP_MOVERS_CALL_TIME, 0L)
+    fun getLastTopMoversCallTime(): Long = preference.getLong(KEY_TOP_MOVERS_LAST_CALL_TIME, 0L)
 
     // Last time in millis when remote API was accessed to get all CoinPaprika tickers
-    fun getLastCpTickersCallTime(): Long = preference.getLong(KEY_LAST_CP_TICKERS_CALL_TIME, 0L)
+    fun getLastCpTickersCallTime(): Long = preference.getLong(KEY_CP_TICKERS_LAST_CALL_TIME, 0L)
     fun saveLastCpTickersCallTime() {
         val time = System.currentTimeMillis()
-        preference.edit().putLong(KEY_LAST_CP_TICKERS_CALL_TIME, time).apply()
+        preference.edit().putLong(KEY_CP_TICKERS_LAST_CALL_TIME, time).apply()
     }
 
     // Last time the app database was updated
-    fun getLastAppUpdateTime(): Long = preference.getLong(KEY_LAST_APP_UPDATE_TIME, 0L)
+    fun getLastAppUpdateTime(): Long = preference.getLong(KEY_APP_LAST_UPDATE_TIME, 0L)
     fun saveLastAppUpdateTime() {
         val time = System.currentTimeMillis()
-        preference.edit().putLong(KEY_LAST_APP_UPDATE_TIME, time).apply()
+        preference.edit().putLong(KEY_APP_LAST_UPDATE_TIME, time).apply()
     }
 
     // Last time CoinPaprika tickers db was updated
-    fun getCPTickersUpdateTime(): Long = preference.getLong(KEY_CP_TICKERS_UPDATE_TIME, 0L)
+    fun getCPTickersUpdateTime(): Long = preference.getLong(KEY_CP_TICKERS_LAST_UPDATE_TIME, 0L)
 
     fun saveCPTickersUpdateTime() {
         val time = System.currentTimeMillis()
-        preference.edit().putLong(KEY_CP_TICKERS_UPDATE_TIME, time).apply()
+        preference.edit().putLong(KEY_CP_TICKERS_LAST_UPDATE_TIME, time).apply()
     }
 
     // Min mcap of coins to show
@@ -102,13 +105,30 @@ class PreferenceProvider(context: Context) {
             (SearchSorting from str) ?: DEFAULT_SEARCH_SORTING
         return sorting
     }
+
     fun saveSearchSorting(sorting: SearchSorting) {
         preference.edit().putString(KEY_SEARCH_SORTING, sorting.str).apply()
     }
 
-    fun getSearchSortingDirection(): Int = preference.getInt(KEY_SEARCH_SORTING_DIRECTION, DEFAULT_SEARCH_SORTING_DIRECTION)
+    fun getSearchSortingDirection(): Int =
+        preference.getInt(KEY_SEARCH_SORTING_DIRECTION, DEFAULT_SEARCH_SORTING_DIRECTION)
+
     fun saveSearchSortingDirection(direction: Int) {
-        if (direction != 0) preference.edit().putInt(KEY_SEARCH_SORTING_DIRECTION, direction).apply()
+        if (direction != 0) preference.edit().putInt(KEY_SEARCH_SORTING_DIRECTION, direction)
+            .apply()
+    }
+
+
+    // last time the sentiment endpoint was called
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+    fun getTMSentimentLastCall(): LocalDateTime {
+        val timeStr = preference.getString(KEY_TM_SENTIMENT_LAST_CALL_TIME, "2000-01-01 00:00")
+        return LocalDateTime.parse(timeStr, formatter)
+    }
+
+    fun saveTMSentimentLastCall(time: LocalDateTime) {
+        val timeStr = time.withMinute(3).withSecond(0).withNano(0).format(formatter)
+        preference.edit().putString(KEY_TM_SENTIMENT_LAST_CALL_TIME, timeStr).apply()
     }
 
     // Constants
@@ -116,10 +136,11 @@ class PreferenceProvider(context: Context) {
         private const val SETTINGS = "settings"
         private const val KEY_FIRST_LAUNCH = "first_launch"
 
-        private const val KEY_LAST_TOP_MOVERS_CALL_TIME = "last_top_movers_time"
-        private const val KEY_LAST_CP_TICKERS_CALL_TIME = "last_cp_tickers_time"
-        private const val KEY_LAST_APP_UPDATE_TIME = "last_app_update_time"
-        private const val KEY_CP_TICKERS_UPDATE_TIME = "cp_tickers_update_time"
+        private const val KEY_TOP_MOVERS_LAST_CALL_TIME = "last_top_movers_time"
+        private const val KEY_CP_TICKERS_LAST_CALL_TIME = "last_cp_tickers_time"
+        private const val KEY_APP_LAST_UPDATE_TIME = "last_app_update_time"
+        private const val KEY_CP_TICKERS_LAST_UPDATE_TIME = "cp_tickers_update_time"
+        private const val KEY_TM_SENTIMENT_LAST_CALL_TIME = "last_tm_sentiment_time"
 
         private const val KEY_MIN_MCAP = "min_mcap"
         private const val DEFAULT_MIN_MCAP = 10_000_000L

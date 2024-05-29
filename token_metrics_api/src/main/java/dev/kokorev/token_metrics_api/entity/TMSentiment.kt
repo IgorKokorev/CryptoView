@@ -1,7 +1,9 @@
 package dev.kokorev.token_metrics_api.entity
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TMSentiment(
 
     @SerializedName("DATETIME") var dateTime: String? = null,

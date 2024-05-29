@@ -1,6 +1,7 @@
 package dev.kokorev.cryptoview.views.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,8 @@ import dev.kokorev.cryptoview.views.rvadapters.TopMoverAdapter
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import dev.kokorev.token_metrics_api.entity.TMSentiment
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 /**
  * Main fragment which is started once app starts. Shows Global info about Crypto markets
@@ -45,7 +48,8 @@ class MainFragment : Fragment() {
         "very positive" to ContextCompat.getColor(App.instance.applicationContext, R.color.green),
     )
 
-    val defaultTextColor = ContextCompat.getColor(App.instance.applicationContext, R.color.textColor)
+    val defaultTextColor =
+        ContextCompat.getColor(App.instance.applicationContext, R.color.textColor)
 
     // Top movers - list of 10 gainers and losers for the last 24 hours
     private var topMovers: List<GainerCoin> = listOf()
@@ -74,6 +78,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initRecycler()
 
         setIntervalListeners()
@@ -81,7 +86,7 @@ class MainFragment : Fragment() {
 
         sortingBS.subscribe {
             sorting = it
-            setupDataFromViewModel()
+            getTickers()
             highlightIcon()
         }
             .addTo(autoDisposable)
@@ -197,15 +202,11 @@ class MainFragment : Fragment() {
     }
 
     private fun setupDataFromViewModel() {
-        viewModel.remoteApi.getSentiment()
-            .subscribe {
-                if (it.success && !it.data.isNullOrEmpty()) {
-                    val data = it.data.get(0)
-                    setViewData(data)
-                }
-            }
-            .addTo(autoDisposable)
+        getSentiment()
+        getTickers()
+    }
 
+    private fun getTickers() {
         viewModel.cpTickers
             .subscribe { list ->
                 val gainers = findGainers(list)
@@ -215,6 +216,30 @@ class MainFragment : Fragment() {
             .addTo(autoDisposable)
     }
 
+    private fun getSentiment() {
+        val time = LocalDateTime.now(ZoneOffset.UTC)
+        Log.d(this.javaClass.simpleName, "getSentiment. Time: ${time}")
+        if (time > viewModel.preferences.getTMSentimentLastCall().plusHours(1)) {
+            viewModel.remoteApi.getSentiment()
+                .subscribe {
+                    if (it.success && !it.data.isNullOrEmpty()) {
+                        val data = it.data.get(0)
+                        viewModel.cacheManager.saveTMSentiment(data)
+                        viewModel.preferences.saveTMSentimentLastCall(time)
+                        setViewData(data)
+                    }
+                }
+                .addTo(autoDisposable)
+        } else {
+            val data = viewModel.cacheManager.getTMSentiment()
+            if (data == null) {
+                viewModel.preferences.saveTMSentimentLastCall(time.withYear(time.year - 1))
+            } else {
+                setViewData(data)
+            }
+        }
+    }
+
     private fun setViewData(data: TMSentiment) {
 
         // DateTime of the sentiment
@@ -222,29 +247,45 @@ class MainFragment : Fragment() {
 
         // Market sentiment grade
         binding.marketSentimentGrade.text = data.marketSentimentGrade.toString()
-        binding.marketSentimentGrade.setTextColor(tmGradeToColor.get(data.marketSentimentLabel) ?: defaultTextColor)
+        binding.marketSentimentGrade.setTextColor(
+            tmGradeToColor.get(data.marketSentimentLabel) ?: defaultTextColor
+        )
         binding.marketSentimentLabel.text = data.marketSentimentLabel
-        binding.marketSentimentLabel.setTextColor(tmGradeToColor.get(data.marketSentimentLabel) ?: defaultTextColor)
+        binding.marketSentimentLabel.setTextColor(
+            tmGradeToColor.get(data.marketSentimentLabel) ?: defaultTextColor
+        )
 
         // News sentiment grade
         binding.newsSentimentGrade.text = data.newsSentimentGrade.toString()
-        binding.newsSentimentGrade.setTextColor(tmGradeToColor.get(data.newsSentimentLabel) ?: defaultTextColor)
+        binding.newsSentimentGrade.setTextColor(
+            tmGradeToColor.get(data.newsSentimentLabel) ?: defaultTextColor
+        )
         binding.newsSentimentLabel.text = data.newsSentimentLabel
-        binding.newsSentimentLabel.setTextColor(tmGradeToColor.get(data.newsSentimentLabel) ?: defaultTextColor)
+        binding.newsSentimentLabel.setTextColor(
+            tmGradeToColor.get(data.newsSentimentLabel) ?: defaultTextColor
+        )
         binding.newsText.text = data.newsSummary
 
         // News sentiment grade
         binding.redditSentimentGrade.text = data.redditSentimentGrade.toString()
-        binding.redditSentimentGrade.setTextColor(tmGradeToColor.get(data.redditSentimentLabel) ?: defaultTextColor)
+        binding.redditSentimentGrade.setTextColor(
+            tmGradeToColor.get(data.redditSentimentLabel) ?: defaultTextColor
+        )
         binding.redditSentimentLabel.text = data.redditSentimentLabel
-        binding.redditSentimentLabel.setTextColor(tmGradeToColor.get(data.redditSentimentLabel) ?: defaultTextColor)
+        binding.redditSentimentLabel.setTextColor(
+            tmGradeToColor.get(data.redditSentimentLabel) ?: defaultTextColor
+        )
         binding.redditText.text = data.redditSummary
 
         // News sentiment grade
         binding.twitterSentimentGrade.text = data.twitterSentimentGrade.toString()
-        binding.twitterSentimentGrade.setTextColor(tmGradeToColor.get(data.twitterSentimentLabel) ?: defaultTextColor)
+        binding.twitterSentimentGrade.setTextColor(
+            tmGradeToColor.get(data.twitterSentimentLabel) ?: defaultTextColor
+        )
         binding.twitterSentimentLabel.text = data.twitterSentimentLabel
-        binding.twitterSentimentLabel.setTextColor(tmGradeToColor.get(data.twitterSentimentLabel) ?: defaultTextColor)
+        binding.twitterSentimentLabel.setTextColor(
+            tmGradeToColor.get(data.twitterSentimentLabel) ?: defaultTextColor
+        )
         binding.twitterText.text = data.twitterSummary
     }
 

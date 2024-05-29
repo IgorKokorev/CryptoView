@@ -10,6 +10,7 @@ import dev.kokorev.cryptoview.backgroundService.NotificationService
 import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
+import dev.kokorev.cryptoview.utils.CacheManager
 import dev.kokorev.token_metrics_api.TokenMetricsApi
 import javax.inject.Singleton
 
@@ -24,7 +25,11 @@ class DomainModule(val context: Context) {
 
     @Singleton
     @Provides
-    fun provideNotificationManager(context: Context) = NotificationService(context)
+    fun provideCache(context: Context) = CacheManager(context)
+
+    @Singleton
+    @Provides
+    fun provideNotificationService(context: Context) = NotificationService(context)
 
     @Singleton
     @Provides

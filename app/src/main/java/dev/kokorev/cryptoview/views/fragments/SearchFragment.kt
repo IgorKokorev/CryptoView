@@ -56,11 +56,6 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSearchBinding.inflate(layoutInflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         searchSorting = viewModel.preferences.getSearchSorting()
         direction= viewModel.preferences.getSearchSortingDirection()
@@ -72,8 +67,17 @@ class SearchFragment : Fragment() {
         binding.searchView.setOnClickListener {
             binding.searchView.isIconified = false
         }
+
+        return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
     override fun onPause() {
         super.onPause()
         savePreferences()
@@ -173,60 +177,60 @@ class SearchFragment : Fragment() {
 
         return if (direction > 0) {
             when (searchSorting) {
-                MCAP -> tickersToSort.sortedByDescending {
+                MCAP -> {
                     binding.headerMcapArrow.setImageIcon(iconDown)
-                    it.marketCap
+                    tickersToSort.sortedByDescending { it.marketCap }
                 }
                 ATH -> tickersToSort.sortedByDescending { it.athPrice }
-                ATH_CHANGE -> tickersToSort.sortedByDescending {
+                ATH_CHANGE -> {
                     binding.headerAthArrow.setImageIcon(iconDown)
-                    it.percentFromPriceAth
+                    tickersToSort.sortedByDescending { it.percentFromPriceAth }
                 }
-                SYMBOL -> tickersToSort.sortedBy {
+                SYMBOL -> {
                     binding.headerSymbolArrow.setImageIcon(iconUp)
-                    it.symbol
+                    tickersToSort.sortedBy { it.symbol }
                 }
-                NAME -> tickersToSort.sortedBy {
+                NAME -> {
                     binding.headerNameArrow.setImageIcon(iconUp)
-                    it.name
+                    tickersToSort.sortedBy { it.name }
                 }
-                VOLUME -> tickersToSort.sortedByDescending {
+                VOLUME -> {
                     binding.headerVolumeArrow.setImageIcon(iconDown)
-                    it.dailyVolume
+                    tickersToSort.sortedByDescending { it.dailyVolume }
                 }
-                CHANGE24HR -> tickersToSort.sortedByDescending {
+                CHANGE24HR -> {
                     binding.headerPriceArrow.setImageIcon(iconDown)
-                    it.percentChange24h
+                    tickersToSort.sortedByDescending { it.percentChange24h }
                 }
                 PRICE -> tickersToSort.sortedByDescending { it.price }
                 else -> tickersToSort
             }
         } else {
             when (searchSorting) {
-                MCAP -> tickersToSort.sortedBy {
+                MCAP -> {
                     binding.headerMcapArrow.setImageIcon(iconUp)
-                    it.marketCap
+                    tickersToSort.sortedBy { it.marketCap }
                 }
                 ATH -> tickersToSort.sortedBy { it.athPrice }
-                ATH_CHANGE -> tickersToSort.sortedBy {
+                ATH_CHANGE -> {
                     binding.headerAthArrow.setImageIcon(iconUp)
-                    it.percentFromPriceAth
+                    tickersToSort.sortedBy { it.percentFromPriceAth }
                 }
-                SYMBOL -> tickersToSort.sortedByDescending {
+                SYMBOL -> {
                     binding.headerSymbolArrow.setImageIcon(iconDown)
-                    it.symbol
+                    tickersToSort.sortedByDescending { it.symbol }
                 }
-                NAME -> tickersToSort.sortedByDescending {
+                NAME -> {
                     binding.headerNameArrow.setImageIcon(iconDown)
-                    it.name
+                    tickersToSort.sortedByDescending { it.name }
                 }
-                VOLUME -> tickersToSort.sortedBy {
+                VOLUME -> {
                     binding.headerVolumeArrow.setImageIcon(iconUp)
-                    it.dailyVolume
+                    tickersToSort.sortedBy { it.dailyVolume }
                 }
-                CHANGE24HR -> tickersToSort.sortedBy {
+                CHANGE24HR -> {
                     binding.headerPriceArrow.setImageIcon(iconUp)
-                    it.percentChange24h
+                    tickersToSort.sortedBy { it.percentChange24h }
                 }
                 PRICE -> tickersToSort.sortedBy { it.price }
                 else -> tickersToSort
