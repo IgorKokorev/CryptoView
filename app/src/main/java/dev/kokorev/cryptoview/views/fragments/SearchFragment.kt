@@ -35,8 +35,8 @@ class SearchFragment : Fragment() {
     private lateinit var searchAdapter: SearchAdapter
     private var tickers: List<CoinPaprikaTickerDB> = listOf()
 
-    var searchSorting = SearchSorting.NONE // field for tickers sorting
-    var direction = 1 // sorting direction
+/*    var searchSorting = SearchSorting.NONE // field for tickers sorting
+    var direction = 1 // sorting direction*/
     
     private var tickersToShow: List<CoinPaprikaTickerDB> = listOf()
         set(value) {
@@ -49,48 +49,25 @@ class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         autoDisposable.bindTo(lifecycle)
+
+        binding = FragmentSearchBinding.inflate(layoutInflater)
+
+        setupDataFromViewModel()
+
+        initRecycler()
+        setupSorting()
+        setupSearch()
+
+        binding.searchView.setOnClickListener {
+            binding.searchView.isIconified = false
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(layoutInflater)
-
-        searchSorting = viewModel.preferences.getSearchSorting()
-        direction= viewModel.preferences.getSearchSortingDirection()
-        setupDataFromViewModel()
-        initRecycler()
-        setupSorting()
-        setUpSearch()
-
-        binding.searchView.setOnClickListener {
-            binding.searchView.isIconified = false
-        }
-
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-    override fun onPause() {
-        super.onPause()
-        savePreferences()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        savePreferences()
-    }
-
-    private fun savePreferences() {
-        viewModel.preferences.saveSearchSorting(sorting = searchSorting)
-        viewModel.preferences.saveSearchSortingDirection(direction)
     }
 
     // initializing RV
@@ -120,7 +97,7 @@ class SearchFragment : Fragment() {
     }
 
     // Search coins logic. Search request is sent only after 1 seconds of no input
-    private fun setUpSearch() {
+    private fun setupSearch() {
         Observable.create<String> {
             binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean = true
@@ -136,14 +113,11 @@ class SearchFragment : Fragment() {
             })
         }
             .debounce(1, TimeUnit.SECONDS)
-            .map { str ->
-                tickers.filter { ticker ->
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { str ->
+                tickersToShow = tickers.filter { ticker ->
                     ticker.symbol.contains(str, true) || ticker.name.contains(str, true)
                 }
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { list ->
-                tickersToShow = list
             }
             .addTo(autoDisposable)
 
@@ -162,21 +136,30 @@ class SearchFragment : Fragment() {
     }
 
     // check if the sorting field was clicked first time
-    private fun sortTickers(toSort: SearchSorting) {
-        direction = if (searchSorting == toSort) -direction else 1
-        searchSorting = toSort
-        tickersToShow = setArrowAndSort(tickersToShow)
+    private fun sortTickers(newSorting: SearchSorting) {
+
+        val savedSorting = viewModel.preferences.getSearchSorting()
+        val newDirection = if (savedSorting == newSorting) -viewModel.preferences.getSearchSortingDirection() else 1
+
+        viewModel.preferences.saveSearchSorting(newSorting)
+        viewModel.preferences.saveSearchSortingDirection(newDirection)
+
+        tickersToShow = setArrowAndSort(tickersToShow, newSorting, newDirection)
     }
 
     // sorting the list and set the according arrow
-    private fun setArrowAndSort(tickersToSort: List<CoinPaprikaTickerDB>): List<CoinPaprikaTickerDB> {
+    private fun setArrowAndSort(
+        tickersToSort: List<CoinPaprikaTickerDB>,
+        sorting: SearchSorting,
+        direction: Int
+    ): List<CoinPaprikaTickerDB> {
         val iconUp = Icon.createWithResource(context, R.drawable.icon_arrow_up)
         val iconDown = Icon.createWithResource(context, R.drawable.icon_arrow_down)
 
         clearArrows()
 
         return if (direction > 0) {
-            when (searchSorting) {
+            when (sorting) {
                 MCAP -> {
                     binding.headerMcapArrow.setImageIcon(iconDown)
                     tickersToSort.sortedByDescending { it.marketCap }
@@ -206,7 +189,7 @@ class SearchFragment : Fragment() {
                 else -> tickersToSort
             }
         } else {
-            when (searchSorting) {
+            when (sorting) {
                 MCAP -> {
                     binding.headerMcapArrow.setImageIcon(iconUp)
                     tickersToSort.sortedBy { it.marketCap }
@@ -242,7 +225,11 @@ class SearchFragment : Fragment() {
         viewModel.allTickers
             .subscribe()
                 { dto ->
-                    tickers = setArrowAndSort(dto)
+                    tickers = setArrowAndSort(
+                        dto,
+                        viewModel.preferences.getSearchSorting(),
+                        viewModel.preferences.getSearchSortingDirection()
+                    )
                     tickersToShow = tickers
                 }
             .addTo(autoDisposable)

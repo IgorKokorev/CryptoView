@@ -40,7 +40,7 @@ class MainFragment : Fragment() {
     private var sortingBS: BehaviorSubject<TickerPriceSorting> = BehaviorSubject.create()
 
     // Map TokenMetrics sentiment grades to colors
-    val tmGradeToColor: Map<String, Int> = mapOf(
+    private val tmGradeToColor: Map<String, Int> = mapOf(
         "very negative" to ContextCompat.getColor(App.instance.applicationContext, R.color.red),
         "negative" to ContextCompat.getColor(App.instance.applicationContext, R.color.red),
         "neutral" to ContextCompat.getColor(App.instance.applicationContext, R.color.textColor),
@@ -48,7 +48,7 @@ class MainFragment : Fragment() {
         "very positive" to ContextCompat.getColor(App.instance.applicationContext, R.color.green),
     )
 
-    val defaultTextColor =
+    private val defaultTextColor =
         ContextCompat.getColor(App.instance.applicationContext, R.color.textColor)
 
     // Top movers - list of 10 gainers and losers for the last 24 hours
@@ -218,11 +218,11 @@ class MainFragment : Fragment() {
 
     private fun getSentiment() {
         val time = LocalDateTime.now(ZoneOffset.UTC)
-        Log.d(this.javaClass.simpleName, "getSentiment. Time: ${time}")
-        if (time > viewModel.preferences.getTMSentimentLastCall().plusHours(1)) {
+        Log.d(this.javaClass.simpleName, "getSentiment. Time: $time")
+        if (time.isAfter(viewModel.preferences.getTMSentimentLastCall().plusHours(1))) {
             viewModel.remoteApi.getSentiment()
                 .subscribe {
-                    if (it.success && !it.data.isNullOrEmpty()) {
+                    if (it.success && it.data.isNotEmpty()) {
                         val data = it.data.get(0)
                         viewModel.cacheManager.saveTMSentiment(data)
                         viewModel.preferences.saveTMSentimentLastCall(time)

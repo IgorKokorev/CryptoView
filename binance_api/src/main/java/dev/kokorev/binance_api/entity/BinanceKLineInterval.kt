@@ -2,52 +2,52 @@ package dev.kokorev.binance_api.entity
 
 import com.google.gson.annotations.SerializedName
 
-enum class BinanceKLineInterval {
+enum class BinanceKLineInterval(val value: String) {
     @SerializedName("1s")
-    SECOND,
+    SECOND("1s"),
 
     @SerializedName("1m")
-    MINUTE,
+    MINUTE("1m"),
 
     @SerializedName("3m")
-    MINUTE3,
+    MINUTE3("3m"),
 
     @SerializedName("5m")
-    MINUTE5,
+    MINUTE5("5m"),
 
     @SerializedName("15m")
-    MINUTE15,
+    MINUTE15("15m"),
 
     @SerializedName("30m")
-    MINUTE30,
+    MINUTE30("30m"),
 
     @SerializedName("1h")
-    HOUR,
+    HOUR("1h"),
 
     @SerializedName("2h")
-    HOUR2,
+    HOUR2("2h"),
 
     @SerializedName("4h")
-    HOUR4,
+    HOUR4("4h"),
 
     @SerializedName("6h")
-    HOUR6,
+    HOUR6("6h"),
 
     @SerializedName("8h")
-    HOUR8,
+    HOUR8("8h"),
 
     @SerializedName("12h")
-    HOUR12,
+    HOUR12("12h"),
 
     @SerializedName("1d")
-    DAY,
+    DAY("1d"),
 
     @SerializedName("3d")
-    DAY3,
+    DAY3("3d"),
 
     @SerializedName("1w")
-    WEEK,
+    WEEK("1w"),
 
     @SerializedName("1M")
-    MONTH
+    MONTH("1M")
 }

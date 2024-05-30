@@ -1,5 +1,5 @@
-<resources
-    xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="Base.Theme.CryptoView" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:textViewStyle">@style/CVTextViewStyle</item>
         <item name="android:textAppearance">@style/CVTextAppearance</item>
@@ -17,7 +17,7 @@
         <item name="android:textColorLink">@color/textColor</item>
     </style>
 
-    <style name="CVMaterialToolbar" parent="Widget.MaterialComponents.Toolbar.Primary" >
+    <style name="CVMaterialToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:background">@color/base1</item>
     </style>
 
@@ -41,7 +41,7 @@
         <item name="itemIconTint">@color/iconColor</item>
     </style>
 
-    <style name="CVActiveIndicatorStyle" parent="Widget.Material3.BottomNavigationView.ActiveIndicator" >
+    <style name="CVActiveIndicatorStyle" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
 
     </style>
 
@@ -91,4 +91,9 @@
     </style>
 
     <style name="Theme.CryptoView" parent="Base.Theme.CryptoView" />
+
+    <style name="ThemeOverlay.CryptoView.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+    </style>
 </resources>

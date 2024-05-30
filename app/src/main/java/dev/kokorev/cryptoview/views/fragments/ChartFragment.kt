@@ -70,7 +70,7 @@ class ChartFragment : Fragment() {
             Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.textColor))
                 .substring(2)
         chartColorString =
-            Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.base7))
+            Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.colorAccent))
                 .substring(2)
         chartColor = HIColor.initWithHexValue(chartColorString)
         textColor = HIColor.initWithHexValue(textColorString)

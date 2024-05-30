@@ -127,7 +127,7 @@ class PreferenceProvider(context: Context) {
     }
 
     fun saveTMSentimentLastCall(time: LocalDateTime) {
-        val timeStr = time.withMinute(3).withSecond(0).withNano(0).format(formatter)
+        val timeStr = time.withMinute(6).withSecond(0).withNano(0).format(formatter)
         preference.edit().putString(KEY_TM_SENTIMENT_LAST_CALL_TIME, timeStr).apply()
     }
 

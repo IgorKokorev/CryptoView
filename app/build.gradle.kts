@@ -83,6 +83,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
+
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+
     implementation(libs.viewPager2)
 
     implementation(libs.work)
@@ -104,10 +108,10 @@ dependencies {
     implementation(libs.rxandroid)
 
     implementation(libs.highcharts)
+    implementation(libs.anychart)
 
     implementation(libs.moshi)
     implementation(libs.kotlinx.json)
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

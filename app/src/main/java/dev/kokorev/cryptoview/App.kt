@@ -7,6 +7,7 @@ import androidx.work.WorkManager
 import dev.kokorev.binance_api.DaggerBinanceComponent
 import dev.kokorev.cmc_api.DaggerCmcComponent
 import dev.kokorev.coin_paprika_api.DaggerCoinPaprikaComponent
+import dev.kokorev.cryptoview.backgroundService.BinanceLoaderWorker
 import dev.kokorev.cryptoview.backgroundService.TickersLoaderWorker
 import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.di.AppComponent
@@ -59,13 +60,7 @@ class App : Application() {
         // initialising room db
         getDbFacade().inject(this)
 
-        // periodic work request to check Favorites coins and Portfolio state
-        val workRequest = PeriodicWorkRequestBuilder<TickersLoaderWorker>(15, TimeUnit.MINUTES)
-            .addTag(Constants.TICKER_LOADER_TAG)
-            .build()
-
-        WorkManager.getInstance(this)
-            .enqueueUniquePeriodicWork(Constants.FAVORITE_CHECKER_WORK, ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, workRequest)
+        startWorks()
 
         // start service to periodically check favorites
 //        favoriteCheckIntent = Intent(this, FavoritesCheckService::class.java)
@@ -73,15 +68,43 @@ class App : Application() {
 //        stopFavoriteCheckService()
     }
 
-/*    fun startFavoriteCheckService() {
-        Log.d(this.javaClass.simpleName, "Starting FavoriteCheckService")
-        startService(favoriteCheckIntent)
+    private fun startWorks() {
+        val workManager = WorkManager.getInstance(this)
+
+        // periodic work request to load CoinPaprika tickers and check Favorites and Portfolio state
+        val tickerLoaderWorkRequest =
+            PeriodicWorkRequestBuilder<TickersLoaderWorker>(15, TimeUnit.MINUTES)
+                .addTag(Constants.TICKER_LOADER_TAG)
+                .build()
+        workManager
+            .enqueueUniquePeriodicWork(
+                Constants.TICKER_LOADER_WORK,
+                ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+                tickerLoaderWorkRequest
+            )
+
+        // periodic work request to download and save Binance symbols
+        val binanceLoaderWorkRequest =
+            PeriodicWorkRequestBuilder<BinanceLoaderWorker>(15, TimeUnit.MINUTES)
+                .addTag(Constants.BINANCE_LOADER_TAG)
+                .build()
+        workManager
+            .enqueueUniquePeriodicWork(
+                Constants.BINANCE_LOADER_WORK,
+                ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+                binanceLoaderWorkRequest
+            )
     }
 
-    fun stopFavoriteCheckService() {
-        Log.d(this.javaClass.simpleName, "Stopping FavoriteCheckService")
-        stopService(favoriteCheckIntent)
-    }*/
+    /*    fun startFavoriteCheckService() {
+            Log.d(this.javaClass.simpleName, "Starting FavoriteCheckService")
+            startService(favoriteCheckIntent)
+        }
+
+        fun stopFavoriteCheckService() {
+            Log.d(this.javaClass.simpleName, "Stopping FavoriteCheckService")
+            stopService(favoriteCheckIntent)
+        }*/
 
     private fun getDbFacade(): DbFacadeComponent {
         return dbFacadeComponent ?: DbFacadeComponent.init(this).also {

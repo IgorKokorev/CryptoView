@@ -184,21 +184,6 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedExitCallback)
     }
 
-    /*    private fun initMenuButtons() {
-
-            binding.topAppBar.setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.main -> {
-                        val tag = Constants.MAIN_FRAGMENT_TAG
-                        val fragment = supportFragmentManager.findFragmentByTag(tag) ?: MainFragment()
-                        replaceFragment(fragment, tag)
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }*/
-
     fun launchCoinFragment(coinPaprikaId: String, symbol: String, name: String) {
         val bundle = Bundle()
         bundle.putString(Constants.COIN_PAPRIKA_ID, coinPaprikaId)

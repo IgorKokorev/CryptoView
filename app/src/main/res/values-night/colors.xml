@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorAccent">@color/textColor</color>
-
 <!--    Defining night theme colors -->
+    <color name="colorAccent">@color/red3</color>
+
     <color name="grey1">@color/lightGrey</color>
     <color name="grey2">@color/darkGrey</color>
 

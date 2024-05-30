@@ -42,7 +42,7 @@ class SearchViewModel : ViewModel() {
                     val tickers = it
                         .map { dto -> Converter.dtoToCoinPaprikaTicker(dto) }
                         .toList()
-                    repository.addCoinPaprikaTickers(tickers)
+                    repository.saveCoinPaprikaTickers(tickers)
                 }
                 .doOnError {
 

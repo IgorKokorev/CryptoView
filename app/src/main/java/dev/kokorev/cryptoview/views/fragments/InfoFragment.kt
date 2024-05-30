@@ -62,6 +62,7 @@ class InfoFragment : Fragment() {
                 findCoin(it)
                 if (viewModel.cmcInfo != null) setupCmcData(viewModel.cmcInfo!!)
             }
+            .onErrorComplete()
             .subscribe()
             .addTo(autoDisposable)
     }
@@ -73,10 +74,11 @@ class InfoFragment : Fragment() {
                 viewModel.cpInfo = it
                 setupCoinPaprikaData(it)
                 val recentCoinDB = Converter.CoinDetailsEntityToRecentCoinDB(it)
-                viewModel.repository.addRecent(recentCoinDB)
+                viewModel.repository.saveRecent(recentCoinDB)
                 setupFavoriteFab(it)
                 setupPortfolioFab(it)
             }
+            .onErrorComplete()
             .subscribe()
             .addTo(autoDisposable)
     }
@@ -125,7 +127,7 @@ class InfoFragment : Fragment() {
             } else {
                 val favoriteCoinDB: FavoriteCoinDB =
                     Converter.CoinDetailsEntityToFavoriteCoinDB(coin)
-                viewModel.repository.addFavorite(favoriteCoinDB)
+                viewModel.repository.saveFavorite(favoriteCoinDB)
             }
             isFavorite = !isFavorite
             setFavoriteIcon()

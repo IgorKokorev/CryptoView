@@ -31,13 +31,13 @@ class Repository() {
     private val messageDao = App.instance.messageDao
 
     // BinanceSymbol table interaction
-    fun addBinanceSymbol(binanceSymbolDB: BinanceSymbolDB) {
+    fun saveBinanceSymbol(binanceSymbolDB: BinanceSymbolDB) {
         Executors.newSingleThreadExecutor().execute {
             binanceSymbolDao.insertBinanceSymbol(binanceSymbolDB)
         }
     }
 
-    fun addBinanceSymbols(list: List<BinanceSymbolDB>) {
+    fun saveBinanceSymbols(list: List<BinanceSymbolDB>) {
         Executors.newSingleThreadExecutor().execute {
             binanceSymbolDao.insertAll(list)
         }
@@ -84,7 +84,7 @@ class Repository() {
 
     fun getCPTickerById(cpId: String) = coinPaprikaTickerDao.findById(cpId).addSettings()
 
-    fun addCoinPaprikaTickers(list: List<CoinPaprikaTickerDB>) {
+    fun saveCoinPaprikaTickers(list: List<CoinPaprikaTickerDB>) {
         Executors.newSingleThreadExecutor().execute {
             coinPaprikaTickerDao.updateAll(list)
         }
@@ -96,7 +96,7 @@ class Repository() {
     // FavoriteCoin table interaction
     fun getFavoriteCoins() = favoriteCoinDao.getAll().addSettings()
     fun getFavoriteCoinsSingle() = favoriteCoinDao.getAllSingle().addSettings()
-    fun addFavorite(coinDB: FavoriteCoinDB) {
+    fun saveFavorite(coinDB: FavoriteCoinDB) {
         Executors.newSingleThreadExecutor().execute {
             favoriteCoinDao.insertFavoriteCoin(coinDB)
         }
@@ -135,7 +135,7 @@ class Repository() {
 
     // RecentCoin table interaction
     fun getRecentCoins() = recentCoinDao.getAll().addSettings()
-    fun addRecent(coinDB: RecentCoinDB) {
+    fun saveRecent(coinDB: RecentCoinDB) {
         Executors.newSingleThreadExecutor().execute {
             recentCoinDao.insertRecentCoin(coinDB)
         }

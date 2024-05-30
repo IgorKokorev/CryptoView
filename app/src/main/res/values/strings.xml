@@ -77,4 +77,6 @@
     <string name="price_not_found">Price hasn\'t been found for symbol: </string>
     <string name="position_not_changed">The position has not been changed</string>
     <string name="position_changed_text">"Position ha been changed, new quantity: "</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

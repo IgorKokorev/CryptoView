@@ -1,11 +1,15 @@
 package dev.kokorev.cryptoview.data
 
 object Constants {
+    const val BINANCE_FIRST_ASSET = "USDT"
+    const val BINANCE_SECOND_ASSET = "BTC"
     const val NOTIFICATION_PERMISSION_REQUEST_CODE: Int = 1
     const val FAVORITE_CHECK_MIN_CHANGE: Float = 1.0f
     const val FAVORITE_CHECK_MAX_CHANGE: Float = 20.0f
     const val TICKER_LOADER_TAG: String = "ticker_loader_tag"
-    const val FAVORITE_CHECKER_WORK: String = "favorite_checker_work"
+    const val TICKER_LOADER_WORK: String = "ticker_loader_work"
+    const val BINANCE_LOADER_TAG: String = "binance_loader_tag"
+    const val BINANCE_LOADER_WORK: String = "binance_loader_work"
     const val NOTIFICATION_ID: Int = 1
     const val INTENT_EXTRA_FAVORITE_COIN: String = "intent_extra_favorite_coin"
 

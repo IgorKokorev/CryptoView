@@ -17,7 +17,7 @@
         app:tabTextColor="@color/white"
         app:tabIconTint="@color/base8"
         app:tabBackground="@drawable/rounded_up_rectangle"
-        app:tabIndicatorColor="@color/base8"
+        app:tabIndicatorColor="@color/colorAccent"
         app:tabIndicatorFullWidth="true"
         />
 

@@ -12,10 +12,10 @@ interface BinanceSymbolDao {
     @Query("SELECT * FROM binance_symbol")
     fun getBinanceSymbols(): Observable<List<BinanceSymbolDB>>
 
-    @Query("SELECT * FROM binance_symbol WHERE base_asset = :asset")
+    @Query("""SELECT * FROM binance_symbol WHERE status = 'TRADING' AND base_asset = :asset""")
     fun findByBaseAsset(asset: String): Observable<List<BinanceSymbolDB>>
 
-    @Query("SELECT * FROM binance_symbol WHERE quote_asset = :asset")
+    @Query("SELECT * FROM binance_symbol WHERE status = 'TRADING' AND quote_asset = :asset")
     fun findByQuoteAsset(asset: String): Observable<List<BinanceSymbolDB>>
 
     @Insert

@@ -34,9 +34,6 @@ class TickersLoaderWorker(
     }
 
     override fun createWork(): Single<Result> {
-        Log.d(this.javaClass.simpleName, "TickerLoader is running")
-        Log.d(this.javaClass.simpleName, Thread.currentThread().name)
-
         val minMcap = Constants.minMCaps.get(0)
         val minVol = Constants.minVols.get(0)
         val minChange = preferences.getFavoriteMinChange()
@@ -56,7 +53,7 @@ class TickersLoaderWorker(
                         }
                     }
                     .map { dto -> Converter.dtoToCoinPaprikaTicker(dto) }
-                repository.addCoinPaprikaTickers(tickers)
+                repository.saveCoinPaprikaTickers(tickers)
                 tickers
             }
             .doOnError {

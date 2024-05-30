@@ -1,5 +1,7 @@
 package dev.kokorev.cryptoview.utils
 
+import android.util.Log
+import com.anychart.chart.common.dataentry.HighLowDataEntry
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import com.coinpaprika.apiclient.entity.MoverEntity
@@ -158,4 +160,67 @@ object Converter {
         )
     }
 
+    fun binanceKLineToOHLCData(kline: ArrayList<Any>): OHLCDataEntry {
+        val closeTime = try {
+            (kline.get(6) as Double).toLong() + 1
+        } catch (e: Exception) {
+            Log.d(
+                this.javaClass.simpleName,
+                "Error converting Binance kline: ${kline.joinToString()}"
+            )
+            0L
+        }
+        val openPrice = try {
+            (kline.get(1) as String).toDouble()
+        } catch (e: Exception) {
+            Log.d(
+                this.javaClass.simpleName,
+                "Error converting Binance kline: ${kline.joinToString()}"
+            )
+            0.0
+        }
+        val highPrice = try {
+            (kline.get(2) as String).toDouble()
+        } catch (e: Exception) {
+            Log.d(
+                this.javaClass.simpleName,
+                "Error converting Binance kline: ${kline.joinToString()}"
+            )
+            0.0
+        }
+        val lowPrice = try {
+            (kline.get(3) as String).toDouble()
+        } catch (e: Exception) {
+            Log.d(
+                this.javaClass.simpleName,
+                "Error converting Binance kline: ${kline.joinToString()}"
+            )
+            0.0
+        }
+        val closePrice = try {
+            (kline.get(4) as String).toDouble()
+        } catch (e: Exception) {
+            Log.d(
+                this.javaClass.simpleName,
+                "Error converting Binance kline: ${kline.joinToString()}"
+            )
+            0.0
+        }
+        return OHLCDataEntry(
+            closeTime,
+            openPrice,
+            highPrice,
+            lowPrice,
+            closePrice
+        )
+    }
+
+}
+
+class OHLCDataEntry(x: Long?, open: Double?, high: Double?, low: Double?, close: Double?) :
+    HighLowDataEntry(x, high, low) {
+    init {
+        setValue("open", open)
+        setValue("close", close)
+    }
 }
