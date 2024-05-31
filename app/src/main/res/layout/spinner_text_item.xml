@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
-    android:textAlignment="inherit"
+    android:textAlignment="viewEnd"
     android:textSize="@dimen/medium_text"
-    android:padding="@dimen/min_padding" />
+    android:padding="@dimen/small_padding"
+    />

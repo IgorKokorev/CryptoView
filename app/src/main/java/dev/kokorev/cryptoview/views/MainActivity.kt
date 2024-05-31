@@ -29,6 +29,7 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
 import dev.kokorev.cryptoview.views.fragments.AiChatFragment
+import dev.kokorev.cryptoview.views.fragments.BinanceFragment
 import dev.kokorev.cryptoview.views.fragments.CoinFragment
 import dev.kokorev.cryptoview.views.fragments.MainFragment
 import dev.kokorev.cryptoview.views.fragments.SavedFragment
@@ -184,6 +185,14 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedExitCallback)
     }
 
+    fun launchBinanceFragment(symbol: String) {
+        val bundle = Bundle()
+        bundle.putString(Constants.COIN_SYMBOL, symbol)
+        val fragment = BinanceFragment()
+        fragment.arguments = bundle
+        replaceFragment(fragment, Constants.BINANCE_FRAGMENT_TAG)
+    }
+    
     fun launchCoinFragment(coinPaprikaId: String, symbol: String, name: String) {
         val bundle = Bundle()
         bundle.putString(Constants.COIN_PAPRIKA_ID, coinPaprikaId)

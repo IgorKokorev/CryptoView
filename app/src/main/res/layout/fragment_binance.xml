@@ -12,6 +12,8 @@
         android:id="@+id/market_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/medium_padding"
+        android:paddingBottom="@dimen/medium_padding"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -27,10 +29,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_weight="1"
+                android:layout_weight="3"
+                android:maxLines="1"
                 android:gravity="start"
-                android:padding="@dimen/min_padding"
-                android:text="Symbol:"
+                android:text="Binance ticker:"
                 android:textSize="@dimen/big_text"
                 android:textStyle="bold" />
 
@@ -38,19 +40,26 @@
                 android:id="@+id/symbol_selector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:popupBackground="@drawable/rounded_rectangle_base"
+                android:layout_weight="2"
                 android:layout_gravity="end"
-                android:dropDownSelector="@color/colorAccent"
-                android:padding="@dimen/min_padding" />
+                android:spinnerMode="dropdown"
+                tools:listitem="@layout/spinner_text_item"
+                android:dropDownSelector="@color/colorAccent" />
 
             <Spinner
                 android:id="@+id/interval_selector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_padding"
+                android:background="@drawable/rounded_rectangle_base"
+                android:popupBackground="@drawable/rounded_rectangle_base"
                 android:layout_weight="1"
                 android:layout_gravity="end"
-                android:dropDownSelector="@color/colorAccent"
-                android:padding="@dimen/min_padding" />
+                android:spinnerMode="dropdown"
+                tools:listitem="@layout/spinner_text_item"
+                android:dropDownSelector="@color/colorAccent" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

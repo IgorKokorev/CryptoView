@@ -35,6 +35,7 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
+import dev.kokorev.cryptoview.views.MainActivity
 import java.time.LocalDate
 import java.util.Locale
 
@@ -66,12 +67,8 @@ class ChartFragment : Fragment() {
         autoDisposable.bindTo(lifecycle)
 
         // initializing chart colors with theme colors
-        textColorString =
-            Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.textColor))
-                .substring(2)
-        chartColorString =
-            Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.colorAccent))
-                .substring(2)
+        textColorString = getColorHex(R.color.textColor)
+        chartColorString =getColorHex(R.color.colorAccent)
         chartColor = HIColor.initWithHexValue(chartColorString)
         textColor = HIColor.initWithHexValue(textColorString)
         textThemeStyle = HICSSObject().apply {
@@ -80,8 +77,14 @@ class ChartFragment : Fragment() {
         }
 
         initChartView()
+        binding.binanceLink.setOnClickListener {
+            (requireActivity() as MainActivity).launchBinanceFragment(viewModel.symbol)
+        }
     }
-
+    
+    private fun getColorHex(colorResource: Int) = Integer.toHexString(ContextCompat.getColor(binding.root.context, colorResource))
+        .substring(2)
+    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

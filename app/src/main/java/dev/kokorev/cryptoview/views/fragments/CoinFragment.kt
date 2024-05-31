@@ -14,6 +14,7 @@ import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.databinding.FragmentCoinBinding
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
+import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class CoinFragment : Fragment() {
@@ -21,12 +22,7 @@ class CoinFragment : Fragment() {
     private val viewModel: CoinViewModel by viewModels<CoinViewModel>()
     private lateinit var adapter: CoinPagerAdapter
     // fragments - elements of the ViewPager
-    private val fragments = listOf(
-        InfoFragment::class,
-        ChartFragment::class,
-        BinanceFragment::class,
-        AiReportFragment::class,
-    )
+    private lateinit var fragments: List<KClass<out Fragment>>
     // icons for every tab/fragment. Should be initialised after the context is available
     private lateinit var icons: List<Drawable?>
 
@@ -39,11 +35,16 @@ class CoinFragment : Fragment() {
         viewModel.symbol = arguments?.getString(Constants.COIN_SYMBOL) ?: ""
         viewModel.name = arguments?.getString(Constants.COIN_NAME) ?: ""
 
-        // icons for every Tab
+        fragments = listOf(
+            InfoFragment::class,
+            ChartFragment::class,
+//        BinanceFragment::class,
+            AiReportFragment::class,
+        )
         icons = listOf(
             ResourcesCompat.getDrawable(resources, R.drawable.icon_info, null),
             ResourcesCompat.getDrawable(resources, R.drawable.icon_chart, null),
-            ResourcesCompat.getDrawable(resources, R.drawable.binance_logo, null),
+//            ResourcesCompat.getDrawable(resources, R.drawable.binance_logo, null),
             ResourcesCompat.getDrawable(resources, R.drawable.svg_report, null),
         )
 

@@ -8,6 +8,7 @@
     <dimen name="min_padding">3dp</dimen>
     <dimen name="small_padding">6dp</dimen>
     <dimen name="medium_padding">12dp</dimen>
+    <dimen name="bigger_padding">16dp</dimen>
     <dimen name="big_padding">24dp</dimen>
     <dimen name="tiny_text">10sp</dimen>
     <dimen name="logo_min_width">24dp</dimen>

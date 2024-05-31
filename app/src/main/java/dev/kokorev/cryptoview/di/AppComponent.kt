@@ -11,6 +11,7 @@ import dev.kokorev.cryptoview.di.modules.DomainModule
 import dev.kokorev.cryptoview.utils.PortfolioInteractor
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
 import dev.kokorev.cryptoview.viewModel.AiChatViewModel
+import dev.kokorev.cryptoview.viewModel.BinanceViewModel
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.viewModel.SavedViewModel
@@ -36,6 +37,7 @@ interface AppComponent {
     fun inject(settingsViewModel: SettingsViewModel)
     fun inject(searchViewModel: SearchViewModel)
     fun inject(coinViewModel: CoinViewModel)
+    fun inject(binanceViewModel: BinanceViewModel)
     fun inject(aiChatViewModel: AiChatViewModel)
     fun inject(tickersLoaderWorker: TickersLoaderWorker)
     fun inject(binanceLoaderWorker: BinanceLoaderWorker)
