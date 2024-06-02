@@ -13,7 +13,7 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="40dp"
+        android:layout_width="@dimen/logo_min_width"
         android:layout_height="match_parent"
         android:gravity="start|center_vertical"
         android:scaleType="centerInside" />

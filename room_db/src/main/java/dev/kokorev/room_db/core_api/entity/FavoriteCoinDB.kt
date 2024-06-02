@@ -21,4 +21,5 @@ data class FavoriteCoinDB(
     @ColumnInfo(name = "proof_type") val proofType: String?,
     @ColumnInfo(name = "org_structure") val organizationStructure: String?,
     @ColumnInfo(name = "hash_algorithm") val algorithm: String?,
+    @ColumnInfo(name = "time_notified", defaultValue = "0") val timeNotified: Long = 0L,
 )

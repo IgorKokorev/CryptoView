@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -8,78 +8,434 @@
     android:background="@drawable/background_gradient45"
     tools:context=".views.fragments.MainFragment">
 
-    <TextView
-        android:id="@+id/main_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/top_gainers_and_losers"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:paddingTop="12dp"
-        android:paddingBottom="0dp"
-        />
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rv_headers"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/base1"
-        android:elevation="@dimen/small_padding"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:layout_margin="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/main_header">
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/sentiment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/sentiment_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingTop="@dimen/medium_padding"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/big_text"
+                android:text="Sentiment summary"
+                android:layout_margin="@dimen/medium_padding"/>
+
+            <TextView
+                android:id="@+id/sentiment_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingTop="@dimen/medium_padding"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/big_text"
+                tools:text="Date"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <include
+                android:id="@+id/line"
+                layout="@layout/horizontal_line"
+                app:layout_constraintTop_toBottomOf="@+id/sentiment_header"
+                android:layout_height="1dp"
+                android:layout_width="match_parent"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <TextView
+                android:id="@+id/market_sentiment_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/line"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/big_text"
+                android:text="Market sentiment grade:"
+                android:layout_margin="@dimen/medium_padding"/>
+
+            <TextView
+                android:id="@+id/market_sentiment_grade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/line"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/big_text"
+                tools:text="Market"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <TextView
+                android:id="@+id/market_sentiment_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/market_sentiment_grade"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/small_text"
+                android:paddingEnd="@dimen/medium_padding"
+                tools:text="label" />
+
+            <TextView
+                android:id="@+id/news_sentiment_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/market_sentiment_label"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/big_text"
+                android:text="News sentiment grade:"
+                android:layout_margin="@dimen/medium_padding"/>
+
+            <TextView
+                android:id="@+id/news_sentiment_grade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/market_sentiment_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/big_text"
+                tools:text="News"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <TextView
+                android:id="@+id/news_sentiment_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/news_sentiment_grade"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/small_text"
+                android:paddingEnd="@dimen/medium_padding"
+                tools:text="label" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/news_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_padding"
+                app:cardCornerRadius="@dimen/medium_padding"
+                app:cardElevation="@dimen/medium_padding"
+                app:contentPadding="@dimen/medium_padding"
+                app:layout_constraintTop_toBottomOf="@+id/news_sentiment_label">
+
+                <LinearLayout
+                    android:id="@+id/news_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/news_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/news_summary"
+                        android:textSize="@dimen/big_text"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:id="@+id/news_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_report_found"
+                        android:paddingTop="@dimen/medium_padding"
+                        android:textSize="@dimen/medium_text"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/reddit_sentiment_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/news_container"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/big_text"
+                android:text="Reddit sentiment grade:"
+                android:layout_margin="@dimen/medium_padding"/>
+
+            <TextView
+                android:id="@+id/reddit_sentiment_grade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/news_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/big_text"
+                tools:text="Reddit"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <TextView
+                android:id="@+id/reddit_sentiment_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/reddit_sentiment_grade"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/small_text"
+                android:paddingEnd="@dimen/medium_padding"
+                tools:text="label" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/reddit_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_padding"
+                app:cardCornerRadius="@dimen/medium_padding"
+                app:cardElevation="@dimen/medium_padding"
+                app:contentPadding="@dimen/medium_padding"
+                app:layout_constraintTop_toBottomOf="@+id/reddit_sentiment_label">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/reddit_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reddit_summary"
+                        android:textSize="@dimen/big_text"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:id="@+id/reddit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_report_found"
+                        android:paddingTop="@dimen/medium_padding"
+                        android:textSize="@dimen/medium_text"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/twitter_sentiment_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/reddit_container"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/big_text"
+                android:text="Twitter sentiment grade:"
+                android:layout_margin="@dimen/medium_padding"/>
+
+            <TextView
+                android:id="@+id/twitter_sentiment_grade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/reddit_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/big_text"
+                tools:text="Twitter"
+                android:layout_margin="@dimen/medium_padding" />
+
+            <TextView
+                android:id="@+id/twitter_sentiment_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@+id/twitter_sentiment_grade"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/small_text"
+                android:paddingEnd="@dimen/medium_padding"
+                tools:text="label" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/twitter_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_padding"
+                app:cardCornerRadius="@dimen/medium_padding"
+                app:cardElevation="@dimen/medium_padding"
+                app:contentPadding="@dimen/medium_padding"
+                android:layout_marginBottom="@dimen/big_padding"
+                app:layout_constraintTop_toBottomOf="@+id/twitter_sentiment_label">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/twitter_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/twitter_summary"
+                        android:textSize="@dimen/big_text"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:id="@+id/twitter_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_report_found"
+                        android:paddingTop="@dimen/medium_padding"
+                        android:textSize="@dimen/medium_text"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_marginTop="@dimen/medium_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/twitter_container"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <TextView
-            android:id="@+id/coin_name"
-            android:layout_width="wrap_content"
+            android:id="@+id/main_header"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center"
+            android:paddingTop="12dp"
+            android:paddingBottom="0dp"
+            android:text="@string/top_gainers_and_losers"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/sentiment_container" />
 
-        <TextView
-            android:id="@+id/coin_symbol"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/interval_selector"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="Symbol"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/coin_change"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginTop="@dimen/medium_padding"
+            android:orientation="horizontal"
+            android:padding="@dimen/min_padding"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toBottomOf="@+id/main_header">
 
-        <TextView
-            android:id="@+id/coin_change"
-            android:layout_width="80dp"
+
+            <TextView
+                android:id="@+id/sorting_h1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="1h"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sorting_d1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="1d"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintStart_toEndOf="@+id/sorting_h1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sorting_w1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="1w"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintStart_toEndOf="@+id/sorting_d1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sorting_m1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="1m"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintStart_toEndOf="@+id/sorting_w1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sorting_y1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="1y"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintStart_toEndOf="@+id/sorting_m1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sorting_ath"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:gravity="center"
+                android:padding="@dimen/min_padding"
+                android:text="ATH"
+                android:textSize="@dimen/medium_text"
+                app:layout_constraintStart_toEndOf="@+id/sorting_y1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/alert_text"
+            layout="@layout/gainer_coin_header"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text="%24hr"
-            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/interval_selector" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/main_recycler"
+            android:nestedScrollingEnabled="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/alert_text"
+            tools:listitem="@layout/gainer_coin_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/main_recycler"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_headers"
-        tools:listitem="@layout/main_coin_item" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

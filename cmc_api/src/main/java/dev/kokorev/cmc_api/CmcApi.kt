@@ -2,7 +2,7 @@ package dev.kokorev.cmc_api
 
 import dev.kokorev.cmc_api.entity.cmc_listing.CmcListingDTO
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcMetadataDTO
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,7 +10,7 @@ interface CmcApi {
     @GET("/v2/cryptocurrency/info")
     fun getMetadata(
         @Query("symbol") symbol: String
-    ) : Observable<CmcMetadataDTO>
+    ) : Single<CmcMetadataDTO>
 
     @GET("/v1/cryptocurrency/listings/latest")
     fun getListingLatest(
@@ -21,5 +21,5 @@ interface CmcApi {
         @Query("sort") sort: String = "percent_change_24h",
         @Query("sort_dir") sortDir: String = "desc",
         @Query("cryptocurrency_type") cryptocurrencyType: String = "all"
-    ) : Observable<CmcListingDTO>
+    ) : Single<CmcListingDTO>
 }

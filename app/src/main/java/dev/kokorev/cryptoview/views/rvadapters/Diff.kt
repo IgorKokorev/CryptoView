@@ -2,7 +2,7 @@ package dev.kokorev.cryptoview.views.rvadapters
 
 import androidx.recyclerview.widget.DiffUtil
 
-// Calculates difference between 2 film lists for DiffUtil
+// Calculates difference between 2 lists for DiffUtil
 class Diff<T: Any>(val oldList: MutableList<T>, val newList: List<T>) :
     DiffUtil.Callback() {
 

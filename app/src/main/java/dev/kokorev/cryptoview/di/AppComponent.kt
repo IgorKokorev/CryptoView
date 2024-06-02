@@ -4,9 +4,14 @@ import dagger.Component
 import dev.kokorev.binance_api.BinanceProvider
 import dev.kokorev.cmc_api.CmcProvider
 import dev.kokorev.coin_paprika_api.CoinPaprikaProvider
+import dev.kokorev.cryptoview.backgroundService.BinanceLoaderWorker
+import dev.kokorev.cryptoview.backgroundService.FavoritesCheckService
+import dev.kokorev.cryptoview.backgroundService.TickersLoaderWorker
 import dev.kokorev.cryptoview.di.modules.DomainModule
+import dev.kokorev.cryptoview.utils.PortfolioInteractor
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
 import dev.kokorev.cryptoview.viewModel.AiChatViewModel
+import dev.kokorev.cryptoview.viewModel.BinanceViewModel
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.viewModel.SavedViewModel
@@ -32,5 +37,10 @@ interface AppComponent {
     fun inject(settingsViewModel: SettingsViewModel)
     fun inject(searchViewModel: SearchViewModel)
     fun inject(coinViewModel: CoinViewModel)
+    fun inject(binanceViewModel: BinanceViewModel)
     fun inject(aiChatViewModel: AiChatViewModel)
+    fun inject(tickersLoaderWorker: TickersLoaderWorker)
+    fun inject(binanceLoaderWorker: BinanceLoaderWorker)
+    fun inject(favoritesCheckService: FavoritesCheckService)
+    fun inject(portfolioInteractor: PortfolioInteractor)
 }

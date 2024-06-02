@@ -3,8 +3,8 @@ package dev.kokorev.cryptoview.views.rvviewholders
 import androidx.recyclerview.widget.RecyclerView
 import dev.kokorev.cryptoview.databinding.SearchCoinItemBinding
 import dev.kokorev.cryptoview.utils.NumbersUtils
-import dev.kokorev.cryptoview.utils.NumbersUtils.setPrice
-import dev.kokorev.cryptoview.utils.NumbersUtils.setPriceChange
+import dev.kokorev.cryptoview.utils.NumbersUtils.setChangeView
+import dev.kokorev.cryptoview.utils.NumbersUtils.formatPrice
 import dev.kokorev.cryptoview.views.rvadapters.SearchAdapter
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 
@@ -20,10 +20,10 @@ class SearchItemViewHolder(val binding: SearchCoinItemBinding) :
         ticker = coinPaprikaTickerDB
         binding.coinSymbol.text = ticker.symbol
         binding.coinName.text = ticker.name
-        binding.coinPrice.text = setPrice(ticker.price)
-        binding.coinAth.text = setPrice(ticker.athPrice)
-        setPriceChange(ticker.percentChange24h, binding.root.context, binding.coinChange)
-        setPriceChange(ticker.percentFromPriceAth, binding.root.context, binding.coinAthChange)
+        binding.coinPrice.text = formatPrice(ticker.price)
+        binding.coinAth.text = formatPrice(ticker.athPrice)
+        setChangeView(ticker.percentChange24h, binding.root.context, binding.coinChange, "%")
+        setChangeView(ticker.percentFromPriceAth, binding.root.context, binding.coinAthChange, "%")
 
         val volume = NumbersUtils.formatBigNumber(ticker.dailyVolume ?: 0.0)
         binding.coinVolume.text = volume

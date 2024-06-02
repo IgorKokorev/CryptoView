@@ -11,7 +11,6 @@ import javax.inject.Inject
 class AiChatViewModel : ViewModel() {
     @Inject
     lateinit var remoteApi: RemoteApi
-
     @Inject
     lateinit var repository: Repository
     val messages: Observable<List<MessageDB>>

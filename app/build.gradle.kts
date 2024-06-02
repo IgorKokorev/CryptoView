@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kapt)
+    id("kotlin-parcelize")
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
@@ -81,11 +83,22 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
+
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+
     implementation(libs.viewPager2)
+
+    implementation(libs.work)
+    implementation(libs.work.rxjava3)
 
     implementation(libs.glide)
     kapt(libs.glide.annotation.processor)
 
+    // airbnb paris lets you change view style programmatically
+    implementation(libs.airbnb.paris)
+    kapt(libs.airbnb.paris.processor)
+    
     // retrofit for error handling
     implementation(libs.retrofit)
 
@@ -95,7 +108,10 @@ dependencies {
     implementation(libs.rxandroid)
 
     implementation(libs.highcharts)
+    implementation(libs.anychart)
 
+    implementation(libs.moshi)
+    implementation(libs.kotlinx.json)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,15 +1,16 @@
 package dev.kokorev.cryptoview.views.fragments
 
+import android.content.ComponentName
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.transition.TransitionManager
 import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.databinding.FragmentAiBinding
+import dev.kokorev.cryptoview.databinding.FragmentAiReportsBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
@@ -17,7 +18,7 @@ import dev.kokorev.token_metrics_api.entity.AiReportData
 
 // AI reports fragment to show Token Metrics reports
 class AiReportFragment : Fragment() {
-    private lateinit var binding: FragmentAiBinding
+    private lateinit var binding: FragmentAiReportsBinding
     private val autoDisposable = AutoDisposable()
     private val viewModel: CoinViewModel by viewModels<CoinViewModel>(
         ownerProducer = { requireParentFragment() }
@@ -26,7 +27,7 @@ class AiReportFragment : Fragment() {
     // Boring
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = FragmentAiBinding.inflate(layoutInflater)
+        binding = FragmentAiReportsBinding.inflate(layoutInflater)
         autoDisposable.bindTo(lifecycle)
     }
 
@@ -36,30 +37,67 @@ class AiReportFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setupReportsClickListeners()
         getAiReport() // here we get the reports from API, convert them and show into the view
         return binding.root
     }
 
+    private fun setupReportsClickListeners() {
+        binding.fundamentalContainer.setOnClickListener {
+            TransitionManager.beginDelayedTransition(binding.fundamentalContainer)
+            binding.fundamentalText.visibility =
+                if (binding.fundamentalText.visibility == View.GONE) View.VISIBLE
+                else View.GONE
+        }
+
+        binding.traderContainer.setOnClickListener {
+            TransitionManager.beginDelayedTransition(binding.traderContainer)
+            binding.traderText.visibility =
+                if (binding.traderText.visibility == View.GONE) View.VISIBLE
+                else View.GONE
+        }
+
+        binding.technologyContainer.setOnClickListener {
+            TransitionManager.beginDelayedTransition(binding.technologyContainer)
+            binding.technologyText.visibility =
+                if (binding.technologyText.visibility == View.GONE) View.VISIBLE
+                else View.GONE
+        }
+    }
+
     private fun getAiReport() {
-        // In case of an error or empty report
-        val emptyReport =
-            getString(R.string.no_available_ai_report, viewModel.name, viewModel.symbol)
         viewModel.remoteApi.getAIReport(viewModel.symbol)
-            .subscribe{
-                val strBuilder = StringBuilder()
+            .subscribe {
                 // Selecting an item from the list
                 var aiReportData: AiReportData? = findReport(it.data)
-                if (aiReportData == null) {
-                    strBuilder.append(emptyReport)
-                } else {
-                    aiReportData.run {
-                        strBuilder.append(convertToHtml(getString(R.string.fundamental_report),FUNDAMENTALREPORT))
-                        strBuilder.append(convertToHtml(getString(R.string.trader_report), TRADERREPORT))
-                        strBuilder.append(convertToHtml(getString(R.string.technology_report), TECHNOLOGYREPORT))
-                    }
+                if (aiReportData != null) {
+                    val fundamentalReportHTML =
+                        Html.fromHtml(
+                            reportTextToHtml(
+                                aiReportData.fundamentalReport
+                                    ?: getString(R.string.no_report_found)
+                            ), Html.FROM_HTML_MODE_COMPACT
+                        )
+                    binding.fundamentalText.text = fundamentalReportHTML
+
+                    val traderReportHTML =
+                        Html.fromHtml(
+                            reportTextToHtml(
+                                aiReportData.traderReport
+                                    ?: getString(R.string.no_report_found)
+                            ), Html.FROM_HTML_MODE_COMPACT
+                        )
+                    binding.traderText.text = traderReportHTML
+
+                    val technologyReportHTML =
+                        Html.fromHtml(
+                            reportTextToHtml(
+                                aiReportData.technologyReport
+                                    ?: getString(R.string.no_report_found)
+                            ), Html.FROM_HTML_MODE_COMPACT
+                        )
+                    binding.technologyText.text = technologyReportHTML
                 }
-                binding.content.text =
-                    Html.fromHtml(strBuilder.toString(), Html.FROM_HTML_MODE_COMPACT)
             }
             .addTo(autoDisposable)
     }
@@ -67,17 +105,11 @@ class AiReportFragment : Fragment() {
     // in a list of reports find the one we need
     private fun findReport(aiReportDataList: ArrayList<AiReportData>): AiReportData? {
         if (aiReportDataList.isEmpty()) return null
-        aiReportDataList.forEach { data ->
-            Log.d(
-                "AiFragment",
-                "TokenMetrics symbol: ${data.SYMBOL}, name: ${data.TOKENNAME}, id: ${data.TOKENID}"
-            )
-        }
         var aiReportData: AiReportData? = null
         if (aiReportDataList.size == 1) aiReportData = aiReportDataList.get(0)
         else {
             for (data in aiReportDataList) {
-                if (data.TOKENNAME.lowercase() == viewModel.name.lowercase()) {
+                if (data.tokenName.lowercase() == viewModel.name.lowercase()) {
                     aiReportData = data
                     break
                 }
@@ -86,21 +118,8 @@ class AiReportFragment : Fragment() {
         return aiReportData
     }
 
-    // Creating a html section from TokenMetrics with given header
-    private fun convertToHtml(header: String, text: String?): StringBuilder {
-        val strBuilder = StringBuilder()
-        if (text.isNullOrBlank()) return strBuilder
-
-        val newText = reportTextToHtml(text)
-        strBuilder.append("<h2>${header}</h2><br><br>", newText, "<br><br>")
-
-        return strBuilder
-    }
-
     // Convert TokenMetrics ai text report to html
     private fun reportTextToHtml(text: String): String {
-        val regex = """(- )?## .+\n""".toRegex()
-
         val firstIteration = """- ## .+\n""".toRegex()
             .replace(text) { it ->
                 "<h4>" + it.value.substring(5) + "</h4>"
@@ -111,7 +130,6 @@ class AiReportFragment : Fragment() {
                 "<h4>" + it.value.substring(3) + "</h4>"
             }
 
-        return secondIteration.replace("\n", "<br>")
-
+        return "<br>" + secondIteration.replace("\n", "<br>")
     }
 }

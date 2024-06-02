@@ -9,7 +9,7 @@
     tools:context=".views.fragments.FavoritesFragment">
 
     <include
-        android:id="@+id/header"
+        android:id="@+id/alert_text"
         layout="@layout/saved_coin_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header"
+        app:layout_constraintTop_toBottomOf="@+id/alert_text"
         tools:listitem="@layout/saved_coin_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

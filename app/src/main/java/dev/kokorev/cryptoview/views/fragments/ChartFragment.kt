@@ -35,7 +35,7 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
-import java.text.DecimalFormat
+import dev.kokorev.cryptoview.views.MainActivity
 import java.time.LocalDate
 import java.util.Locale
 
@@ -67,12 +67,8 @@ class ChartFragment : Fragment() {
         autoDisposable.bindTo(lifecycle)
 
         // initializing chart colors with theme colors
-        textColorString =
-            Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.textColor))
-                .substring(2)
-        chartColorString =
-            Integer.toHexString(ContextCompat.getColor(binding.root.context, R.color.base7))
-                .substring(2)
+        textColorString = getColorHex(R.color.textColor)
+        chartColorString =getColorHex(R.color.colorAccent)
         chartColor = HIColor.initWithHexValue(chartColorString)
         textColor = HIColor.initWithHexValue(textColorString)
         textThemeStyle = HICSSObject().apply {
@@ -81,8 +77,14 @@ class ChartFragment : Fragment() {
         }
 
         initChartView()
+        binding.binanceLink.setOnClickListener {
+            (requireActivity() as MainActivity).launchBinanceFragment(viewModel.symbol)
+        }
     }
-
+    
+    private fun getColorHex(colorResource: Int) = Integer.toHexString(ContextCompat.getColor(binding.root.context, colorResource))
+        .substring(2)
+    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -304,8 +306,8 @@ class ChartFragment : Fragment() {
             .centerCrop()
             .into(binding.logo)
 
-        binding.price.text = formatPrice(quotes.price)
-        binding.ath.text = formatPrice(quotes.athPrice)
+        binding.price.text = NumbersUtils.formatPriceUSD(quotes.price)
+        binding.ath.text = NumbersUtils.formatPriceUSD(quotes.athPrice)
 
         showChange(quotes.percentChange1h, binding.change1h)
         showChange(quotes.percentChange12h, binding.change12h)
@@ -333,14 +335,7 @@ class ChartFragment : Fragment() {
         }
     }
 
-    private fun formatPrice(price: Double?): String =
-        if (price == null) "-"
-        else DecimalFormat("#,###.########$").format(
-            NumbersUtils.roundNumber(
-                price,
-                3
-            )
-        )
+
 
     companion object {
         const val D7_INTERVAL = 7

@@ -1,5 +1,9 @@
 package dev.kokorev.cryptoview.data.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class FavoriteCoin(
     override val id: Int = 0,
     override val coinPaprikaId: String,
@@ -11,5 +15,6 @@ data class FavoriteCoin(
     override val price: Double?,
     override val dailyVolume: Double?,
     override val marketCap: Double?,
-    override val percentChange24h: Double?,
-): SavedCoin
+    override val percentChange: Double?,
+    val timeNotified: Long
+): SavedCoin, Parcelable

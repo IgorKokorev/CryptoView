@@ -1,6 +1,7 @@
 package dev.kokorev.cryptoview.views.fragments
 
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,68 +20,91 @@ import dev.kokorev.cryptoview.databinding.OneColumnItemViewBinding
 import dev.kokorev.cryptoview.databinding.TwoColumnItemViewBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
+import dev.kokorev.cryptoview.utils.PortfolioInteractor
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 
+//Shows genegal Information about the coin
 class InfoFragment : Fragment() {
     private lateinit var binding: FragmentInfoBinding
+    private lateinit var portfolioInteractor: PortfolioInteractor
     private val autoDisposable = AutoDisposable()
     private val viewModel: CoinViewModel by viewModels<CoinViewModel>(
         ownerProducer = { requireParentFragment() }
     )
-    private var cpDescription = ""
-    private var cmcDescription = ""
+
+    private var cpDescription = "" // coin description from CoinPaprika
+    private var cmcDescription = "" // coin decription from CoinMarketCap
     private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         autoDisposable.bindTo(lifecycle)
+        binding = FragmentInfoBinding.inflate(layoutInflater)
+        portfolioInteractor = PortfolioInteractor(binding.root, autoDisposable)
+
+        getCoinPaprikaInfo()
+        getCmcInfo()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentInfoBinding.inflate(layoutInflater)
-
-        viewModel.remoteApi.getCoinPaprikaCoinInfo(viewModel.coinPaprikaId)
-            .subscribe(
-                {
-                    viewModel.cpInfo = it
-                    setupCoinPaprikaData(it)
-                    val recentCoinDB = Converter.CoinDetailsEntityToRecentCoinDB(it)
-                    viewModel.repository.addRecent(recentCoinDB)
-                    setupFavoriteFab(it)
-                },
-                { t ->
-                    Log.d(
-                        "InfoFragment",
-                        "Error getting data from CoinPaparikaCoinInfo",
-                        t
-                    )
-                })
-            .addTo(autoDisposable)
-
-        viewModel.remoteApi.getCmcMetadata(viewModel.symbol)
-            .subscribe(
-                {
-                    // Coin Info from CoinMarketCap
-                    findCoin(it)
-                    if (viewModel.cmcInfo != null) setupCmcData(viewModel.cmcInfo!!)
-                },
-                { t ->
-                    Log.d(
-                        "InfoFragment",
-                        "Error getting data from CmcMetaData",
-                        t
-                    )
-                })
-            .addTo(autoDisposable)
         return binding.root
     }
 
+    // get coin info from CoinMarketCap API and set to view. In fact we need only description
+    private fun getCmcInfo() {
+        viewModel.remoteApi.getCmcMetadata(viewModel.symbol)
+            .doOnSuccess {
+                // Coin Info from CoinMarketCap
+                findCoin(it)
+                if (viewModel.cmcInfo != null) setupCmcData(viewModel.cmcInfo!!)
+            }
+            .onErrorComplete()
+            .subscribe()
+            .addTo(autoDisposable)
+    }
+
+    // get coin info from CoinPaprika API and set to view
+    private fun getCoinPaprikaInfo() {
+        viewModel.remoteApi.getCoinPaprikaCoinInfo(viewModel.coinPaprikaId)
+            .doOnSuccess {
+                viewModel.cpInfo = it
+                setupCoinPaprikaData(it)
+                val recentCoinDB = Converter.CoinDetailsEntityToRecentCoinDB(it)
+                viewModel.repository.saveRecent(recentCoinDB)
+                setupFavoriteFab(it)
+                setupPortfolioFab(it)
+            }
+            .onErrorComplete()
+            .subscribe()
+            .addTo(autoDisposable)
+    }
+
+    private fun setupPortfolioFab(coin: CoinDetailsEntity) {
+        binding.portfolioFab.setOnClickListener {
+            Log.d(this.javaClass.simpleName, "Looking for ${coin.symbol} in Portfolio db")
+
+            viewModel.repository.getPortfolioPositionByCPId(coin.id)
+                // If position is found in Portfolio - change it
+                .doOnSuccess { portfolioCoinDB ->
+                    Log.d(this.javaClass.simpleName, portfolioCoinDB.symbol)
+                    portfolioInteractor.changePosition(portfolioCoinDB)
+                }
+                // if not found - open it
+                .doOnComplete {
+                    Log.d(this.javaClass.simpleName, "Empty response")
+                    portfolioInteractor.openPosition(coin)
+                }
+                .subscribe()
+                .addTo(autoDisposable)
+
+        }
+    }
+
+    // select correct coin in data list in CMC info
     private fun findCoin(it: CmcMetadataDTO) {
         val list = it.data.get(viewModel.symbol)
         if (list.isNullOrEmpty()) return
@@ -103,7 +127,7 @@ class InfoFragment : Fragment() {
             } else {
                 val favoriteCoinDB: FavoriteCoinDB =
                     Converter.CoinDetailsEntityToFavoriteCoinDB(coin)
-                viewModel.repository.addFavorite(favoriteCoinDB)
+                viewModel.repository.saveFavorite(favoriteCoinDB)
             }
             isFavorite = !isFavorite
             setFavoriteIcon()
@@ -126,17 +150,12 @@ class InfoFragment : Fragment() {
     private fun setupCoinPaprikaData(cpInfo: CoinDetailsEntity) {
         val coinPaprikaId = cpInfo.id
 
+        // check if coin is in favorites
         viewModel.repository.findFavoriteCoinByCoinPaprikaId(coinPaprikaId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+            .subscribe() {
                 isFavorite = true
                 setFavoriteIcon()
-            },
-                {
-                    isFavorite = false
-                    setFavoriteIcon()
-                })
+            }
             .addTo(autoDisposable)
 
         // Coin logo
@@ -164,7 +183,7 @@ class InfoFragment : Fragment() {
                 itemViewBinding.value.text = tag.name
                 itemViewBinding.root.setOnClickListener {
                     val message = "Coins: " + tag.coinCounter + "\n" + "ICOs: " + tag.icoCounter
-                    MaterialAlertDialogBuilder(binding.root.context, R.style.DialogStyle)
+                    MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
                         .setTitle(tag.name)
                         .setMessage(message)
                         .setPositiveButton("Ok") { dialog, which ->
@@ -259,8 +278,7 @@ class InfoFragment : Fragment() {
     }
 
     // Converts camel case name to normal text
-    private fun camelCaseToText(s: String): String {
-        return s.replaceFirstChar { c -> c.uppercase() }.replace('_', ' ')
-    }
-
+    private fun camelCaseToText(s: String): String = s.replaceFirstChar { c -> c.uppercase() }.replace('_', ' ')
 }
+
+fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)

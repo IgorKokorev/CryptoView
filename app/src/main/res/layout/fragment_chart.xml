@@ -9,40 +9,71 @@
     android:padding="@dimen/medium_padding"
     tools:context=".views.fragments.ChartFragment">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/symbol"
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:id="@+id/symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textSize="@dimen/big_text"
+            android:textStyle="bold"
+            tools:text="Symbol" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/binance_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/logo"
-        app:layout_constraintTop_toTopOf="@+id/logo"
-        app:layout_constraintBottom_toBottomOf="@+id/logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingStart="@dimen/big_padding"
-        android:textSize="@dimen/big_text"
-        android:textStyle="bold"
-        tools:text="Symbol" />
+        android:padding="@dimen/bigger_padding"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header">
+
+        <ImageView
+            android:id="@+id/binance_logo"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/binance_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/medium_text"
+            android:paddingStart="@dimen/medium_padding"
+            android:text="Binance market data and chart" />
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/price_stat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="@dimen/medium_padding"
-        app:layout_constraintTop_toBottomOf="@+id/logo">
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/binance_link">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="20"
-            android:padding="@dimen/small_padding"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/small_padding">
 
             <TextView
                 android:id="@+id/price_text"
@@ -50,9 +81,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:maxLines="1"
+                android:text="Price:"
                 android:textAlignment="viewEnd"
-                android:textSize="@dimen/medium_text"
-                android:text="Price:" />
+                android:textSize="@dimen/medium_text" />
 
             <TextView
                 android:id="@+id/ath_text"
@@ -70,8 +101,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="30"
-            android:padding="@dimen/small_padding"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/small_padding">
 
             <TextView
                 android:id="@+id/price"
@@ -100,26 +131,26 @@
             android:layout_height="wrap_content"
             android:layout_weight="20"
             android:gravity="end"
-            android:padding="@dimen/small_padding"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/small_padding">
 
             <TextView
                 android:id="@+id/vol_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
+                android:text="Vol:"
                 android:textAlignment="viewEnd"
-                android:textSize="@dimen/medium_text"
-                android:text="Vol:" />
+                android:textSize="@dimen/medium_text" />
 
             <TextView
                 android:id="@+id/mcap_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
+                android:text="MCap:"
                 android:textAlignment="viewStart"
-                android:textSize="@dimen/medium_text"
-                android:text="MCap:" />
+                android:textSize="@dimen/medium_text" />
 
         </LinearLayout>
 
@@ -127,8 +158,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="30"
-            android:padding="@dimen/small_padding"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/small_padding">
 
             <TextView
                 android:id="@+id/volume"
@@ -365,11 +396,12 @@
 
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/interval_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/medium_padding"
+        android:orientation="horizontal"
         android:padding="@dimen/min_padding"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@+id/changes">
@@ -381,7 +413,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_rectangle_base"
             android:gravity="center"
             android:padding="@dimen/min_padding"
             android:text="1w"
@@ -396,11 +429,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_rectangle_base"
             android:gravity="center"
             android:padding="@dimen/min_padding"
             android:text="1m"
-
             android:textSize="@dimen/medium_text"
             app:layout_constraintStart_toEndOf="@+id/d7"
             app:layout_constraintTop_toTopOf="parent" />
@@ -411,7 +444,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_rectangle_base"
             android:gravity="center"
             android:padding="@dimen/min_padding"
             android:text="3m"
@@ -425,7 +459,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_rectangle_base"
             android:gravity="center"
             android:padding="@dimen/min_padding"
             android:text="6m"
@@ -439,7 +474,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_rectangle_base"
             android:gravity="center"
             android:padding="@dimen/min_padding"
             android:text="YTD"
@@ -453,7 +489,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_margin="@dimen/min_padding"
-            android:background="@drawable/rounded_rectangle"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_rectangle_base"
             android:gravity="center"
             android:padding="@dimen/min_padding"
             android:text="Y"
@@ -462,7 +499,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <com.highsoft.highcharts.core.HIChartView
         android:id="@+id/chart_view"

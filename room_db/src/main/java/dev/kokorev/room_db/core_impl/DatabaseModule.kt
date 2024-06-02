@@ -8,6 +8,7 @@ import dev.kokorev.room_db.core_api.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.CoinPaprikaTickerDao
 import dev.kokorev.room_db.core_api.FavoriteCoinDao
 import dev.kokorev.room_db.core_api.MessageDao
+import dev.kokorev.room_db.core_api.PortfolioCoinDao
 import dev.kokorev.room_db.core_api.RecentCoinDao
 import dev.kokorev.room_db.core_api.TopMoverDao
 import dev.kokorev.room_db.core_api.db.DbContract
@@ -43,6 +44,12 @@ class DatabaseModule {
 
     @Provides
     @Singleton
+    fun providePortfolioCoinDao(databaseContract: DbContract): PortfolioCoinDao {
+        return databaseContract.portfolioCoinDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideRecentCoinDao(databaseContract: DbContract): RecentCoinDao {
         return databaseContract.recentCoinDao()
     }
@@ -60,7 +67,11 @@ class DatabaseModule {
             context,
             CoinViewDb::class.java, DATABASE_NAME
         )
-//            .fallbackToDestructiveMigration()
+/*            .setQueryCallback(
+                { sqlQuery, bindArgs ->
+                    Log.d(this.javaClass.simpleName, "SQL Query: $sqlQuery SQL Args: $bindArgs")
+                }, Executors.newSingleThreadExecutor()
+            )*/
             .build()
     }
 }

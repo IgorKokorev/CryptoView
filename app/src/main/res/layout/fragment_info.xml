@@ -21,7 +21,7 @@
             android:fitsSystemWindows="false">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/header"
+                android:id="@+id/alert_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/base1"
@@ -64,6 +64,19 @@
             app:layout_anchor="@id/app_bar"
             app:layout_anchorGravity="right|bottom"
             app:srcCompat="@drawable/icon_star_empty" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/portfolio_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:backgroundTint="@color/base3"
+            android:contentDescription="@string/add_to_portfolio"
+            app:borderWidth="0dp"
+            app:layout_anchor="@id/app_bar"
+            app:layout_anchorGravity="right|bottom"
+            android:translationX="-72dp"
+            app:srcCompat="@drawable/icon_portfolio" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"

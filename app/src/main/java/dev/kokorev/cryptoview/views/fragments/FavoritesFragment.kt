@@ -1,7 +1,6 @@
 package dev.kokorev.cryptoview.views.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,19 +69,16 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun setupDataFromViewModel() {
-        Observable.zip(viewModel.favorites, viewModel.tikers) { favorites, tikers ->
+        Observable.zip(viewModel.favorites, viewModel.tickers) { favorites, tikers ->
             val ids = favorites.map { favorite -> favorite.coinPaprikaId }
             val filtered = tikers.filter { db -> ids.contains(db.coinPaprikaId) }
             favorites.map { db -> Converter.favoriteCoinDBToFavoriteCoin(db, filtered) }
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+            .subscribe{
                 recyclerData = it
-            },
-                {
-                    Log.d("MainFragment", "Error getting data from CoinPaparikaTop10Movers", it)
-                })
+            }
             .addTo(autoDisposable)
     }
 }

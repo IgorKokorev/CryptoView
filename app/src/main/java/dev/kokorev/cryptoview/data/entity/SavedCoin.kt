@@ -12,5 +12,5 @@ interface SavedCoin {
     val price: Double?
     val dailyVolume: Double?
     val marketCap: Double?
-    val percentChange24h: Double?
+    val percentChange: Double?
 }

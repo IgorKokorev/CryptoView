@@ -15,25 +15,30 @@ import javax.inject.Singleton
 class TokenMetricsModule {
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
-        .callTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .addInterceptor(HttpLoggingInterceptor().apply {
-            if (BuildConfig.DEBUG) {
-                level = HttpLoggingInterceptor.Level.BASIC
+    fun provideOkHttpClient(): OkHttpClient {
+
+        val client = OkHttpClient.Builder()
+            .callTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                if (BuildConfig.DEBUG) {
+                    level = HttpLoggingInterceptor.Level.BASIC
+                }
+            })
+            // Adding headers interceptor that inserts auth header to every request
+            .addInterceptor { chain ->
+                val request = chain.request()
+                val requestWithHeaders = request.newBuilder()
+                    .addHeader("Accept", "application/json")
+                    .addHeader("api_key", TokenMetricsApiKey.key)
+                    .build()
+                return@addInterceptor chain.proceed(requestWithHeaders)
             }
-        })
-        // Adding headers interceptor that inserts auth header to every request
-        .addInterceptor { chain ->
-            val request = chain.request()
-            val requestWithHeaders = request.newBuilder()
-                .addHeader("Accept", "application/json")
-                .addHeader("api_key", TokenMetricsApiKey.key)
-                .build()
-            return@addInterceptor chain.proceed(requestWithHeaders)
-        }
-        .build()
+            .build()
+
+        return client
+    }
 
     @Provides
     @Singleton

@@ -70,7 +70,7 @@ class RecentFragment : Fragment() {
     }
 
     private fun setupDataFromViewModel() {
-        Observable.zip(viewModel.recents, viewModel.tikers) { recents, tikers ->
+        Observable.zip(viewModel.recents, viewModel.tickers) { recents, tikers ->
             val ids = recents.map { recent -> recent.coinPaprikaId }
             val filtered = tikers.filter { db -> ids.contains(db.coinPaprikaId) }
             recents.map { db -> Converter.recentCoinDBToRecentCoin(db, filtered) }
