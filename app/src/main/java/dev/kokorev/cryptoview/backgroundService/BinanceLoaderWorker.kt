@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
 import dev.kokorev.cryptoview.App
-import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter
@@ -23,8 +22,6 @@ class BinanceLoaderWorker(
     lateinit var remoteApi: RemoteApi
     @Inject
     lateinit var notificationService: NotificationService
-    @Inject
-    lateinit var preferences: PreferenceProvider
 
     init {
         App.instance.dagger.inject(this)

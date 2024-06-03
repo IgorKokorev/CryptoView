@@ -12,7 +12,7 @@ import dev.kokorev.binance_api.entity.BinanceSymbolDTO
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
 import dev.kokorev.cryptoview.data.entity.GainerCoin
 import dev.kokorev.cryptoview.data.entity.RecentCoin
-import dev.kokorev.cryptoview.views.fragments.TickerPriceSorting
+import dev.kokorev.cryptoview.views.fragments.MainPriceSorting
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import dev.kokorev.room_db.core_api.entity.TopMoverDB
@@ -124,7 +124,7 @@ object Converter {
         )
     }
 
-    fun cpTickerDBToGainerCoin(ticker: CoinPaprikaTickerDB, sorting: TickerPriceSorting): GainerCoin {
+    fun cpTickerDBToGainerCoin(ticker: CoinPaprikaTickerDB, sorting: MainPriceSorting): GainerCoin {
         return GainerCoin(
             id = ticker.id,
             coinPaprikaId = ticker.coinPaprikaId,
@@ -135,12 +135,12 @@ object Converter {
             dailyVolume = ticker.dailyVolume,
             marketCap = ticker.marketCap,
             percentChange = when (sorting) {
-                TickerPriceSorting.H1 -> ticker.percentChange1h
-                TickerPriceSorting.H24 -> ticker.percentChange24h
-                TickerPriceSorting.D7 -> ticker.percentChange7d
-                TickerPriceSorting.D30 -> ticker.percentChange30d
-                TickerPriceSorting.Y1 -> ticker.percentChange1y
-                TickerPriceSorting.ATH -> ticker.percentFromPriceAth
+                MainPriceSorting.H1 -> ticker.percentChange1h
+                MainPriceSorting.H24 -> ticker.percentChange24h
+                MainPriceSorting.D7 -> ticker.percentChange7d
+                MainPriceSorting.D30 -> ticker.percentChange30d
+                MainPriceSorting.Y1 -> ticker.percentChange1y
+                MainPriceSorting.ATH -> ticker.percentFromPriceAth
             }
         )
     }
@@ -168,7 +168,7 @@ object Converter {
                 this.javaClass.simpleName,
                 "Error converting Binance kline: ${kline.joinToString()}"
             )
-            0L
+            null
         }
         val openPrice = try {
             (kline.get(1) as String).toDouble()
@@ -177,7 +177,7 @@ object Converter {
                 this.javaClass.simpleName,
                 "Error converting Binance kline: ${kline.joinToString()}"
             )
-            0.0
+            null
         }
         val highPrice = try {
             (kline.get(2) as String).toDouble()
@@ -186,7 +186,7 @@ object Converter {
                 this.javaClass.simpleName,
                 "Error converting Binance kline: ${kline.joinToString()}"
             )
-            0.0
+            null
         }
         val lowPrice = try {
             (kline.get(3) as String).toDouble()
@@ -195,7 +195,7 @@ object Converter {
                 this.javaClass.simpleName,
                 "Error converting Binance kline: ${kline.joinToString()}"
             )
-            0.0
+            null
         }
         val closePrice = try {
             (kline.get(4) as String).toDouble()
@@ -204,23 +204,35 @@ object Converter {
                 this.javaClass.simpleName,
                 "Error converting Binance kline: ${kline.joinToString()}"
             )
-            0.0
+            null
         }
+        val volume = try {
+            (kline.get(5) as String).toDouble()
+        } catch (e: Exception) {
+            Log.d(
+                this.javaClass.simpleName,
+                "Error converting Binance kline: ${kline.joinToString()}"
+            )
+            null
+        }
+        
         return OHLCDataEntry(
             closeTime,
             openPrice,
             highPrice,
             lowPrice,
-            closePrice
+            closePrice,
+            volume
         )
     }
 
 }
 
-class OHLCDataEntry(x: Long?, open: Double?, high: Double?, low: Double?, close: Double?) :
+class OHLCDataEntry(x: Long?, open: Double?, high: Double?, low: Double?, close: Double?, volume: Double?) :
     HighLowDataEntry(x, high, low) {
     init {
         setValue("open", open)
         setValue("close", close)
+        setValue("value", volume)
     }
 }

@@ -13,6 +13,7 @@ class AiChatViewModel : ViewModel() {
     lateinit var remoteApi: RemoteApi
     @Inject
     lateinit var repository: Repository
+    
     val messages: Observable<List<MessageDB>>
 
     init {

@@ -22,13 +22,15 @@
         android:roundIcon="@drawable/cryptoview_blue_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CryptoView"
-        tools:targetApi="31">
+        tools:targetApi="34">
+<!--
         <service
             android:name=".backgroundService.FavoritesCheckService"
             android:enabled="true"
             android:icon="@drawable/cryptoview_blue_square"
             android:roundIcon="@drawable/cryptoview_blue_round"
             android:exported="false" />
+-->
         <activity
             android:name=".views.MainActivity"
             android:exported="true">

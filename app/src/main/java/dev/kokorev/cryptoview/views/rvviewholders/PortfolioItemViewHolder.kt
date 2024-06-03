@@ -7,7 +7,6 @@ import dev.kokorev.cryptoview.databinding.PortfolioCoinItemBinding
 import dev.kokorev.cryptoview.utils.NumbersUtils.formatPrice
 import dev.kokorev.cryptoview.utils.NumbersUtils.setChangeView
 import dev.kokorev.cryptoview.views.rvadapters.PortfolioAdapter
-import java.text.DecimalFormat
 
 class PortfolioItemViewHolder(val binding: PortfolioCoinItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -29,8 +28,7 @@ class PortfolioItemViewHolder(val binding: PortfolioCoinItemBinding) : RecyclerV
             binding.coinChange,
             "%"
         )
-        val decimalFormat = DecimalFormat.getInstance(binding.root.context.resources.configuration.locales[0])
-        binding.coinQty.text = decimalFormat.format(coin.quantity)
+        binding.coinQty.text = formatPrice(coin.quantity)
         binding.coinVal.text = formatPrice(coin.quantity * coin.priceLastEvaluation)
 
         val pnlNumber = coin.quantity * (coin.priceLastEvaluation - coin.priceOpen)

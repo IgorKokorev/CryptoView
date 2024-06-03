@@ -1,20 +1,26 @@
 package dev.kokorev.cryptoview.views.fragments
 
-import android.content.ComponentName
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.transition.TransitionManager
+import com.google.android.material.snackbar.Snackbar
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentAiReportsBinding
+import dev.kokorev.cryptoview.databinding.PricePredictionItemBinding
+import dev.kokorev.cryptoview.databinding.SimpleTextViewBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
+import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import dev.kokorev.token_metrics_api.entity.AiReportData
+import dev.kokorev.token_metrics_api.entity.TMPricePredictionData
 
 // AI reports fragment to show Token Metrics reports
 class AiReportFragment : Fragment() {
@@ -24,30 +30,75 @@ class AiReportFragment : Fragment() {
         ownerProducer = { requireParentFragment() }
     )
 
-    // Boring
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentAiReportsBinding.inflate(layoutInflater)
         autoDisposable.bindTo(lifecycle)
+        setupReportsClickListeners() // expand on click
+        getPricePrediction()
+        getAiReport() // here we get the reports from API, convert them and show into the view
     }
 
-    // Boring
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        setupReportsClickListeners()
-        getAiReport() // here we get the reports from API, convert them and show into the view
         return binding.root
     }
-
+    
+    private fun getPricePrediction() {
+        viewModel.remoteApi.getPricePrediction(symbol = viewModel.symbol)
+            .doOnSuccess {
+                if (it.success && it.data.isNotEmpty()) {
+                    setPrediction(it.data[0])
+                }
+            }
+            .doOnError {
+                Log.d(this.javaClass.simpleName, "Error getting price prediction for ${viewModel.symbol}, message: ${it.localizedMessage}, ${it.stackTrace}")
+            }
+            .doOnComplete {
+                val textViewBinding = SimpleTextViewBinding.inflate(layoutInflater)
+                textViewBinding.root.text = getString(R.string.price_prediction_not_found_for, viewModel.symbol)
+                binding.predictionContainer.addView(
+                    textViewBinding.root
+                )
+                Snackbar.make(binding.root,
+                    getString(R.string.price_prediction_not_found_for, viewModel.symbol), Snackbar.LENGTH_SHORT).show()
+            }
+            .subscribe()
+            .addTo(autoDisposable)
+    }
+    
+    private fun setPrediction(prediction: TMPricePredictionData) {
+        binding.date.text = prediction.date
+        binding.coinName.text = prediction.tokenName
+        prediction.forecastForNext7Days.forEach { (key, value) ->
+            val itemBinding = PricePredictionItemBinding.inflate(layoutInflater)
+            itemBinding.name.text = key
+            val priceStr = NumbersUtils.formatPriceUSD(value)
+            itemBinding.value.text = priceStr
+            binding.predictionContainer.addView(itemBinding.root)
+        }
+        val yield = prediction.predictedReturns7d
+        if (yield != null) {
+            val yieldBinding = PricePredictionItemBinding.inflate(layoutInflater)
+            NumbersUtils.setChangeView(yield * 100.0, binding.root.context, yieldBinding.value, "%")
+            yieldBinding.name.text = getString(R.string.predicted_return_in_7_days)
+            yieldBinding.name.setTypeface(null, Typeface.BOLD)
+            yieldBinding.value.setTypeface(null, Typeface.BOLD)
+            binding.predictionContainer.addView(yieldBinding.root)
+        }
+    }
+    
     private fun setupReportsClickListeners() {
         binding.fundamentalContainer.setOnClickListener {
             TransitionManager.beginDelayedTransition(binding.fundamentalContainer)
             binding.fundamentalText.visibility =
                 if (binding.fundamentalText.visibility == View.GONE) View.VISIBLE
                 else View.GONE
+            binding.traderText.visibility = View.GONE
+            binding.technologyText.visibility = View.GONE
         }
 
         binding.traderContainer.setOnClickListener {
@@ -55,6 +106,8 @@ class AiReportFragment : Fragment() {
             binding.traderText.visibility =
                 if (binding.traderText.visibility == View.GONE) View.VISIBLE
                 else View.GONE
+            binding.fundamentalText.visibility = View.GONE
+            binding.technologyText.visibility = View.GONE
         }
 
         binding.technologyContainer.setOnClickListener {
@@ -62,6 +115,8 @@ class AiReportFragment : Fragment() {
             binding.technologyText.visibility =
                 if (binding.technologyText.visibility == View.GONE) View.VISIBLE
                 else View.GONE
+            binding.fundamentalText.visibility = View.GONE
+            binding.traderText.visibility = View.GONE
         }
     }
 
@@ -69,7 +124,7 @@ class AiReportFragment : Fragment() {
         viewModel.remoteApi.getAIReport(viewModel.symbol)
             .subscribe {
                 // Selecting an item from the list
-                var aiReportData: AiReportData? = findReport(it.data)
+                val aiReportData: AiReportData? = findReport(it.data)
                 if (aiReportData != null) {
                     val fundamentalReportHTML =
                         Html.fromHtml(
@@ -106,7 +161,7 @@ class AiReportFragment : Fragment() {
     private fun findReport(aiReportDataList: ArrayList<AiReportData>): AiReportData? {
         if (aiReportDataList.isEmpty()) return null
         var aiReportData: AiReportData? = null
-        if (aiReportDataList.size == 1) aiReportData = aiReportDataList.get(0)
+        if (aiReportDataList.size == 1) aiReportData = aiReportDataList[0]
         else {
             for (data in aiReportDataList) {
                 if (data.tokenName.lowercase() == viewModel.name.lowercase()) {
@@ -121,12 +176,12 @@ class AiReportFragment : Fragment() {
     // Convert TokenMetrics ai text report to html
     private fun reportTextToHtml(text: String): String {
         val firstIteration = """- ## .+\n""".toRegex()
-            .replace(text) { it ->
+            .replace(text) {
                 "<h4>" + it.value.substring(5) + "</h4>"
             }
 
         val secondIteration = """## .+\n""".toRegex()
-            .replace(firstIteration) { it ->
+            .replace(firstIteration) {
                 "<h4>" + it.value.substring(3) + "</h4>"
             }
 

@@ -1,7 +1,6 @@
 package dev.kokorev.cryptoview.views.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.transition.TransitionManager
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.data.entity.GainerCoin
+import dev.kokorev.cryptoview.data.preferencesDateTime
+import dev.kokorev.cryptoview.data.preferencesInt
+import dev.kokorev.cryptoview.data.preferencesMainPriceSorting
 import dev.kokorev.cryptoview.databinding.FragmentMainBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
@@ -24,8 +25,11 @@ import dev.kokorev.cryptoview.views.rvadapters.TopMoverAdapter
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import dev.kokorev.token_metrics_api.entity.TMSentiment
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
+
 
 /**
  * Main fragment which is started once app starts. Shows Global info about Crypto markets
@@ -35,9 +39,11 @@ class MainFragment : Fragment() {
     private val autoDisposable = AutoDisposable()
     private val viewModel: MainViewModel by viewModels()
     private lateinit var topMoverAdapter: TopMoverAdapter
-    private lateinit var sorting: TickerPriceSorting
-    private var numTopCoins = Constants.TOP_COINS_DEFAULT
-    private var sortingBS: BehaviorSubject<TickerPriceSorting> = BehaviorSubject.create()
+    private var sortingBS: BehaviorSubject<MainPriceSorting> = BehaviorSubject.create()
+    
+    private var nTopCoins: Int by preferencesInt("nTopCoins")
+    private var sorting: MainPriceSorting by preferencesMainPriceSorting("mainPriceSorting")
+    private var tmSentimentTime: LocalDateTime by preferencesDateTime("tmSentimentTime")
 
     // Map TokenMetrics sentiment grades to colors
     private val tmGradeToColor: Map<String, Int> = mapOf(
@@ -62,9 +68,6 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sorting = viewModel.preferences.getMainPriceSorting()
-        numTopCoins = viewModel.preferences.getNumTopCoins()
-
         autoDisposable.bindTo(lifecycle)
     }
 
@@ -73,87 +76,75 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(layoutInflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+        
         initRecycler()
-
         setIntervalListeners()
         setupSentimentsClickListeners()
-
+        
         sortingBS.subscribe {
             sorting = it
-            getTickers()
+            getTopMovers()
             highlightIcon()
         }
             .addTo(autoDisposable)
+        
         sortingBS.onNext(sorting)
+        
+        return binding.root
     }
 
+    // highlight active sorting button
     private fun highlightIcon() {
         binding.sortingH1.background = ResourcesCompat.getDrawable(
             resources,
-            if (sorting == TickerPriceSorting.H1) R.drawable.rounded_rectangle_accent
+            if (sorting == MainPriceSorting.H1) R.drawable.rounded_rectangle_accent
             else R.drawable.rounded_rectangle_base, null
         )
         binding.sortingD1.background = ResourcesCompat.getDrawable(
             resources,
-            if (sorting == TickerPriceSorting.H24) R.drawable.rounded_rectangle_accent
+            if (sorting == MainPriceSorting.H24) R.drawable.rounded_rectangle_accent
             else R.drawable.rounded_rectangle_base, null
         )
         binding.sortingW1.background = ResourcesCompat.getDrawable(
             resources,
-            if (sorting == TickerPriceSorting.D7) R.drawable.rounded_rectangle_accent
+            if (sorting == MainPriceSorting.D7) R.drawable.rounded_rectangle_accent
             else R.drawable.rounded_rectangle_base, null
         )
         binding.sortingM1.background = ResourcesCompat.getDrawable(
             resources,
-            if (sorting == TickerPriceSorting.D30) R.drawable.rounded_rectangle_accent
+            if (sorting == MainPriceSorting.D30) R.drawable.rounded_rectangle_accent
             else R.drawable.rounded_rectangle_base, null
         )
         binding.sortingY1.background = ResourcesCompat.getDrawable(
             resources,
-            if (sorting == TickerPriceSorting.Y1) R.drawable.rounded_rectangle_accent
+            if (sorting == MainPriceSorting.Y1) R.drawable.rounded_rectangle_accent
             else R.drawable.rounded_rectangle_base, null
         )
         binding.sortingAth.background = ResourcesCompat.getDrawable(
             resources,
-            if (sorting == TickerPriceSorting.ATH) R.drawable.rounded_rectangle_accent
+            if (sorting == MainPriceSorting.ATH) R.drawable.rounded_rectangle_accent
             else R.drawable.rounded_rectangle_base, null
         )
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.preferences.saveMainPriceSorting(sorting)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        viewModel.preferences.saveMainPriceSorting(sorting)
-    }
-
     private fun setIntervalListeners() {
         binding.sortingH1.setOnClickListener {
-            sortingBS.onNext(TickerPriceSorting.H1)
+            sortingBS.onNext(MainPriceSorting.H1)
         }
         binding.sortingD1.setOnClickListener {
-            sortingBS.onNext(TickerPriceSorting.H24)
+            sortingBS.onNext(MainPriceSorting.H24)
         }
         binding.sortingW1.setOnClickListener {
-            sortingBS.onNext(TickerPriceSorting.D7)
+            sortingBS.onNext(MainPriceSorting.D7)
         }
         binding.sortingM1.setOnClickListener {
-            sortingBS.onNext(TickerPriceSorting.D30)
+            sortingBS.onNext(MainPriceSorting.D30)
         }
         binding.sortingY1.setOnClickListener {
-            sortingBS.onNext(TickerPriceSorting.Y1)
+            sortingBS.onNext(MainPriceSorting.Y1)
         }
         binding.sortingAth.setOnClickListener {
-            sortingBS.onNext(TickerPriceSorting.ATH)
+            sortingBS.onNext(MainPriceSorting.ATH)
         }
     }
 
@@ -178,12 +169,15 @@ class MainFragment : Fragment() {
         binding.mainRecycler.adapter = topMoverAdapter
     }
 
+    // Expand sentiment text on click
     private fun setupSentimentsClickListeners() {
         binding.newsContainer.setOnClickListener {
             TransitionManager.beginDelayedTransition(binding.newsContainer)
             binding.newsText.visibility =
                 if (binding.newsText.visibility == View.GONE) View.VISIBLE
                 else View.GONE
+            binding.redditText.visibility = View.GONE
+            binding.twitterText.visibility = View.GONE
         }
 
         binding.redditContainer.setOnClickListener {
@@ -191,6 +185,8 @@ class MainFragment : Fragment() {
             binding.redditText.visibility =
                 if (binding.redditText.visibility == View.GONE) View.VISIBLE
                 else View.GONE
+            binding.newsText.visibility = View.GONE
+            binding.twitterText.visibility = View.GONE
         }
 
         binding.twitterContainer.setOnClickListener {
@@ -198,15 +194,18 @@ class MainFragment : Fragment() {
             binding.twitterText.visibility =
                 if (binding.twitterText.visibility == View.GONE) View.VISIBLE
                 else View.GONE
+            binding.newsText.visibility = View.GONE
+            binding.redditText.visibility = View.GONE
         }
     }
 
     private fun setupDataFromViewModel() {
         getSentiment()
-        getTickers()
+        getTopMovers()
     }
 
-    private fun getTickers() {
+    // Get top movers for RV
+    private fun getTopMovers() {
         viewModel.cpTickers
             .subscribe { list ->
                 val gainers = findGainers(list)
@@ -216,34 +215,34 @@ class MainFragment : Fragment() {
             .addTo(autoDisposable)
     }
 
+    // Get Sentiment from API if more than 1 hour have passed since the last saved sentiment. Othewise get it from cache
     private fun getSentiment() {
         val time = LocalDateTime.now(ZoneOffset.UTC)
-        Log.d(this.javaClass.simpleName, "getSentiment. Time: $time")
-        if (time.isAfter(viewModel.preferences.getTMSentimentLastCall().plusHours(1))) {
+        if (time.isAfter(tmSentimentTime.plusHours(1).plusMinutes(7))) {
             viewModel.remoteApi.getSentiment()
                 .subscribe {
                     if (it.success && it.data.isNotEmpty()) {
                         val data = it.data.get(0)
                         viewModel.cacheManager.saveTMSentiment(data)
-                        viewModel.preferences.saveTMSentimentLastCall(time)
-                        setViewData(data)
+                        setSentimentData(data)
                     }
                 }
                 .addTo(autoDisposable)
         } else {
             val data = viewModel.cacheManager.getTMSentiment()
             if (data == null) {
-                viewModel.preferences.saveTMSentimentLastCall(time.withYear(time.year - 1))
+                tmSentimentTime = time.withYear(time.year - 1)
             } else {
-                setViewData(data)
+                setSentimentData(data)
             }
         }
     }
 
-    private fun setViewData(data: TMSentiment) {
-
+    // Show sentiment data
+    private fun setSentimentData(data: TMSentiment) {
         // DateTime of the sentiment
-        binding.sentimentDate.text = data.dateTime?.take(16)
+        val timeString = data.dateTime
+        if (timeString != null) setDateTime(timeString)
 
         // Market sentiment grade
         binding.marketSentimentGrade.text = data.marketSentimentGrade.toString()
@@ -288,20 +287,37 @@ class MainFragment : Fragment() {
         )
         binding.twitterText.text = data.twitterSummary
     }
-
+    
+    // Show last sentiment date and time and save last saved sentiment time if needed
+    private fun setDateTime(timeString: String) {
+        // Time in Sentiment
+        val ldt = LocalDateTime.parse(timeString.replace(' ', 'T'))
+        
+        if (ldt.isAfter(tmSentimentTime)) {
+            tmSentimentTime = ldt
+        }
+        
+        // converting UTC to local time
+        val timeInMillis = ldt.toEpochSecond(ZoneOffset.UTC) * 1000
+        val localTime =
+            Instant.ofEpochMilli(timeInMillis).atZone(ZoneId.systemDefault()).toLocalDateTime()
+        val localTimeStr = localTime.toString().replace('T', ' ')
+        binding.sentimentDate.text = localTimeStr
+    }
+    
     private fun findLosers(list: List<CoinPaprikaTickerDB>) =
         list
             .sortedBy { ticker ->
                 when (sorting) {
-                    TickerPriceSorting.H1 -> ticker.percentChange1h
-                    TickerPriceSorting.H24 -> ticker.percentChange24h
-                    TickerPriceSorting.D7 -> ticker.percentChange7d
-                    TickerPriceSorting.D30 -> ticker.percentChange30d
-                    TickerPriceSorting.Y1 -> ticker.percentChange1y
-                    TickerPriceSorting.ATH -> ticker.percentFromPriceAth
+                    MainPriceSorting.H1 -> ticker.percentChange1h
+                    MainPriceSorting.H24 -> ticker.percentChange24h
+                    MainPriceSorting.D7 -> ticker.percentChange7d
+                    MainPriceSorting.D30 -> ticker.percentChange30d
+                    MainPriceSorting.Y1 -> ticker.percentChange1y
+                    MainPriceSorting.ATH -> ticker.percentFromPriceAth
                 }
             }
-            .take(numTopCoins)
+            .take(nTopCoins)
             .map { ticker -> Converter.cpTickerDBToGainerCoin(ticker, sorting) }
             .filter { coin -> coin.percentChange!! < 0 }
             .reversed()
@@ -310,17 +326,17 @@ class MainFragment : Fragment() {
         list
             .sortedByDescending { ticker ->
                 when (sorting) {
-                    TickerPriceSorting.H1 -> ticker.percentChange1h
-                    TickerPriceSorting.H24 -> ticker.percentChange24h
-                    TickerPriceSorting.D7 -> ticker.percentChange7d
-                    TickerPriceSorting.D30 -> ticker.percentChange30d
-                    TickerPriceSorting.Y1 -> ticker.percentChange1y
-                    TickerPriceSorting.ATH -> ticker.percentFromPriceAth
+                    MainPriceSorting.H1 -> ticker.percentChange1h
+                    MainPriceSorting.H24 -> ticker.percentChange24h
+                    MainPriceSorting.D7 -> ticker.percentChange7d
+                    MainPriceSorting.D30 -> ticker.percentChange30d
+                    MainPriceSorting.Y1 -> ticker.percentChange1y
+                    MainPriceSorting.ATH -> ticker.percentFromPriceAth
                 }
             }
-            .take(numTopCoins)
+            .take(nTopCoins)
             .map { ticker -> Converter.cpTickerDBToGainerCoin(ticker, sorting) }
-            .filter { coin -> sorting == TickerPriceSorting.ATH || coin.percentChange!! > 0 }
+            .filter { coin -> sorting == MainPriceSorting.ATH || coin.percentChange!! > 0 }
 
 }
 

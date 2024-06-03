@@ -3,7 +3,7 @@
     <dimen name="small_text">12sp</dimen>
     <dimen name="medium_text">14sp</dimen>
     <dimen name="big_text">16sp</dimen>
-    <dimen name="corner_radius">15dp</dimen>
+    <dimen name="corner_radius">5dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="min_padding">3dp</dimen>
     <dimen name="small_padding">6dp</dimen>
@@ -12,4 +12,5 @@
     <dimen name="big_padding">24dp</dimen>
     <dimen name="tiny_text">10sp</dimen>
     <dimen name="logo_min_width">24dp</dimen>
+    <dimen name="card_elevation">6dp</dimen>
 </resources>

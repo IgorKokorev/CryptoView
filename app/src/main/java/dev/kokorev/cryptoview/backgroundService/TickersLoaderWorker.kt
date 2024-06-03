@@ -5,9 +5,10 @@ import android.util.Log
 import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
 import dev.kokorev.cryptoview.App
+import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.data.Constants
-import dev.kokorev.cryptoview.data.PreferenceProvider
+import dev.kokorev.cryptoview.data.preferencesBoolean
+import dev.kokorev.cryptoview.data.preferencesFloat
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter
@@ -26,9 +27,11 @@ class TickersLoaderWorker(
     lateinit var remoteApi: RemoteApi
     @Inject
     lateinit var notificationService: NotificationService
-    @Inject
-    lateinit var preferences: PreferenceProvider
-
+    
+    
+    private var toCheckFavorites: Boolean by preferencesBoolean("toCheckFavorites")
+    private var favoriteChange: Float by preferencesFloat("favoriteChange")
+    
     init {
         App.instance.dagger.inject(this)
     }
@@ -36,8 +39,6 @@ class TickersLoaderWorker(
     override fun createWork(): Single<Result> {
         val minMcap = Constants.minMCaps.get(0)
         val minVol = Constants.minVols.get(0)
-        val minChange = preferences.getFavoriteMinChange()
-        val toCheckFavorites = preferences.toCheckFavorites()
 
         val tickersSingle = remoteApi.getCoinPaprikaTickers()
             .map { list ->
@@ -77,7 +78,7 @@ class TickersLoaderWorker(
                     list.forEach { coin ->
                         val change = coin.percentChange ?: 0.0
                         Log.d(this.javaClass.simpleName, "Coin ${coin.symbol} has changed by ${change}%")
-                        if (abs(change) >= minChange &&
+                        if (abs(change) >= favoriteChange &&
                             coin.timeNotified + Constants.INTERVAL_TO_SHOW_FAVORITE_CHANGE < System.currentTimeMillis()
                         ) {
                             Log.d(this.javaClass.simpleName, "Sending notification")

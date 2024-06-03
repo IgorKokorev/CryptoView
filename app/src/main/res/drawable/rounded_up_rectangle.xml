@@ -4,8 +4,8 @@
     <solid
         android:color="@color/base3" />
     <corners
-        android:topLeftRadius="15dp"
-        android:topRightRadius="15dp" />
+        android:topLeftRadius="@dimen/corner_radius"
+        android:topRightRadius="@dimen/corner_radius" />
     <stroke
         android:color="@android:color/transparent"
         android:width="10dp" />

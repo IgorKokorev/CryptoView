@@ -29,6 +29,7 @@
 
     <color name="green">@color/lightGreen</color>
     <color name="red">@color/lightRed</color>
+    <color name="blue">@color/light_blue_600</color>
 
     <color name="iconColor">@color/base8</color>
     <color name="iconColor2">@color/base6</color>

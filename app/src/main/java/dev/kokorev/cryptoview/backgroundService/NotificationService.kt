@@ -8,10 +8,9 @@ import android.content.Intent
 import android.os.Parcelable
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
+import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.views.MainActivity
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 // Service for push notifications
 class NotificationService(val context: Context) {
@@ -23,7 +22,6 @@ class NotificationService(val context: Context) {
 
     private val notificationManager: NotificationManager?
 
-    val notificationPermission: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     init {
         notificationManager = getSystemService(context, NotificationManager::class.java)

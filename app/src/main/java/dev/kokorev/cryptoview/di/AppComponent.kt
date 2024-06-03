@@ -5,7 +5,6 @@ import dev.kokorev.binance_api.BinanceProvider
 import dev.kokorev.cmc_api.CmcProvider
 import dev.kokorev.coin_paprika_api.CoinPaprikaProvider
 import dev.kokorev.cryptoview.backgroundService.BinanceLoaderWorker
-import dev.kokorev.cryptoview.backgroundService.FavoritesCheckService
 import dev.kokorev.cryptoview.backgroundService.TickersLoaderWorker
 import dev.kokorev.cryptoview.di.modules.DomainModule
 import dev.kokorev.cryptoview.utils.PortfolioInteractor
@@ -41,6 +40,5 @@ interface AppComponent {
     fun inject(aiChatViewModel: AiChatViewModel)
     fun inject(tickersLoaderWorker: TickersLoaderWorker)
     fun inject(binanceLoaderWorker: BinanceLoaderWorker)
-    fun inject(favoritesCheckService: FavoritesCheckService)
     fun inject(portfolioInteractor: PortfolioInteractor)
 }

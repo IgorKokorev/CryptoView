@@ -6,19 +6,72 @@
     android:layout_height="match_parent"
     tools:context=".views.fragments.AiReportFragment">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
+            android:id="@+id/prediction_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/medium_padding"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/medium_padding">
+
+                <TextView
+                    android:id="@+id/coin_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    tools:text="Coin Name"
+                    android:layout_gravity="start"
+                    android:textSize="@dimen/medium_text"
+                    android:textStyle="bold"
+                    android:textAlignment="viewStart" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:layout_gravity="end"
+                android:textAlignment="viewEnd"
+                android:textSize="@dimen/medium_text"
+                tools:text="Date"
+                />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/big_text"
+                android:textStyle="bold"
+                android:layout_gravity="start"
+                android:text="TokenMetrics price prediction:"
+                android:paddingBottom="@dimen/medium_padding"
+                />
+
+        </LinearLayout>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/fundamental_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/medium_padding"
-            app:cardCornerRadius="@dimen/medium_padding"
-            app:cardElevation="@dimen/medium_padding"
+            app:cardCornerRadius="@dimen/corner_radius"
+            app:cardElevation="@dimen/card_elevation"
             app:contentPadding="@dimen/medium_padding"
-            app:layout_constraintTop_toTopOf="parent">
+            app:cardBackgroundColor="@color/base3"
+            app:layout_constraintTop_toBottomOf="@+id/prediction_container">
 
             <LinearLayout
                 android:id="@+id/fundamental_layout"
@@ -42,16 +95,17 @@
                     android:text="@string/no_report_found"
                     android:visibility="gone" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
         
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/trader_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/medium_padding"
-            app:cardCornerRadius="@dimen/medium_padding"
-            app:cardElevation="@dimen/medium_padding"
+            app:cardCornerRadius="@dimen/corner_radius"
+            app:cardElevation="@dimen/card_elevation"
             app:contentPadding="@dimen/medium_padding"
+            app:cardBackgroundColor="@color/base3"
             app:layout_constraintTop_toBottomOf="@+id/fundamental_container">
 
             <LinearLayout
@@ -75,16 +129,17 @@
                     android:text="@string/no_report_found"
                     android:visibility="gone" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
         
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/technology_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/medium_padding"
-            app:cardCornerRadius="@dimen/medium_padding"
-            app:cardElevation="@dimen/medium_padding"
+            app:cardCornerRadius="@dimen/corner_radius"
+            app:cardElevation="@dimen/card_elevation"
             app:contentPadding="@dimen/medium_padding"
+            app:cardBackgroundColor="@color/base3"
             android:layout_marginBottom="@dimen/big_padding"
             app:layout_constraintTop_toBottomOf="@+id/trader_container">
 
@@ -109,7 +164,7 @@
                     android:text="@string/no_report_found"
                     android:visibility="gone" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <View
             android:layout_marginTop="@dimen/big_padding"

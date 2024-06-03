@@ -19,6 +19,7 @@ class SavedViewModel : ViewModel() {
     lateinit var notificationService: NotificationService
 
     private var disposable: Disposable? = null
+    
     val favorites: Observable<List<FavoriteCoinDB>>
     val recents: Observable<List<RecentCoinDB>>
     val portfolio: Observable<List<PortfolioCoinDB>>

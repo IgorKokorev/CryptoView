@@ -51,3 +51,22 @@ enum class BinanceKLineInterval(val value: String) {
     @SerializedName("1M")
     MONTH("1M")
 }
+
+fun BinanceKLineInterval.list(): List<BinanceKLineInterval> = listOf(
+    BinanceKLineInterval.SECOND,
+    BinanceKLineInterval.MINUTE,
+    BinanceKLineInterval.MINUTE3,
+    BinanceKLineInterval.MINUTE5,
+    BinanceKLineInterval.MINUTE15,
+    BinanceKLineInterval.MINUTE30,
+    BinanceKLineInterval.HOUR,
+    BinanceKLineInterval.HOUR2,
+    BinanceKLineInterval.HOUR4,
+    BinanceKLineInterval.HOUR6,
+    BinanceKLineInterval.HOUR8,
+    BinanceKLineInterval.HOUR12,
+    BinanceKLineInterval.DAY,
+    BinanceKLineInterval.DAY3,
+    BinanceKLineInterval.WEEK,
+    BinanceKLineInterval.MONTH,
+)

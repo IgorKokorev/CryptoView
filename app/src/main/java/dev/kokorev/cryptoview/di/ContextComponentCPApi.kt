@@ -1,24 +1,25 @@
+/*
 package dev.kokorev.cryptoview.di
 
 import android.app.Application
 import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
-import dev.kokorev.room_db.core_api.db.ContextProvider
+import dev.kokorev.coin_paprika_api.ContextProviderCPApi
 import javax.inject.Singleton
 
 // Component to provide context to room db module
 @Singleton
 @Component
-interface ContextComponent: ContextProvider {
+interface ContextComponentCPApi: ContextProviderCPApi {
     companion object {
-        private var contextComponent: ContextProvider? = null
-        fun create(application: Application): ContextProvider {
-            return contextComponent ?: DaggerContextComponent
+        private var contextComponentCPApi: ContextProviderCPApi? = null
+        fun create(application: Application): ContextProviderCPApi {
+            return contextComponentCPApi ?: DaggerContextComponentCPApi
                 .builder()
                 .application(application.applicationContext)
                 .build().also {
-                    contextComponent = it
+                    contextComponentCPApi = it
                 }
         }
     }
@@ -27,6 +28,6 @@ interface ContextComponent: ContextProvider {
     interface Builder {
         @BindsInstance
         fun application(context: Context): Builder
-        fun build(): ContextComponent
+        fun build(): ContextComponentCPApi
     }
-}
+}*/

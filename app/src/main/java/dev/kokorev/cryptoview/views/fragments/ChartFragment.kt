@@ -45,7 +45,6 @@ class ChartFragment : Fragment() {
     private val viewModel: CoinViewModel by viewModels<CoinViewModel>(
         ownerProducer = { requireParentFragment() }
     )
-
     // Chart data
     private lateinit var hiChartView: HIChartView
     private lateinit var options: HIOptions
@@ -75,8 +74,9 @@ class ChartFragment : Fragment() {
             color = "#" + textColorString
             fontSize = "8pt"
         }
-
+        // initialising chart view before sending data to display
         initChartView()
+        
         binding.binanceLink.setOnClickListener {
             (requireActivity() as MainActivity).launchBinanceFragment(viewModel.symbol)
         }
@@ -89,25 +89,19 @@ class ChartFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         setupIntervalButtons()
+        getCPQuote()
+        getCPTicks()
 
-        viewModel.remoteApi.getCoinPaprikaTicker(viewModel.coinPaprikaId)
-            .subscribe({
-                val nameAndSymbol = viewModel.name + " (" + viewModel.symbol + ")"
-                binding.symbol.text = nameAndSymbol
-                val quotes = it.quotes?.get("USD")
-                if (quotes != null) showQuotes(quotes)
-            },
-                {
-                    Log.d(
-                        "ChartFragment",
-                        "Error getting data from CoinPaparikaTicker",
-                        it
-                    )
-                })
-            .addTo(autoDisposable)
+        // Refresh chart with delay, otherwise sometimes it isn't drawn.
+        Handler(Looper.getMainLooper()).postDelayed({
+            updateChart(MAX_INTERVAL)
+        }, 500)
 
+        return binding.root
+    }
+    
+    private fun getCPTicks() {
         viewModel.remoteApi.getCoinPaprikaTickerHistorical(viewModel.coinPaprikaId)
             .subscribe({
                 Log.d("ChartFragment", "${it.size} ticks received for the chart")
@@ -123,19 +117,26 @@ class ChartFragment : Fragment() {
                     )
                 })
             .addTo(autoDisposable)
-
-        // Refresh chart with delay, otherwise sometimes it isn't drawn.
-        Handler(Looper.getMainLooper()).postDelayed({
-            updateChart(MAX_INTERVAL)
-            Log.d(
-                "ChartFragment",
-                "Chart refreshed"
-            )
-        }, 500)
-
-        return binding.root
     }
-
+    
+    private fun getCPQuote() {
+        viewModel.remoteApi.getCoinPaprikaTicker(viewModel.coinPaprikaId)
+            .subscribe({
+                val nameAndSymbol = viewModel.name + " (" + viewModel.symbol + ")"
+                binding.symbol.text = nameAndSymbol
+                val quotes = it.quotes?.get("USD")
+                if (quotes != null) showQuotes(quotes)
+            },
+                {
+                    Log.d(
+                        "ChartFragment",
+                        "Error getting data from CoinPaparikaTicker",
+                        it
+                    )
+                })
+            .addTo(autoDisposable)
+    }
+    
     private fun setupIntervalButtons() {
         binding.d7.setOnClickListener { updateChart(D7_INTERVAL) }
         binding.m1.setOnClickListener { updateChart(M1_INTERVAL) }
@@ -308,14 +309,14 @@ class ChartFragment : Fragment() {
 
         binding.price.text = NumbersUtils.formatPriceUSD(quotes.price)
         binding.ath.text = NumbersUtils.formatPriceUSD(quotes.athPrice)
-
-        showChange(quotes.percentChange1h, binding.change1h)
-        showChange(quotes.percentChange12h, binding.change12h)
-        showChange(quotes.percentChange24h, binding.change24h)
-        showChange(quotes.percentChange7d, binding.change7d)
-        showChange(quotes.percentChange30d, binding.change30d)
-        showChange(quotes.percentChange1y, binding.change1y)
-        showChange(quotes.percentFromPriceAth, binding.changeAth)
+        
+        NumbersUtils.setChangeView(quotes.percentChange1h, binding.root.context, binding.change1h)
+        NumbersUtils.setChangeView(quotes.percentChange12h, binding.root.context, binding.change12h)
+        NumbersUtils.setChangeView(quotes.percentChange24h, binding.root.context, binding.change24h)
+        NumbersUtils.setChangeView(quotes.percentChange7d, binding.root.context, binding.change7d)
+        NumbersUtils.setChangeView(quotes.percentChange30d, binding.root.context, binding.change30d)
+        NumbersUtils.setChangeView(quotes.percentChange1y, binding.root.context, binding.change1y)
+        NumbersUtils.setChangeView(quotes.percentFromPriceAth, binding.root.context, binding.changeAth)
 
         binding.volume.text = NumbersUtils.formatBigNumber(quotes.dailyVolume)
         binding.mcap.text = NumbersUtils.formatBigNumber(quotes.marketCap)
@@ -334,8 +335,6 @@ class ChartFragment : Fragment() {
             "%.3f".format(Locale.ENGLISH, change)
         }
     }
-
-
 
     companion object {
         const val D7_INTERVAL = 7
