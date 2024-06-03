@@ -17,9 +17,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/selectors"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -28,11 +29,10 @@
                 android:id="@+id/symbol_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_gravity="start|center_vertical"
                 android:layout_weight="3"
                 android:maxLines="1"
-                android:gravity="start"
-                android:text="Binance ticker:"
+                android:text="@string/binance_ticker"
                 android:textSize="@dimen/big_text"
                 android:textStyle="bold" />
 
@@ -40,41 +40,316 @@
                 android:id="@+id/symbol_selector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_rectangle_base"
-                android:popupBackground="@drawable/rounded_rectangle_base"
+                android:layout_gravity="end|center_vertical"
                 android:layout_weight="2"
-                android:layout_gravity="end"
+                android:background="@drawable/rounded_rectangle_base"
+                android:dropDownSelector="@color/colorAccent"
+                android:popupBackground="@drawable/rounded_rectangle_base"
                 android:spinnerMode="dropdown"
-                tools:listitem="@layout/spinner_text_item"
-                android:dropDownSelector="@color/colorAccent" />
+                tools:listitem="@layout/spinner_text_item" />
 
             <Spinner
                 android:id="@+id/interval_selector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
                 android:layout_marginStart="@dimen/medium_padding"
-                android:background="@drawable/rounded_rectangle_base"
-                android:popupBackground="@drawable/rounded_rectangle_base"
                 android:layout_weight="1"
-                android:layout_gravity="end"
+                android:background="@drawable/rounded_rectangle_base"
+                android:dropDownSelector="@color/colorAccent"
+                android:popupBackground="@drawable/rounded_rectangle_base"
                 android:spinnerMode="dropdown"
-                tools:listitem="@layout/spinner_text_item"
-                android:dropDownSelector="@color/colorAccent" />
+                tools:listitem="@layout/spinner_text_item" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/price_and_volume"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/medium_padding"
+            android:layout_marginBottom="@dimen/medium_padding"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@+id/selectors" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="10"
+                android:paddingStart="@dimen/small_padding"
+                android:paddingEnd="@dimen/small_padding"
+                android:gravity="center_vertical|end" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/price"
+                    android:maxLines="1"
+                    android:textSize="@dimen/medium_text"
+                    android:textAlignment="viewEnd" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/change_24h"
+                    android:textSize="@dimen/medium_text"
+                    android:textAlignment="viewEnd" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="10"
+                android:paddingStart="@dimen/small_padding"
+                android:paddingEnd="@dimen/small_padding"
+                android:gravity="center_vertical|start" >
+
+                <TextView
+                    android:id="@+id/last_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/price"
+                    android:maxLines="1"
+                    android:textSize="@dimen/medium_text"
+                    android:textAlignment="viewStart" />
+
+                <TextView
+                    android:id="@+id/change_24h"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/change_24h"
+                    android:maxLines="1"
+                    android:textSize="@dimen/medium_text"
+                    android:textAlignment="viewStart" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="10"
+                android:paddingStart="@dimen/small_padding"
+                android:paddingEnd="@dimen/small_padding"
+                android:gravity="center_vertical|end" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/volume"
+                    android:maxLines="1"
+                    android:textSize="@dimen/medium_text"
+                    android:textAlignment="viewEnd" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/value"
+                    android:textSize="@dimen/medium_text"
+                    android:maxLines="1"
+                    android:textAlignment="viewEnd" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="10"
+                android:paddingStart="@dimen/small_padding"
+                android:paddingEnd="@dimen/small_padding"
+                android:gravity="center_vertical|start" >
+
+                <TextView
+                    android:id="@+id/volume"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    tools:text="@string/volume"
+                    android:textSize="@dimen/medium_text"
+                    android:textAlignment="viewStart" />
+
+                <TextView
+                    android:id="@+id/value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/value"
+                    android:maxLines="1"
+                    android:textSize="@dimen/medium_text"
+                    android:textAlignment="viewStart" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="10"
+                android:paddingStart="@dimen/small_padding"
+                android:paddingEnd="@dimen/small_padding"
+                android:gravity="center_vertical|start" >
+
+                <TextView
+                    android:id="@+id/base_asset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Base"
+                    android:maxLines="1"
+                    android:textSize="@dimen/medium_text"
+                    android:textAlignment="viewStart" />
+
+                <TextView
+                    android:id="@+id/quote_asset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Quote"
+                    android:maxLines="1"
+                    android:textSize="@dimen/medium_text"
+                    android:textAlignment="viewStart" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ohl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/price_and_volume"
+            android:orientation="horizontal"
+            android:padding="@dimen/small_padding"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="O:"
+                android:textSize="@dimen/medium_text"
+                android:maxLines="1"
+                android:layout_gravity="end|center_vertical"
+                android:textAlignment="viewEnd" />
+            <TextView
+                android:id="@+id/open_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Open"
+                android:maxLines="1"
+                android:layout_weight="10"
+                android:padding="@dimen/small_padding"
+                android:textSize="@dimen/medium_text"
+                android:layout_gravity="start|center_vertical"
+                android:textAlignment="viewStart" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="H:"
+                android:textSize="@dimen/medium_text"
+                android:layout_gravity="end|center_vertical"
+                android:textAlignment="viewEnd" />
+            <TextView
+                android:id="@+id/high_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Open"
+                android:layout_weight="10"
+                android:maxLines="1"
+                android:padding="@dimen/small_padding"
+                android:textSize="@dimen/medium_text"
+                android:layout_gravity="start|center_vertical"
+                android:textAlignment="viewStart" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="L:"
+                android:textSize="@dimen/medium_text"
+                android:maxLines="1"
+                android:layout_gravity="end|center_vertical"
+                android:textAlignment="viewEnd" />
+            <TextView
+                android:id="@+id/low_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Open"
+                android:maxLines="1"
+                android:padding="@dimen/small_padding"
+                android:textSize="@dimen/medium_text"
+                android:layout_gravity="start|center_vertical"
+                android:textAlignment="viewStart" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tech_indicators"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/ohl"
+            >
+
+            <TextView
+                android:id="@+id/stochastic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:text="Stochastic" />
+
+            <TextView
+                android:id="@+id/macd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:text="MACD" />
+
+            <TextView
+                android:id="@+id/momentum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:text="Momentum" />
+
+            <TextView
+                android:id="@+id/rsi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/min_padding"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_base"
+                android:padding="@dimen/min_padding"
+                android:textAlignment="center"
+                android:text="RSI" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <com.anychart.AnyChartView
+        android:id="@+id/any_chart_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/market_data">
+        app:layout_constraintTop_toBottomOf="@+id/market_data" />
 
-        <com.anychart.AnyChartView
-            android:id="@+id/any_chart_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

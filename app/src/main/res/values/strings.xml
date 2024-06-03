@@ -19,9 +19,9 @@
     <string name="http400">Sorry, I can\'t find any reasonable response to your question.</string>
     <string name="http500">Sorry, I don\'t have a response to such a question or maybe I\'m just experiencing some technical difficulties right now. Please reformulate your question or come back later.</string>
     <string name="unknown_http_error">Unknown Http error</string>
-    <string name="fundamental_report">FUNDAMENTAL REPORT</string>
-    <string name="trader_report">TRADER REPORT</string>
-    <string name="technology_report">TECHNOLOGY REPORT:</string>
+    <string name="fundamental_report">Fundamental report</string>
+    <string name="trader_report">Trader report</string>
+    <string name="technology_report">Technology report</string>
     <string name="no_available_ai_report">No available AI report for %1$s(%2$s)</string>
     <string name="ai_greeting">Hi, I\'m your AI helper. You can make any question about crypto industry and I\'ll do my best to find an answer…</string>
     <string name="ai_chat_hint">Enter your question</string>
@@ -45,7 +45,7 @@
     <string name="symbol">Symbol</string>
     <string name="name">Name</string>
     <string name="price">Price</string>
-    <string name="change_24h">%</string>
+    <string name="change">%</string>
     <string name="volume">Volume</string>
     <string name="mcap">MCap</string>
     <string name="add_to_portfolio">Add to portfolio</string>
@@ -79,4 +79,21 @@
     <string name="position_changed_text">"Position ha been changed, new quantity: "</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="tokenmetrics_summary">TokenMetrics summary</string>
+    <string name="market_sentiment_grade">Market sentiment grade:</string>
+    <string name="news_sentiment_grade">News sentiment grade:</string>
+    <string name="reddit_sentiment_grade">Reddit sentiment grade:</string>
+    <string name="ath">ATH</string>
+    <string name="_1d">1d</string>
+    <string name="_1h">1h</string>
+    <string name="_1m">1m</string>
+    <string name="_1w">1w</string>
+    <string name="_1y">1y</string>
+    <string name="twitter_sentiment_grade">Twitter sentiment grade:</string>
+    <string name="price_prediction_not_found_for">Price prediction not found for %1$s</string>
+    <string name="predicted_return_in_7_days">Predicted return in 7 days</string>
+    <string name="binance_market_data_and_chart">Binance market data and chart</string>
+    <string name="binance_ticker">Binance ticker:</string>
+    <string name="change_24h">%24h</string>
+    <string name="value">Value</string>
 </resources>

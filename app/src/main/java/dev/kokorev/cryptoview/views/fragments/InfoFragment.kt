@@ -34,7 +34,7 @@ class InfoFragment : Fragment() {
     )
 
     private var cpDescription = "" // coin description from CoinPaprika
-    private var cmcDescription = "" // coin decription from CoinMarketCap
+    private var cmcDescription = "" // coin description from CoinMarketCap
     private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {

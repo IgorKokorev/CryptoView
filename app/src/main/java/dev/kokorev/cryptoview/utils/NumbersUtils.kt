@@ -6,7 +6,6 @@ import android.icu.util.ULocale
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import dev.kokorev.cryptoview.R
-import java.text.DecimalFormat
 
 object NumbersUtils {
     // get user locale
@@ -28,12 +27,7 @@ object NumbersUtils {
 
     fun formatPriceUSD(price: Double?): String =
         if (price == null) "-"
-        else DecimalFormat("#,##0.00######$").format(
-            roundNumber(
-                price,
-                3
-            )
-        )
+        else formatPrice(price) + "$"
 
     fun roundNumber(number: Double, precision: Int): Double {
         if (number == 0.0) return number
@@ -55,38 +49,41 @@ object NumbersUtils {
     }
 
     fun formatBigNumber(number: Double): String {
-        if (number > 1_000_000_000_000) return DecimalFormat("#,###B").format(number / 1_000_000_000.0)
-        if (number > 100_000_000_000) return DecimalFormat("#,###.0B").format(number / 1_000_000_000.0)
-        if (number > 10_000_000_000) return DecimalFormat("#,###.00B").format(number / 1_000_000_000.0)
-        if (number > 1_000_000_000) return DecimalFormat("#,###M").format(number / 1_000_000.0)
-        if (number > 100_000_000) return DecimalFormat("#,###.0M").format(number / 1_000_000.0)
-        if (number > 10_000_000) return DecimalFormat("#,###.00M").format(number / 1_000_000.0)
-        if (number > 1_000_000) return DecimalFormat("#,###T").format(number / 1_000.0)
-        if (number > 100_000) return DecimalFormat("#,###.0T").format(number / 1_000.0)
-        if (number > 10_000) return DecimalFormat("#,###.00T").format(number / 1_000.0)
-        return DecimalFormat("#,###").format(number)
+        return when {
+            (number > 1_000_000_000_000) -> formatWithPrecision(number / 1_000_000_000.0, 0) + "B"
+            (number > 100_000_000_000) -> formatWithPrecision(number / 1_000_000_000.0, 1) + "B"
+            (number > 10_000_000_000) -> formatWithPrecision(number / 1_000_000_000.0, 2) + "B"
+            (number > 1_000_000_000) -> formatWithPrecision(number / 1_000_000.0, 0) + "M"
+            (number > 100_000_000) -> formatWithPrecision(number / 1_000_000.0, 1) + "M"
+            (number > 10_000_000) -> formatWithPrecision(number / 1_000_000.0, 2) + "M"
+            (number > 1_000_000) -> formatWithPrecision(number / 1_000.0, 0) + "T"
+            (number > 100_000) -> formatWithPrecision(number / 1_000.0, 1) + "T"
+            (number > 10_000) -> formatWithPrecision(number / 1_000.0, 2) + "T"
+            (number > 1_000) -> formatWithPrecision(number, 0)
+            
+            
+            else -> formatPrice(number)
+        }
     }
 
     fun formatPrice(price: Double?): String {
-        return if (price == null) "-"
-        else {
-            numberFormat.maximumFractionDigits = getPrecision(price)
-            numberFormat.format(price)
-        }
+        return if (price == null) "0"
+        else formatWithPrecision(price, getPrecision(price))
+    }
+    
+    fun formatWithPrecision(num: Double, precision: Int): String {
+        numberFormat.maximumFractionDigits = precision
+        return numberFormat.format(num)
     }
 
     fun parseDouble(str: String): Double {
         return numberFormat.parse(str).toDouble()
     }
 
-    fun setChangeView(change: Double?, context: Context, view: TextView, suffix: String) {
+    fun setChangeView(change: Double?, context: Context, view: TextView, suffix: String = "") {
         val changeNumber = change ?: 0.0
-        var changeString = DecimalFormat("#,##0.00").format(
-            NumbersUtils.roundNumber(
-                changeNumber,
-                2
-            )
-        ) + suffix
+        numberFormat.maximumFractionDigits = MIN_PRECISION
+        var changeString = numberFormat.format(changeNumber) + suffix
         if (changeNumber < 0) {
             view.setTextColor(
                 ContextCompat.getColor(
@@ -107,9 +104,9 @@ object NumbersUtils {
     }
 
     fun formatBigNumberShort(number: Long): String {
-        if (number >= 1_000_000_000) return DecimalFormat("#,###B").format(number / 1_000_000_000)
-        if (number >= 1_000_000) return DecimalFormat("#,###M").format(number / 1_000_000)
-        if (number >= 1_000) return DecimalFormat("#,###T").format(number / 1_000)
-        return DecimalFormat("#,###").format(number)
+        return if (number >= 1_000_000_000) formatWithPrecision(number / 1_000_000_000.0, 0) + "B"
+        else if (number >= 1_000_000)  formatWithPrecision(number / 1_000_000.0, 0) + "M"
+        else if (number >= 1_000) formatWithPrecision(number / 1_000.0, 0) + "T"
+        else formatWithPrecision(number.toDouble(), 0)
     }
 }

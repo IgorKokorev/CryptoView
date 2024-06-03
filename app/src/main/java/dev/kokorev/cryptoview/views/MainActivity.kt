@@ -21,9 +21,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import dev.kokorev.cryptoview.App
+import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
+import dev.kokorev.cryptoview.data.preferencesBoolean
 import dev.kokorev.cryptoview.databinding.ActivityMainBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
@@ -42,6 +44,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: ActivityViewModel by viewModels()
     private val autoDisposable = AutoDisposable()
+    
+    private var toCheckFavorites: Boolean by preferencesBoolean("toCheckFavorites")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
         // If notifications are disabled do not check favorites price change
         if(!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
-            viewModel.preferences.saveCheckFaforites(false)
+            toCheckFavorites = false
         }
 
         addFragment(MainFragment(), Constants.MAIN_FRAGMENT_TAG)
@@ -226,10 +230,8 @@ class MainActivity : AppCompatActivity() {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED
             ) {
-                Log.d(this.javaClass.simpleName, "Notification permission is already granted")
-                viewModel.notificationService.notificationPermission.onNext(true)
+                App.instance.notificationPermission.onNext(true)
             } else {
-                Log.d(this.javaClass.simpleName, "Asking for notification permission")
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
@@ -245,7 +247,6 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Constants.NOTIFICATION_PERMISSION_REQUEST_CODE) {
-            Log.d(this.javaClass.simpleName, "onRequestPermissionsResult. Number of permissions = ${permissions.size}, results: ${grantResults.size}")
 
             for (i in 0 until permissions.size) {
                 val permission = permissions[i]
@@ -253,11 +254,9 @@ class MainActivity : AppCompatActivity() {
 
                 if (permission == Manifest.permission.POST_NOTIFICATIONS) {
                     if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                        Log.d(this.javaClass.simpleName, "Notification permission granted")
-                        viewModel.notificationService.notificationPermission.onNext(true)
+                        App.instance.notificationPermission.onNext(true)
                     } else {
-                        Log.d(this.javaClass.simpleName, "Notification permission rejected")
-                        viewModel.notificationService.notificationPermission.onNext(false)
+                        App.instance.notificationPermission.onNext(false)
                     }
                 }
             }

@@ -7,7 +7,6 @@ import dev.kokorev.binance_api.BinanceApi
 import dev.kokorev.cmc_api.CmcApi
 import dev.kokorev.coin_paprika_api.CoinPaprikaApi
 import dev.kokorev.cryptoview.backgroundService.NotificationService
-import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.CacheManager
@@ -18,10 +17,10 @@ import javax.inject.Singleton
 class DomainModule(val context: Context) {
     @Provides
     fun provideContext() = context
-
+/*
     @Singleton
     @Provides
-    fun providePreferences(context: Context) = PreferenceProvider(context)
+    fun providePreferences(context: Context) = PreferenceProvider(context)*/
 
     @Singleton
     @Provides

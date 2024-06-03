@@ -33,17 +33,20 @@ class RemoteApi(
     private val tokenMetricsApi: TokenMetricsApi
 ) {
     var progressBarState: BehaviorSubject<Boolean> = BehaviorSubject.create()
-
+    
     // Binance API info
     fun getBinanceInfo() = binanceApi.getExchangeInfo().addProgressBar()
     fun getBinanceCurrentAvgPrice(symbol: String) =
         binanceApi.getCurrentAvgPrice(symbol).addProgressBar()
-    fun getBinance24hrstats(
+    
+    fun getBinance24hrStats(
         symbol: String,
         type: Binance24hrStatsType = Binance24hrStatsType.FULL
     ) = binanceApi.get24hrStats(symbol, type).addProgressBar()
-    fun getBinance24hrstatsAll(type: Binance24hrStatsType = Binance24hrStatsType.MINI) =
+    
+    fun getBinance24hrStatsAll(type: Binance24hrStatsType = Binance24hrStatsType.MINI) =
         binanceApi.get24hrStatsAll(type).addProgressBar()
+    
     fun getBinanceKLines(
         symbol: String,
         interval: BinanceKLineInterval = BinanceKLineInterval.HOUR,
@@ -51,26 +54,27 @@ class RemoteApi(
         endTime: Long? = null,
         limit: Int = 100
     ) = binanceApi.getKLines(symbol, interval.value, startTime, endTime, limit).addProgressBar()
-
-
+    
+    
     // CoinMarketCap API info
     fun getCmcMetadata(symbol: String) = cmcApi.getMetadata(symbol).addProgressBar()
-
+    
     fun getCmcListingLatest() = cmcApi.getListingLatest().addProgressBar()
-
-
+    
+    
     // CoinPaprika API info
     fun getCoinPaprikaAllCoins() = coinPaprikaApi.getCoins().addProgressBar()
     fun getCoinPaprikaTop10Movers() = coinPaprikaApi.getTop10Movers().addProgressBar()
     fun getCoinPaprikaCoinInfo(id: String) =
         coinPaprikaApi.getCoin(id).addProgressBar()
-
+    
     fun getCoinPaprikaTicker(id: String) = coinPaprikaApi.getTicker(id)
         .addProgressBar()
+    
     fun getCoinPaprikaTickers() = coinPaprikaApi.getTickers().addProgressBar()
     fun getCoinPaprikaTickerHistorical(id: String) =
         coinPaprikaApi.getTickerHistoricalTicks(id).addProgressBar()
-
+    
     // TokenMetrics API
     fun getAIReport(symbol: String): Maybe<TMResponse<AiReportData>> {
         return tokenMetricsApi.getAiReports(symbol = symbol)
@@ -83,7 +87,7 @@ class RemoteApi(
             }
             .addProgressBar()
     }
-
+    
     fun askAi(aiQuestion: AiQuestion): Maybe<AiAnswer> {
         return tokenMetricsApi.aiQuestion(aiQuestion)
             .onErrorReturn { e ->
@@ -95,13 +99,16 @@ class RemoteApi(
             }
             .addProgressBar()
     }
+    
     fun getSentiment() = tokenMetricsApi.getSentiment().addProgressBar()
     fun getMarketMetrics(
         startDate: String? = null,
         endDate: String? = null,
         limit: Int? = null,
         page: Int? = null,
-    ): Maybe<TMResponse<TMMarketMetricsData>> = tokenMetricsApi.getMarketMetrics(startDate, endDate, limit, page).addProgressBar()
+    ): Maybe<TMResponse<TMMarketMetricsData>> =
+        tokenMetricsApi.getMarketMetrics(startDate, endDate, limit, page).addProgressBar()
+    
     fun getPricePrediction(
         tokenId: Int? = null,
         symbol: String? = null,
@@ -109,23 +116,26 @@ class RemoteApi(
         exchange: String? = null,
         limit: Int? = null,
         page: Int? = null,
-    ): Maybe<TMResponse<TMPricePredictionData>> = tokenMetricsApi.getPricePrediction(tokenId, symbol, category, exchange, limit, page).addProgressBar()
-
-
-
-
+    ): Maybe<TMResponse<TMPricePredictionData>> =
+        tokenMetricsApi.getPricePrediction(tokenId, symbol, category, exchange, limit, page).addProgressBar()
+    
+    
     // Service functions
-    private fun exceptionToErrorText(e: Throwable) = if (e is HttpException) {
-        httpCodeToError(e.code())
-    } else "Unknown error"
-
+    private fun exceptionToErrorText(e: Throwable) =
+        if (e is HttpException) {
+            httpCodeToError(e.code())
+        } else "Unknown error"
+    
     private fun httpCodeToError(code: Int): String =
-        if (code == 400) context.getString(R.string.http400)
-        else if (code == 429) context.getString(R.string.http429)
-        else if (code == 500) context.getString(R.string.http500)
-        else context.getString(R.string.unknown_http_error)
-
-    private fun <T: Any> Maybe<T>.addProgressBar(): Maybe<T> {
+        when (code) {
+            400 -> context.getString(R.string.http400)
+            429 -> context.getString(R.string.http429)
+            500 -> context.getString(R.string.http500)
+            else -> context.getString(R.string.unknown_http_error)
+        }
+    
+    // Automatically turn progress bar on and off
+    private fun <T : Any> Maybe<T>.addProgressBar(): Maybe<T> {
         return this
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -136,12 +146,12 @@ class RemoteApi(
                 progressBarState.onNext(false)
             }
             .doOnError {
-                Log.d(this.javaClass.simpleName, "Error calling local db: ${it.localizedMessage}")
+                Log.d(this.javaClass.simpleName, "Error calling API ${this.javaClass.simpleName}: ${it.localizedMessage}")
             }
             .onErrorComplete()
     }
-
-    private fun <T: Any> Single<T>.addProgressBar(): Single<T> {
+    
+    private fun <T : Any> Single<T>.addProgressBar(): Single<T> {
         return this
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -152,11 +162,11 @@ class RemoteApi(
                 progressBarState.onNext(false)
             }
             .doOnError {
-                Log.d(this.javaClass.simpleName, "Error calling local db: ${it.localizedMessage}")
+                Log.d(this.javaClass.simpleName, "Error calling API: ${it.localizedMessage}")
             }
     }
-
-    private fun <T: Any> Observable<T>.addProgressBar(): Observable<T> {
+    
+    private fun <T : Any> Observable<T>.addProgressBar(): Observable<T> {
         return this
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -167,7 +177,7 @@ class RemoteApi(
                 progressBarState.onNext(false)
             }
             .doOnError {
-                Log.d(this.javaClass.simpleName, "Error calling local db: ${it.localizedMessage}")
+                Log.d(this.javaClass.simpleName, "Error calling API: ${it.localizedMessage}")
             }
             .onErrorComplete()
     }

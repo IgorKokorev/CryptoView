@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:padding="@dimen/min_padding"
-            android:text="@string/change_24h"
+            android:text="@string/change"
             android:textAlignment="viewEnd"
             android:textSize="@dimen/small_text" />
     </LinearLayout>

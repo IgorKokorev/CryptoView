@@ -7,7 +7,7 @@ import com.coinpaprika.apiclient.entity.MessageType
 import com.coinpaprika.apiclient.entity.PortfolioCoinDB
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import dev.kokorev.cryptoview.App
-import dev.kokorev.cryptoview.data.Constants
+import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
 import dev.kokorev.room_db.core_api.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB

@@ -2,7 +2,7 @@ package dev.kokorev.cryptoview.viewModel
 
 import androidx.lifecycle.ViewModel
 import dev.kokorev.cryptoview.App
-import dev.kokorev.cryptoview.data.PreferenceProvider
+import dev.kokorev.cryptoview.data.preferencesLong
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.CacheManager
@@ -18,8 +18,11 @@ class MainViewModel : ViewModel() {
     lateinit var cacheManager: CacheManager
     @Inject
     lateinit var repository: Repository
-    @Inject
-    lateinit var preferences: PreferenceProvider
+    
+    
+    private var minMcap: Long by preferencesLong("minMcap")
+    private var minVol: Long by preferencesLong("minVol")
+    
     private val compositeDisposable = CompositeDisposable()
     val cpTickers: Observable<List<CoinPaprikaTickerDB>>
 
@@ -27,7 +30,7 @@ class MainViewModel : ViewModel() {
 
     init {
         App.instance.dagger.inject(this)
-        cpTickers = repository.getAllCoinPaprikaTickersFiltered(preferences.getMinMcap(), preferences.getMinVol())
+        cpTickers = repository.getAllCoinPaprikaTickersFiltered(minMcap, minVol)
     }
 
     override fun onCleared() {

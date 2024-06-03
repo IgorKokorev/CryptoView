@@ -9,7 +9,6 @@ import dev.kokorev.cmc_api.DaggerCmcComponent
 import dev.kokorev.coin_paprika_api.DaggerCoinPaprikaComponent
 import dev.kokorev.cryptoview.backgroundService.BinanceLoaderWorker
 import dev.kokorev.cryptoview.backgroundService.TickersLoaderWorker
-import dev.kokorev.cryptoview.data.Constants
 import dev.kokorev.cryptoview.di.AppComponent
 import dev.kokorev.cryptoview.di.DaggerAppComponent
 import dev.kokorev.cryptoview.di.DbFacadeComponent
@@ -22,12 +21,15 @@ import dev.kokorev.room_db.core_api.PortfolioCoinDao
 import dev.kokorev.room_db.core_api.RecentCoinDao
 import dev.kokorev.room_db.core_api.TopMoverDao
 import dev.kokorev.token_metrics_api.DaggerTokenMetricsComponent
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
 class App : Application() {
     lateinit var dagger: AppComponent
+    
+    // Room DB external module daos
     @Inject
     lateinit var binanceSymbolDao: BinanceSymbolDao
     @Inject
@@ -42,8 +44,10 @@ class App : Application() {
     lateinit var recentCoinDao: RecentCoinDao
     @Inject
     lateinit var messageDao: MessageDao
-//    private lateinit var favoriteCheckIntent: Intent
-
+    
+    // follow any change in notification permissions
+    val notificationPermission: BehaviorSubject<Boolean> = BehaviorSubject.create()
+    
     override fun onCreate() {
         super.onCreate()
         instance = this
@@ -61,11 +65,6 @@ class App : Application() {
         getDbFacade().inject(this)
 
         startWorks()
-
-        // start service to periodically check favorites
-//        favoriteCheckIntent = Intent(this, FavoritesCheckService::class.java)
-//        startFavoriteCheckService()
-//        stopFavoriteCheckService()
     }
 
     private fun startWorks() {
@@ -95,16 +94,6 @@ class App : Application() {
                 binanceLoaderWorkRequest
             )
     }
-
-    /*    fun startFavoriteCheckService() {
-            Log.d(this.javaClass.simpleName, "Starting FavoriteCheckService")
-            startService(favoriteCheckIntent)
-        }
-
-        fun stopFavoriteCheckService() {
-            Log.d(this.javaClass.simpleName, "Stopping FavoriteCheckService")
-            stopService(favoriteCheckIntent)
-        }*/
 
     private fun getDbFacade(): DbFacadeComponent {
         return dbFacadeComponent ?: DbFacadeComponent.init(this).also {

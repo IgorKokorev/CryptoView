@@ -1,3 +1,4 @@
+/*
 package dev.kokorev.cryptoview.backgroundService
 
 import android.app.Service
@@ -7,7 +8,7 @@ import android.os.IBinder
 import android.util.Log
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.data.Constants
+import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.data.PreferenceProvider
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter
@@ -89,4 +90,4 @@ class FavoritesCheckService : Service() {
         Log.d(this.javaClass.simpleName, "onDestroy")
         compositeDisposable.clear()
     }
-}
+}*/

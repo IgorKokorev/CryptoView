@@ -17,6 +17,9 @@
         <item name="android:textColorLink">@color/textColor</item>
     </style>
 
+    <style name="CVCardView" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/base2</item>
+    </style>
     <style name="CVMaterialToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:background">@color/base1</item>
     </style>
@@ -37,12 +40,7 @@
     <style name="CVBottomBar" parent="Widget.Material3.BottomNavigationView">
         <item name="android:background">@color/base1</item>
         <item name="itemTextColor">@color/iconColor</item>
-        <item name="itemActiveIndicatorStyle">@style/CVActiveIndicatorStyle</item>
         <item name="itemIconTint">@color/iconColor</item>
-    </style>
-
-    <style name="CVActiveIndicatorStyle" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-
     </style>
 
     <style name="CVDialogStyle" parent="Theme.AppCompat.DayNight.Dialog.Alert">
@@ -92,8 +90,4 @@
 
     <style name="Theme.CryptoView" parent="Base.Theme.CryptoView" />
 
-    <style name="ThemeOverlay.CryptoView.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
-        <item name="fullscreenTextColor">@color/light_blue_A200</item>
-    </style>
 </resources>

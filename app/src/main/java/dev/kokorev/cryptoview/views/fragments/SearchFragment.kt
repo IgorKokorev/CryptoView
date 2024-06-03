@@ -9,6 +9,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dev.kokorev.cryptoview.R
+import dev.kokorev.cryptoview.data.preferencesInt
+import dev.kokorev.cryptoview.data.preferencesSearchSorting
 import dev.kokorev.cryptoview.databinding.FragmentSearchBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
@@ -34,10 +36,10 @@ class SearchFragment : Fragment() {
     private val viewModel: SearchViewModel by viewModels()
     private lateinit var searchAdapter: SearchAdapter
     private var tickers: List<CoinPaprikaTickerDB> = listOf()
-
-/*    var searchSorting = SearchSorting.NONE // field for tickers sorting
-    var direction = 1 // sorting direction*/
     
+    private var sortingDirection: Int by preferencesInt("searchSortingDirection")
+    private var sorting: SearchSorting by preferencesSearchSorting("searchSorting")
+
     private var tickersToShow: List<CoinPaprikaTickerDB> = listOf()
         set(value) {
             if (field == value) return
@@ -137,28 +139,19 @@ class SearchFragment : Fragment() {
 
     // check if the sorting field was clicked first time
     private fun sortTickers(newSorting: SearchSorting) {
-
-        val savedSorting = viewModel.preferences.getSearchSorting()
-        val newDirection = if (savedSorting == newSorting) -viewModel.preferences.getSearchSortingDirection() else 1
-
-        viewModel.preferences.saveSearchSorting(newSorting)
-        viewModel.preferences.saveSearchSortingDirection(newDirection)
-
-        tickersToShow = setArrowAndSort(tickersToShow, newSorting, newDirection)
+        sortingDirection = if (sorting == newSorting) -sortingDirection else 1
+        sorting = newSorting
+        tickersToShow = setArrowAndSort(tickers)
     }
 
     // sorting the list and set the according arrow
-    private fun setArrowAndSort(
-        tickersToSort: List<CoinPaprikaTickerDB>,
-        sorting: SearchSorting,
-        direction: Int
-    ): List<CoinPaprikaTickerDB> {
+    private fun setArrowAndSort(tickersToSort: List<CoinPaprikaTickerDB>): List<CoinPaprikaTickerDB> {
         val iconUp = Icon.createWithResource(context, R.drawable.icon_arrow_up)
         val iconDown = Icon.createWithResource(context, R.drawable.icon_arrow_down)
 
         clearArrows()
 
-        return if (direction > 0) {
+        return if (sortingDirection > 0) {
             when (sorting) {
                 MCAP -> {
                     binding.headerMcapArrow.setImageIcon(iconDown)
@@ -225,11 +218,7 @@ class SearchFragment : Fragment() {
         viewModel.allTickers
             .subscribe()
                 { dto ->
-                    tickers = setArrowAndSort(
-                        dto,
-                        viewModel.preferences.getSearchSorting(),
-                        viewModel.preferences.getSearchSortingDirection()
-                    )
+                    tickers = setArrowAndSort(dto)
                     tickersToShow = tickers
                 }
             .addTo(autoDisposable)

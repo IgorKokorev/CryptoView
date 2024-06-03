@@ -21,7 +21,7 @@ class Binance24hrStatsDTO(
     @SerializedName("quoteVolume") val quoteVolume: String,
     @SerializedName("openTime") val openTime: Long,
     @SerializedName("closeTime") val closeTime: Long,
-    @SerializedName("firstId") val firstId: Int,
-    @SerializedName("lastId") val lastId: Int,
-    @SerializedName("count") val count: Int,
+    @SerializedName("firstId") val firstId: Long,
+    @SerializedName("lastId") val lastId: Long,
+    @SerializedName("count") val count: Long,
 )
