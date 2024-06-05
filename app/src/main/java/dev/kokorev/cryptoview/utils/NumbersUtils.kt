@@ -6,6 +6,10 @@ import android.icu.util.ULocale
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import dev.kokorev.cryptoview.R
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 object NumbersUtils {
     // get user locale
@@ -109,4 +113,15 @@ object NumbersUtils {
         else if (number >= 1_000) formatWithPrecision(number / 1_000.0, 0) + "T"
         else formatWithPrecision(number.toDouble(), 0)
     }
+}
+
+
+fun Instant.toLocalDate(): LocalDate {
+    val localDateTime = LocalDateTime.ofInstant(this, ZoneId.of("UTC"))
+    return localDateTime.toLocalDate()
+}
+
+fun LocalDate.toInstant(): Instant {
+    val localDateTime = this.atStartOfDay(ZoneId.of("UTC"))
+    return localDateTime.toInstant()
 }

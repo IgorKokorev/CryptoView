@@ -9,8 +9,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.data.preferencesInt
-import dev.kokorev.cryptoview.data.preferencesSearchSorting
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesInt
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesSearchSorting
 import dev.kokorev.cryptoview.databinding.FragmentSearchBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo

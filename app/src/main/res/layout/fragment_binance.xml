@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/price"
                     android:maxLines="1"
-                    android:textSize="@dimen/medium_text"
+                    android:textSize="@dimen/small_text"
                     android:textAlignment="viewEnd" />
 
                 <TextView
@@ -95,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:text="@string/change_24h"
-                    android:textSize="@dimen/medium_text"
+                    android:textSize="@dimen/small_text"
                     android:textAlignment="viewEnd" />
 
             </LinearLayout>
@@ -107,7 +107,7 @@
                 android:layout_weight="10"
                 android:paddingStart="@dimen/small_padding"
                 android:paddingEnd="@dimen/small_padding"
-                android:gravity="center_vertical|start" >
+                android:gravity="center_vertical|end" >
 
                 <TextView
                     android:id="@+id/last_price"
@@ -115,8 +115,8 @@
                     android:layout_height="wrap_content"
                     tools:text="@string/price"
                     android:maxLines="1"
-                    android:textSize="@dimen/medium_text"
-                    android:textAlignment="viewStart" />
+                    android:textSize="@dimen/small_text"
+                    android:textAlignment="viewEnd" />
 
                 <TextView
                     android:id="@+id/change_24h"
@@ -124,8 +124,8 @@
                     android:layout_height="wrap_content"
                     tools:text="@string/change_24h"
                     android:maxLines="1"
-                    android:textSize="@dimen/medium_text"
-                    android:textAlignment="viewStart" />
+                    android:textSize="@dimen/small_text"
+                    android:textAlignment="viewEnd" />
 
             </LinearLayout>
 
@@ -143,13 +143,12 @@
                     android:layout_height="wrap_content"
                     android:text="@string/volume"
                     android:maxLines="1"
-                    android:textSize="@dimen/medium_text"
+                    android:textSize="@dimen/small_text"
                     android:textAlignment="viewEnd" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/value"
                     android:textSize="@dimen/medium_text"
                     android:maxLines="1"
                     android:textAlignment="viewEnd" />
@@ -163,7 +162,7 @@
                 android:layout_weight="10"
                 android:paddingStart="@dimen/small_padding"
                 android:paddingEnd="@dimen/small_padding"
-                android:gravity="center_vertical|start" >
+                android:gravity="center_vertical|end" >
 
                 <TextView
                     android:id="@+id/volume"
@@ -171,8 +170,8 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     tools:text="@string/volume"
-                    android:textSize="@dimen/medium_text"
-                    android:textAlignment="viewStart" />
+                    android:textSize="@dimen/small_text"
+                    android:textAlignment="viewEnd" />
 
                 <TextView
                     android:id="@+id/value"
@@ -180,8 +179,8 @@
                     android:layout_height="wrap_content"
                     tools:text="@string/value"
                     android:maxLines="1"
-                    android:textSize="@dimen/medium_text"
-                    android:textAlignment="viewStart" />
+                    android:textSize="@dimen/small_text"
+                    android:textAlignment="viewEnd" />
 
             </LinearLayout>
 
@@ -200,7 +199,7 @@
                     android:layout_height="wrap_content"
                     tools:text="Base"
                     android:maxLines="1"
-                    android:textSize="@dimen/medium_text"
+                    android:textSize="@dimen/small_text"
                     android:textAlignment="viewStart" />
 
                 <TextView
@@ -209,7 +208,7 @@
                     android:layout_height="wrap_content"
                     tools:text="Quote"
                     android:maxLines="1"
-                    android:textSize="@dimen/medium_text"
+                    android:textSize="@dimen/small_text"
                     android:textAlignment="viewStart" />
 
             </LinearLayout>
@@ -229,8 +228,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="O:"
-                android:textSize="@dimen/medium_text"
+                android:text="Open:"
                 android:maxLines="1"
                 android:layout_gravity="end|center_vertical"
                 android:textAlignment="viewEnd" />
@@ -242,7 +240,6 @@
                 android:maxLines="1"
                 android:layout_weight="10"
                 android:padding="@dimen/small_padding"
-                android:textSize="@dimen/medium_text"
                 android:layout_gravity="start|center_vertical"
                 android:textAlignment="viewStart" />
 
@@ -250,8 +247,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="H:"
-                android:textSize="@dimen/medium_text"
+                android:text="High:"
                 android:layout_gravity="end|center_vertical"
                 android:textAlignment="viewEnd" />
             <TextView
@@ -262,15 +258,13 @@
                 android:layout_weight="10"
                 android:maxLines="1"
                 android:padding="@dimen/small_padding"
-                android:textSize="@dimen/medium_text"
                 android:layout_gravity="start|center_vertical"
                 android:textAlignment="viewStart" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="L:"
-                android:textSize="@dimen/medium_text"
+                android:text="Low:"
                 android:maxLines="1"
                 android:layout_gravity="end|center_vertical"
                 android:textAlignment="viewEnd" />
@@ -281,7 +275,6 @@
                 tools:text="Open"
                 android:maxLines="1"
                 android:padding="@dimen/small_padding"
-                android:textSize="@dimen/medium_text"
                 android:layout_gravity="start|center_vertical"
                 android:textAlignment="viewStart" />
 

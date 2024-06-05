@@ -17,10 +17,6 @@ import javax.inject.Singleton
 class DomainModule(val context: Context) {
     @Provides
     fun provideContext() = context
-/*
-    @Singleton
-    @Provides
-    fun providePreferences(context: Context) = PreferenceProvider(context)*/
 
     @Singleton
     @Provides

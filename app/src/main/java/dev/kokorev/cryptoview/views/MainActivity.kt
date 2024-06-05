@@ -25,7 +25,7 @@ import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
-import dev.kokorev.cryptoview.data.preferencesBoolean
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesBoolean
 import dev.kokorev.cryptoview.databinding.ActivityMainBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
@@ -77,7 +77,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (coin != null) {
-            launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name)
+//            launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name)
+            launchBinanceFragment(coin.symbol)
         }
     }
 

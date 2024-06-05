@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@android:id/text1"
     style="?android:attr/spinnerItemStyle"
     android:singleLine="true"
@@ -9,6 +9,8 @@
     android:ellipsize="marquee"
     android:textAlignment="viewEnd"
     android:textSize="@dimen/medium_text"
-    android:padding="@dimen/small_padding"
-    android:paddingEnd="@dimen/big_padding"
-    />
+    tools:text="Item"
+    android:paddingTop="@dimen/small_padding"
+    android:paddingBottom="@dimen/small_padding"
+    android:paddingStart="@dimen/small_padding"
+    android:paddingEnd="@dimen/medium_padding" />

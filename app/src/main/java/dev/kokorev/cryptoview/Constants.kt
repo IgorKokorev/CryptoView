@@ -1,5 +1,8 @@
 package dev.kokorev.cryptoview
 
+const val PORTFOLIO_EVALUATION_SERVICE_ACTION: String = "portfolio_evaluation_action"
+const val PORTFOLIO_EVALUATION_SERVICE_REQUEST_ID: Int = 1
+
 object Constants {
     
     const val SETTINGS: String = "settings"
@@ -33,17 +36,7 @@ object Constants {
     const val INTERVAL_TO_SHOW_FAVORITE_CHANGE = 1000L * 60 * 60 /* minutes */ * 12 /* hours */ * 1 /* days */  // Do not show favorite change notifications more often than
 
     // Settings defaults
-    const val FAVORITE_CHECK_MIN_CHANGE: Float = 1.0f
-    const val FAVORITE_CHECK_MAX_CHANGE: Float = 20.0f
-    val minMCaps = listOf<Long>(
-        10_000L, 100_000L, 1_000_000L, 10_000_000L, 100_000_000L, 250_000_000L, 500_000_000L, 1_000_000_000L, 10_000_000_000L
-    )   // List of possible "min mcap" values
-    val minVols = listOf<Long>(
-        1_000L, 10_000L, 100_000L, 1_000_000L, 10_000_000L, 100_000_000L, 1_000_000_000L
-    )   // List of possible "min mcap" values
-    const val TOP_COINS_FROM = 3
-    const val TOP_COINS_TO = 20
-    const val TOP_COINS_DEFAULT = 10
+
 
     // Fragments tags for fragment manager
     const val MAIN_FRAGMENT_TAG = "main"

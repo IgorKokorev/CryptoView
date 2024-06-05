@@ -4,13 +4,15 @@ import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
-import dev.kokorev.room_db.core_api.BinanceSymbolDao
-import dev.kokorev.room_db.core_api.CoinPaprikaTickerDao
-import dev.kokorev.room_db.core_api.FavoriteCoinDao
-import dev.kokorev.room_db.core_api.MessageDao
-import dev.kokorev.room_db.core_api.PortfolioCoinDao
-import dev.kokorev.room_db.core_api.RecentCoinDao
-import dev.kokorev.room_db.core_api.TopMoverDao
+import dev.kokorev.room_db.core_api.dao.BinanceSymbolDao
+import dev.kokorev.room_db.core_api.dao.CoinPaprikaTickerDao
+import dev.kokorev.room_db.core_api.dao.FavoriteCoinDao
+import dev.kokorev.room_db.core_api.dao.MessageDao
+import dev.kokorev.room_db.core_api.dao.PortfolioEvaluationDao
+import dev.kokorev.room_db.core_api.dao.PortfolioPositionDao
+import dev.kokorev.room_db.core_api.dao.PortfolioTransactionDao
+import dev.kokorev.room_db.core_api.dao.RecentCoinDao
+import dev.kokorev.room_db.core_api.dao.TopMoverDao
 import dev.kokorev.room_db.core_api.db.DbContract
 import javax.inject.Singleton
 
@@ -44,10 +46,22 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun providePortfolioCoinDao(databaseContract: DbContract): PortfolioCoinDao {
-        return databaseContract.portfolioCoinDao()
+    fun providePortfolioPositionDao(databaseContract: DbContract): PortfolioPositionDao {
+        return databaseContract.portfolioPositionDao()
     }
-
+    
+    @Provides
+    @Singleton
+    fun providePortfolioEvaluationDao(databaseContract: DbContract): PortfolioEvaluationDao {
+        return databaseContract.portfolioEvaluationDao()
+    }
+    
+    @Provides
+    @Singleton
+    fun providePortfolioTransactionDao(databaseContract: DbContract): PortfolioTransactionDao {
+        return databaseContract.portfolioTransactionDao()
+    }
+    
     @Provides
     @Singleton
     fun provideRecentCoinDao(databaseContract: DbContract): RecentCoinDao {

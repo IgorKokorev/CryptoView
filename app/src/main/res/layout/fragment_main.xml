@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient45"
+    android:paddingTop="@dimen/small_padding"
+    android:paddingBottom="@dimen/small_padding"
     tools:context=".views.fragments.MainFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout

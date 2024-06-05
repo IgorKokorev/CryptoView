@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.coinpaprika.apiclient.entity.PortfolioCoinDB
+import com.coinpaprika.apiclient.entity.PortfolioPositionDB
 import dev.kokorev.cryptoview.databinding.PortfolioCoinItemBinding
 import dev.kokorev.cryptoview.views.rvviewholders.PortfolioItemViewHolder
 
@@ -13,10 +13,10 @@ class PortfolioAdapter(
     private val clickListener: OnItemClickListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val data = mutableListOf<PortfolioCoinDB>()
+    private val data = mutableListOf<PortfolioPositionDB>()
 
     interface OnItemClickListener {
-        fun click(portfolioCoinDB: PortfolioCoinDB)
+        fun click(portfolioPositionDB: PortfolioPositionDB)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -43,7 +43,7 @@ class PortfolioAdapter(
         }
     }
 
-    fun addItems(newList: List<PortfolioCoinDB>) {
+    fun addItems(newList: List<PortfolioPositionDB>) {
         val numbersDiff = Diff(data, newList)
         val diffResult = DiffUtil.calculateDiff(numbersDiff)
         data.clear()

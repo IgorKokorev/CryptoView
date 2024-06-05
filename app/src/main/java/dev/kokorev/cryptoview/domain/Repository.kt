@@ -4,12 +4,15 @@ import android.util.Log
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import com.coinpaprika.apiclient.entity.MessageDB
 import com.coinpaprika.apiclient.entity.MessageType
-import com.coinpaprika.apiclient.entity.PortfolioCoinDB
+import com.coinpaprika.apiclient.entity.PortfolioEvaluationDB
+import com.coinpaprika.apiclient.entity.PortfolioPositionDB
+import com.coinpaprika.apiclient.entity.PortfolioTransactionDB
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
-import dev.kokorev.room_db.core_api.BinanceSymbolDao
+import dev.kokorev.cryptoview.utils.toInstant
+import dev.kokorev.room_db.core_api.dao.BinanceSymbolDao
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import dev.kokorev.room_db.core_api.entity.TopMoverDB
@@ -18,6 +21,8 @@ import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.time.Instant
+import java.time.LocalDate
 import java.util.concurrent.Executors
 
 // Interactor to communicate with local db
@@ -26,7 +31,9 @@ class Repository() {
     private val topMoverDao = App.instance.topMoverDao
     private val coinPaprikaTickerDao = App.instance.coinPaprikaTickerDao
     private val favoriteCoinDao = App.instance.favoriteCoinDao
-    private val portfolioCoinDao = App.instance.portfolioCoinDao
+    private val portfolioCoinDao = App.instance.portfolioPositionDao
+    private val portfolioEvaluationDao = App.instance.portfolioEvaluationDao
+    private val portfolioTransactionDao = App.instance.portfolioTransactionDao
     private val recentCoinDao = App.instance.recentCoinDao
     private val messageDao = App.instance.messageDao
 
@@ -120,18 +127,43 @@ class Repository() {
 
     // Portfolio coins
     fun getPortfolioPositionByCPId(cpId: String) = portfolioCoinDao.findByCoinPaprikaId(cpId).addSettings()
-    fun savePortfolioPosition(portfolioCoinDB: PortfolioCoinDB) {
+    fun savePortfolioPosition(portfolioPositionDB: PortfolioPositionDB) {
         Executors.newSingleThreadExecutor().execute {
-            portfolioCoinDao.insertPortfolioCoin(portfolioCoinDB)
+            portfolioCoinDao.insertPortfolioCoin(portfolioPositionDB)
         }
     }
-    fun getAllPortfolioPositions(): Observable<List<PortfolioCoinDB>> = portfolioCoinDao.getAll().addSettings()
+    fun getAllPortfolioPositions(): Observable<List<PortfolioPositionDB>> = portfolioCoinDao.getAll().addSettings()
+    fun getAllPortfolioPositionsSingle() = portfolioCoinDao.getAllMaybe().addSettings()
     fun deletePortfolioPosition(id: Int) {
         Executors.newSingleThreadExecutor().execute {
             portfolioCoinDao.deleteById(id)
         }
     }
 
+    
+    
+    // Portfolio evaluations
+    fun getAllPortfolioEvaluationsSingle() = portfolioEvaluationDao.getAllSingle().addSettings()
+    fun savePortfolioEvaluation(portfolioEvaluationDB: PortfolioEvaluationDB) {
+        Executors.newSingleThreadExecutor().execute {
+            portfolioEvaluationDao.insertPortfolioEvaluation(portfolioEvaluationDB)
+        }
+    }
+    fun getPortfolioEvaluationByDate(date: LocalDate) = portfolioEvaluationDao.getEvaluationByDate(date).addSettings()
+    fun findPortfolioEvaluationsFrom(date: LocalDate) = portfolioEvaluationDao.findEvaluationsFrom(date).addSettings()
+    
+    
+    
+    // Portfolio transactions
+    fun findTransactionsFrom(instant: Instant) = portfolioTransactionDao.findTransactionsFrom(instant).addSettings()
+    fun findTransactionsFrom(date: LocalDate): Maybe<List<PortfolioTransactionDB>> = portfolioTransactionDao.findTransactionsFrom(date.toInstant()).addSettings()
+    fun savePortfolioTransaction(transactionDB: PortfolioTransactionDB) {
+        Executors.newSingleThreadExecutor().execute {
+            portfolioTransactionDao.insertPortfolioTransaction(transactionDB)
+        }
+    }
+    
+    
 
     // RecentCoin table interaction
     fun getRecentCoins() = recentCoinDao.getAll().addSettings()

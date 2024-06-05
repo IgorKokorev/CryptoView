@@ -1,9 +1,8 @@
-package dev.kokorev.cryptoview.data
+package dev.kokorev.cryptoview.data.sharedPreferences
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import dev.kokorev.cryptoview.App
-import dev.kokorev.cryptoview.Constants
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.properties.ReadWriteProperty
@@ -18,12 +17,12 @@ class SharedPreferenceDelegateDateTime(
 ): ReadWriteProperty<Any?, LocalDateTime> {
     
     private val preferences by lazy {
-        App.instance.applicationContext.getSharedPreferences(Constants.SETTINGS, Context.MODE_PRIVATE)
+        App.instance.applicationContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
     }
     override fun getValue(thisRef: Any?, property: KProperty<*>): LocalDateTime {
         return when(name) {
             "tmSentimentTime" -> {
-                val timeStr = preferences.getString(PreferenceProvider.KEY_TM_SENTIMENT_LAST_CALL_TIME, defaultTime) ?: defaultTime
+                val timeStr = preferences.getString(KEY_TM_SENTIMENT_LAST_CALL_TIME, defaultTime) ?: defaultTime
                 return LocalDateTime.parse(timeStr, dateTimeFormatter)
             }
             else -> defaultValue
@@ -34,7 +33,7 @@ class SharedPreferenceDelegateDateTime(
         when (name) {
             "tmSentimentTime" -> {
                 val timeStr = value.withMinute(0).withSecond(0).withNano(0).format(dateTimeFormatter)
-                preferences.edit().putString(PreferenceProvider.KEY_TM_SENTIMENT_LAST_CALL_TIME, timeStr).apply()
+                preferences.edit().putString(KEY_TM_SENTIMENT_LAST_CALL_TIME, timeStr).apply()
             }
         }
     }

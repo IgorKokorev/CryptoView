@@ -5,7 +5,7 @@ import com.anychart.chart.common.dataentry.HighLowDataEntry
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import com.coinpaprika.apiclient.entity.MoverEntity
-import com.coinpaprika.apiclient.entity.PortfolioCoinDB
+import com.coinpaprika.apiclient.entity.PortfolioPositionDB
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import com.coinpaprika.apiclient.entity.TickerEntity
 import dev.kokorev.binance_api.entity.BinanceSymbolDTO
@@ -145,9 +145,9 @@ object Converter {
         )
     }
 
-    fun createPortfolioCoin(coin: CoinDetailsEntity, price: Double, qty: Double): PortfolioCoinDB {
+    fun createPortfolioPosition(coin: CoinDetailsEntity, price: Double, qty: Double): PortfolioPositionDB {
         val currentTime = System.currentTimeMillis()
-        return PortfolioCoinDB(
+        return PortfolioPositionDB(
             coinPaprikaId = coin.id,
             name = coin.name,
             symbol = coin.symbol,

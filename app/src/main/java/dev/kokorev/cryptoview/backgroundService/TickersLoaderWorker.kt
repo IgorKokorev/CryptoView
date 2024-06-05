@@ -7,8 +7,10 @@ import androidx.work.rxjava3.RxWorker
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.data.preferencesBoolean
-import dev.kokorev.cryptoview.data.preferencesFloat
+import dev.kokorev.cryptoview.data.sharedPreferences.MIN_MCAPS
+import dev.kokorev.cryptoview.data.sharedPreferences.MIN_VOLS
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesBoolean
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesFloat
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter
@@ -28,7 +30,6 @@ class TickersLoaderWorker(
     @Inject
     lateinit var notificationService: NotificationService
     
-    
     private var toCheckFavorites: Boolean by preferencesBoolean("toCheckFavorites")
     private var favoriteChange: Float by preferencesFloat("favoriteChange")
     
@@ -37,8 +38,8 @@ class TickersLoaderWorker(
     }
 
     override fun createWork(): Single<Result> {
-        val minMcap = Constants.minMCaps.get(0)
-        val minVol = Constants.minVols.get(0)
+        val minMcap = MIN_MCAPS.get(0)
+        val minVol = MIN_VOLS.get(0)
 
         val tickersSingle = remoteApi.getCoinPaprikaTickers()
             .map { list ->

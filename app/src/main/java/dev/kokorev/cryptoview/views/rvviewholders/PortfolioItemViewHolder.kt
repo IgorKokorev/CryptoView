@@ -2,7 +2,7 @@ package dev.kokorev.cryptoview.views.rvviewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.coinpaprika.apiclient.entity.PortfolioCoinDB
+import com.coinpaprika.apiclient.entity.PortfolioPositionDB
 import dev.kokorev.cryptoview.databinding.PortfolioCoinItemBinding
 import dev.kokorev.cryptoview.utils.NumbersUtils.formatPrice
 import dev.kokorev.cryptoview.utils.NumbersUtils.setChangeView
@@ -11,7 +11,7 @@ import dev.kokorev.cryptoview.views.rvadapters.PortfolioAdapter
 class PortfolioItemViewHolder(val binding: PortfolioCoinItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun setData(
-        coin: PortfolioCoinDB,
+        coin: PortfolioPositionDB,
         clickListener: PortfolioAdapter.OnItemClickListener,
         position: Int
     ) {

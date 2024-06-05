@@ -86,7 +86,7 @@ class BinanceFragment : Fragment() {
     )
     
     private val intervalBehaviour: BehaviorSubject<BinanceKLineInterval> = BehaviorSubject.create()
-    private var interval = BinanceKLineInterval.DAY
+    private var interval = BinanceKLineInterval.HOUR
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,7 +123,11 @@ class BinanceFragment : Fragment() {
             }
             .addTo(autoDisposable)
         
-        // Turn stochastic on and off
+        setTechIndicatorsToggles()
+    }
+    
+    private fun setTechIndicatorsToggles() {
+        // Turn tech indicators on and off
         binding.stochastic.setOnClickListener {
             isStochasticEnabled = !isStochasticEnabled
             setStochasticPlotAndButtonVisibility()

@@ -3,7 +3,7 @@ package dev.kokorev.cryptoview.viewModel
 import androidx.lifecycle.ViewModel
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.Constants
-import dev.kokorev.cryptoview.data.preferencesLong
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesLong
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter

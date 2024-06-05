@@ -12,9 +12,9 @@ import androidx.transition.TransitionManager
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.data.entity.GainerCoin
-import dev.kokorev.cryptoview.data.preferencesDateTime
-import dev.kokorev.cryptoview.data.preferencesInt
-import dev.kokorev.cryptoview.data.preferencesMainPriceSorting
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesDateTime
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesInt
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesMainPriceSorting
 import dev.kokorev.cryptoview.databinding.FragmentMainBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
@@ -67,7 +67,6 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         autoDisposable.bindTo(lifecycle)
     }
 

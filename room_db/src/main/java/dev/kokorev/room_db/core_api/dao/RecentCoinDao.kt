@@ -1,4 +1,4 @@
-package dev.kokorev.room_db.core_api
+package dev.kokorev.room_db.core_api.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

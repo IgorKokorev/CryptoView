@@ -1,10 +1,9 @@
-package dev.kokorev.cryptoview.data
+package dev.kokorev.cryptoview.data.sharedPreferences
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import dev.kokorev.cryptoview.App
-import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.views.fragments.MainPriceSorting
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -15,12 +14,12 @@ class SharedPreferenceDelegateMainPriceSorting(
 ): ReadWriteProperty<Any?, MainPriceSorting> {
     
     private val preferences by lazy {
-        App.instance.applicationContext.getSharedPreferences(Constants.SETTINGS, Context.MODE_PRIVATE)
+        App.instance.applicationContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
     }
     override fun getValue(thisRef: Any?, property: KProperty<*>): MainPriceSorting {
         return when(name) {
             "mainPriceSorting" -> {
-                val str = preferences.getString(PreferenceProvider.KEY_MAIN_PRICE_SORTING, PreferenceProvider.DEFAULT_MAIN_PRICE_SORTING.str)
+                val str = preferences.getString(KEY_MAIN_PRICE_SORTING, DEFAULT_MAIN_PRICE_SORTING.str)
                 (MainPriceSorting from str) ?: defaultValue
             }
             else -> defaultValue
@@ -30,7 +29,7 @@ class SharedPreferenceDelegateMainPriceSorting(
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: MainPriceSorting) {
         when (name) {
             "mainPriceSorting" -> {
-                preferences.edit().putString(PreferenceProvider.KEY_MAIN_PRICE_SORTING, value.str).apply()
+                preferences.edit().putString(KEY_MAIN_PRICE_SORTING, value.str).apply()
             }
         }
     }

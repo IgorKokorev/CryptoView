@@ -67,13 +67,12 @@ class RemoteApi(
     fun getCoinPaprikaTop10Movers() = coinPaprikaApi.getTop10Movers().addProgressBar()
     fun getCoinPaprikaCoinInfo(id: String) =
         coinPaprikaApi.getCoin(id).addProgressBar()
-    
     fun getCoinPaprikaTicker(id: String) = coinPaprikaApi.getTicker(id)
         .addProgressBar()
-    
     fun getCoinPaprikaTickers() = coinPaprikaApi.getTickers().addProgressBar()
     fun getCoinPaprikaTickerHistorical(id: String) =
         coinPaprikaApi.getTickerHistoricalTicks(id).addProgressBar()
+    fun getCoinPaprikaOhlcvLatest(id: String) = coinPaprikaApi.getCoinOhlcvLatest(id).addProgressBar()
     
     // TokenMetrics API
     fun getAIReport(symbol: String): Maybe<TMResponse<AiReportData>> {

@@ -1,27 +1,26 @@
-package dev.kokorev.room_db.core_api
+package dev.kokorev.room_db.core_api.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.coinpaprika.apiclient.entity.PortfolioCoinDB
+import com.coinpaprika.apiclient.entity.PortfolioPositionDB
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
 
 @Dao
-interface PortfolioCoinDao {
+interface PortfolioPositionDao {
     @Query("SELECT * FROM portfolio_coin")
-    fun getAll(): Observable<List<PortfolioCoinDB>>
+    fun getAll(): Observable<List<PortfolioPositionDB>>
 
     @Query("SELECT * FROM portfolio_coin")
-    fun getAllSingle(): Single<List<PortfolioCoinDB>>
+    fun getAllMaybe(): Maybe<List<PortfolioPositionDB>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPortfolioCoin(PortfolioCoinDB: PortfolioCoinDB)
+    fun insertPortfolioCoin(PortfolioPositionDB: PortfolioPositionDB)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(list: List<PortfolioCoinDB>)
+    fun insertAll(list: List<PortfolioPositionDB>)
 
     @Query("DELETE FROM portfolio_coin")
     fun deleteAll()
@@ -33,6 +32,6 @@ interface PortfolioCoinDao {
     fun deleteByCoinPaprikaId(coinPaprikaId: String)
 
     @Query("SELECT * FROM portfolio_coin WHERE coin_paprika_id = :coinPaprikaId")
-    fun findByCoinPaprikaId(coinPaprikaId: String): Maybe<PortfolioCoinDB>
+    fun findByCoinPaprikaId(coinPaprikaId: String): Maybe<PortfolioPositionDB>
 
 }

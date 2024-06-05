@@ -96,4 +96,7 @@
     <string name="binance_ticker">Binance ticker:</string>
     <string name="change_24h">%24h</string>
     <string name="value">Value</string>
+    <string name="portfolio_service_description">CryptoView background service for portfolio evaluation</string>
+    <string name="get_portfolio_notification_text">I want to receive the state of my portfolio every day at</string>
+    <string name="portfolio_notification">Portfolio notifications</string>
 </resources>
