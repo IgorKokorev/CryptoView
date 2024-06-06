@@ -21,9 +21,11 @@ import dev.kokorev.cmc_api.entity.cmc_metadata.CmcMetadataDTO
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentInfoBinding
 import dev.kokorev.cryptoview.databinding.LinkItemBinding
+import dev.kokorev.cryptoview.databinding.LinkItemStatBinding
 import dev.kokorev.cryptoview.databinding.TwoColumnItemViewBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
+import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.PortfolioInteractor
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
@@ -253,6 +255,12 @@ class InfoFragment : Fragment() {
                     root.setOnClickListener {
                         startActivity(Intent(Intent.ACTION_VIEW).setData(Uri.parse(linkEntity.url)));
                     }
+                }
+                linkEntity.stats?.forEach { statName, stat ->
+                    val statBinding = LinkItemStatBinding.inflate(layoutInflater)
+                    val str = camelCaseToText(statName) + ": " + NumbersUtils.formatBigNumber(stat.toDouble())
+                    statBinding.statText.text = str
+                    itemBinding.statContainer.addView(statBinding.root)
                 }
                 binding.urls.addView(itemBinding.root)
             }
