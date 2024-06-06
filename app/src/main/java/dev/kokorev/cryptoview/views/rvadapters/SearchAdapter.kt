@@ -29,7 +29,7 @@ class SearchAdapter(private val clickListener: OnItemClickListener) :
         when (holder) {
             is SearchItemViewHolder -> {
                 val coinPaprikaTicker = data[position]
-                holder.setData(coinPaprikaTicker, clickListener, position)
+                holder.setData(coinPaprikaTicker, clickListener)
             }
         }
     }

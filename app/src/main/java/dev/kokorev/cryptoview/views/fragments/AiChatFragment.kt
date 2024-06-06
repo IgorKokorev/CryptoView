@@ -80,7 +80,7 @@ class AiChatFragment : Fragment() {
             setImeOptions(EditorInfo.IME_ACTION_SEND); // show Send instead of Enter
             setRawInputType(InputType.TYPE_CLASS_TEXT); // otherwise view isn't multiline
             // listen to "Send" soft key
-            setOnEditorActionListener { v, actionId, event ->
+            setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     sendQuestion()
                     return@setOnEditorActionListener true

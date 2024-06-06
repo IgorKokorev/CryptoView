@@ -20,7 +20,6 @@ class PortfolioAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val i = 0
         return PortfolioItemViewHolder(
             PortfolioCoinItemBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -38,7 +37,7 @@ class PortfolioAdapter(
         when (holder) {
             is PortfolioItemViewHolder -> {
                 val portfolioCoinDB = data[position]
-                holder.setData(portfolioCoinDB, clickListener, position)
+                holder.setData(portfolioCoinDB, clickListener)
             }
         }
     }

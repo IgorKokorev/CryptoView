@@ -78,7 +78,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
 
         MaterialAlertDialogBuilder(context, R.style.CVDialogStyle)
             .setView(inputViewBinding.root)
-            .setPositiveButton(getString(context, R.string.ok)) { dialog, which ->
+            .setPositiveButton(getString(context, R.string.ok)) { dialog, _ ->
                 val qty = try {
                     inputViewBinding.input.text.toString().toDouble()
                 } catch (e: NumberFormatException) {
@@ -89,7 +89,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
                     MaterialAlertDialogBuilder(context, R.style.CVDialogStyle)
                         .setTitle(getString(context, R.string.portfolio_operation))
                         .setMessage(getString(context, R.string.no_quantity_entered_the_position_isn_t_saved))
-                        .setPositiveButton(getString(context, R.string.ok)) { dialogEmptyInput, whichEmptyInput ->
+                        .setPositiveButton(getString(context, R.string.ok)) { dialogEmptyInput, _ ->
                             dialogEmptyInput.cancel()
                         }
                         .show()
@@ -101,7 +101,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
                     MaterialAlertDialogBuilder(context, R.style.CVDialogStyle)
                         .setTitle(getString(context, R.string.portfolio_operation))
                         .setMessage(getString(context, R.string.position_created))
-                        .setPositiveButton(getString(context, R.string.ok)) { dialogEmptyInput, whichEmptyInput ->
+                        .setPositiveButton(getString(context, R.string.ok)) { dialogEmptyInput, _ ->
                             dialogEmptyInput.cancel()
                         }
                         .show()
@@ -110,7 +110,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
                 Log.d(this.javaClass.simpleName, "askUserQtyToOpenPosition user input: ${qty}")
                 dialog.cancel()
             }
-            .setNegativeButton("Cancel") { dialog, which ->
+            .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
             }
             .show()
@@ -167,7 +167,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
 
         MaterialAlertDialogBuilder(context, R.style.CVDialogStyle)
             .setView(inputViewBinding.root)
-            .setPositiveButton(getString(context, R.string.ok)) { dialog, which ->
+            .setPositiveButton(getString(context, R.string.ok)) { dialog, _ ->
                 val newQty = try {
                     inputViewBinding.input.text.toString().toDouble()
                 } catch (e: NumberFormatException) {
@@ -183,7 +183,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
                 }
                 dialog.cancel()
             }
-            .setNegativeButton("Cancel") { dialog, which ->
+            .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
             }
             .show()
@@ -203,7 +203,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
                     context,
                     R.string.ok
                 )
-            ) { dialogEmptyInput, whichEmptyInput ->
+            ) { dialogEmptyInput, _ ->
                 dialogEmptyInput.cancel()
             }
             .show()
@@ -225,7 +225,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
                     context,
                     R.string.ok
                 )
-            ) { dialogEmptyInput, whichEmptyInput ->
+            ) { dialogEmptyInput, _ ->
                 dialogEmptyInput.cancel()
             }
             .show()
@@ -246,7 +246,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
                     context,
                     R.string.ok
                 )
-            ) { dialogEmptyInput, whichEmptyInput ->
+            ) { dialogEmptyInput, _ ->
                 dialogEmptyInput.cancel()
             }
             .show()

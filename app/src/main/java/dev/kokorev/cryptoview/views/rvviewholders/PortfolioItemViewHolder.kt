@@ -13,7 +13,6 @@ class PortfolioItemViewHolder(val binding: PortfolioCoinItemBinding) : RecyclerV
     fun setData(
         coin: PortfolioPositionDB,
         clickListener: PortfolioAdapter.OnItemClickListener,
-        position: Int
     ) {
         Glide.with(binding.root)
             .load(coin.logo)

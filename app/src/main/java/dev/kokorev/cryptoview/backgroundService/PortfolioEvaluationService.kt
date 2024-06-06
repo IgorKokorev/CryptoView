@@ -251,7 +251,7 @@ class PortfolioEvaluationService : Service() {
                     if (list.isNotEmpty()) {
                         val ohlcv = list.maxByOrNull { it.timeClose }
                         if (ohlcv != null) {
-                            valuationAdder.add(evaluatePosition(ohlcv, position, valuationAdder))
+                            valuationAdder.add(evaluatePosition(ohlcv, position))
                             if (atomicNumOfPositions.get() == totalPositions) {
                                 newValuation = valuationAdder.sum()
                                 newEvaluationTime = newEvaluationInstantMillisAtomic.get()
@@ -280,7 +280,6 @@ class PortfolioEvaluationService : Service() {
     private fun evaluatePosition(
         ohlcv: OHLCVEntity,
         position: PortfolioPositionDB,
-        valuationAdder: DoubleAdder,
     ): Double {
         val ohlcvTime = ohlcv.timeClose.toEpochMilli()
         val savedEvaluationTime = newEvaluationInstantMillisAtomic.get()

@@ -1,5 +1,7 @@
 package dev.kokorev.cryptoview.views.fragments
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -11,12 +13,14 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
+import com.coinpaprika.apiclient.entity.LinkExtendedEntity
+import com.coinpaprika.apiclient.entity.TagEntity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcCoinDataDTO
 import dev.kokorev.cmc_api.entity.cmc_metadata.CmcMetadataDTO
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentInfoBinding
-import dev.kokorev.cryptoview.databinding.OneColumnItemViewBinding
+import dev.kokorev.cryptoview.databinding.LinkItemBinding
 import dev.kokorev.cryptoview.databinding.TwoColumnItemViewBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
@@ -36,13 +40,32 @@ class InfoFragment : Fragment() {
     private var cpDescription = "" // coin description from CoinPaprika
     private var cmcDescription = "" // coin description from CoinMarketCap
     private var isFavorite = false
-
+    private var linkToImage: Map<String, Int> = mutableMapOf()
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         autoDisposable.bindTo(lifecycle)
         binding = FragmentInfoBinding.inflate(layoutInflater)
         portfolioInteractor = PortfolioInteractor(binding.root, autoDisposable)
-
+        
+        linkToImage = mapOf(
+            "announcement" to R.drawable.icon_announcement,
+            "blog" to R.drawable.icon_blog,
+            "explorer" to R.drawable.icon_explorer,
+            "facebook" to R.drawable.icon_facebook,
+            "reddit" to R.drawable.icon_reddit,
+            "slack" to R.drawable.icon_slack,
+            "source_code" to R.drawable.icon_source_code,
+            "telegram" to R.drawable.icon_telegram,
+            "twitter" to R.drawable.icon_twitter,
+            "website" to R.drawable.icon_website,
+            "youtube" to R.drawable.icon_youtube,
+            "chat" to R.drawable.icon_chat,
+            "discord" to R.drawable.icon_discord,
+            "wallet" to R.drawable.icon_wallet,
+            "message_board" to R.drawable.icon_message_board,
+        )
+        
         getCoinPaprikaInfo()
         getCmcInfo()
     }
@@ -59,7 +82,7 @@ class InfoFragment : Fragment() {
         viewModel.remoteApi.getCmcMetadata(viewModel.symbol)
             .doOnSuccess {
                 // Coin Info from CoinMarketCap
-                findCoin(it)
+                findCoinInCmcMetadata(it)
                 if (viewModel.cmcInfo != null) setupCmcData(viewModel.cmcInfo!!)
             }
             .onErrorComplete()
@@ -105,7 +128,7 @@ class InfoFragment : Fragment() {
     }
 
     // select correct coin in data list in CMC info
-    private fun findCoin(it: CmcMetadataDTO) {
+    private fun findCoinInCmcMetadata(it: CmcMetadataDTO) {
         val list = it.data.get(viewModel.symbol)
         if (list.isNullOrEmpty()) return
         if (list.size == 1) {
@@ -177,35 +200,11 @@ class InfoFragment : Fragment() {
 
         // tags
         val tags = cpInfo.tags
-        if (!tags.isNullOrEmpty()) {
-            tags.forEach { tag ->
-                val itemViewBinding = OneColumnItemViewBinding.inflate(layoutInflater)
-                itemViewBinding.value.text = tag.name
-                itemViewBinding.root.setOnClickListener {
-                    val message = "Coins: " + tag.coinCounter + "\n" + "ICOs: " + tag.icoCounter
-                    MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
-                        .setTitle(tag.name)
-                        .setMessage(message)
-                        .setPositiveButton("Ok") { dialog, which ->
-                            dialog.cancel()
-                        }
-                        .show()
-
-                }
-                binding.tagList.addView(itemViewBinding.root)
-            }
-        }
+        setTags(tags)
 
         // links
         val links = cpInfo.linksExtended
-        if (!links.isNullOrEmpty()) {
-            links.forEach {
-                val itemViewBinding = TwoColumnItemViewBinding.inflate(layoutInflater)
-                itemViewBinding.name.text = camelCaseToText(it.type)
-                itemViewBinding.value.text = it.url
-                binding.urls.addView(itemViewBinding.root)
-            }
-        }
+        setLinks(links)
 
         // team
         val team = cpInfo.team
@@ -220,7 +219,46 @@ class InfoFragment : Fragment() {
             }
         }
     }
-
+    
+    private fun setTags(tags: List<TagEntity>?) {
+        if (!tags.isNullOrEmpty()) {
+            tags.forEach { tag ->
+                val itemViewBinding = LinkItemBinding.inflate(layoutInflater).apply {
+                    name.text = tag.name
+                    root.setOnClickListener {
+                        val message = "Coins: " + tag.coinCounter + "\n" + "ICOs: " + tag.icoCounter
+                        MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
+                            .setTitle(tag.name)
+                            .setMessage(message)
+                            .setPositiveButton("Ok") { dialog, _ ->
+                                dialog.cancel()
+                            }
+                            .show()
+                        
+                    }
+                }
+                binding.tagList.addView(itemViewBinding.root)
+            }
+        }
+    }
+    
+    private fun setLinks(links: List<LinkExtendedEntity>?) {
+        if (!links.isNullOrEmpty()) {
+            links.forEach {linkEntity ->
+                val itemBinding = LinkItemBinding.inflate(layoutInflater).apply {
+                    name.text = camelCaseToText(linkEntity.type)
+                    logo.setImageResource(
+                        linkToImage.get(linkEntity.type) ?: R.drawable.icon_internet
+                    )
+                    root.setOnClickListener {
+                        startActivity(Intent(Intent.ACTION_VIEW).setData(Uri.parse(linkEntity.url)));
+                    }
+                }
+                binding.urls.addView(itemBinding.root)
+            }
+        }
+    }
+    
     private fun setDescription() {
         val description = if (cpDescription == "") {
             cmcDescription

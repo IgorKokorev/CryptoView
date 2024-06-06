@@ -421,7 +421,7 @@ class BinanceFragment : Fragment() {
                     MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
                         .setTitle("Binance market info")
                         .setMessage("Coin ${symbol} is not listed on Binance.")
-                        .setPositiveButton(R.string.ok) { dialogEmptyInput, whichEmptyInput ->
+                        .setPositiveButton(R.string.ok) { _, _ ->
                             requireActivity().supportFragmentManager.popBackStack()
                         }
                         .show()

@@ -48,9 +48,9 @@ class MainFragment : Fragment() {
     // Map TokenMetrics sentiment grades to colors
     private val tmGradeToColor: Map<String, Int> = mapOf(
         "very negative" to ContextCompat.getColor(App.instance.applicationContext, R.color.red),
-        "negative" to ContextCompat.getColor(App.instance.applicationContext, R.color.red),
+        "negative" to ContextCompat.getColor(App.instance.applicationContext, R.color.redFaded),
         "neutral" to ContextCompat.getColor(App.instance.applicationContext, R.color.textColor),
-        "positive" to ContextCompat.getColor(App.instance.applicationContext, R.color.green),
+        "positive" to ContextCompat.getColor(App.instance.applicationContext, R.color.greenFaded),
         "very positive" to ContextCompat.getColor(App.instance.applicationContext, R.color.green),
     )
 

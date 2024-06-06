@@ -3,8 +3,8 @@ package dev.kokorev.cryptoview.views.rvviewholders
 import androidx.recyclerview.widget.RecyclerView
 import dev.kokorev.cryptoview.databinding.SearchCoinItemBinding
 import dev.kokorev.cryptoview.utils.NumbersUtils
-import dev.kokorev.cryptoview.utils.NumbersUtils.setChangeView
 import dev.kokorev.cryptoview.utils.NumbersUtils.formatPrice
+import dev.kokorev.cryptoview.utils.NumbersUtils.setChangeView
 import dev.kokorev.cryptoview.views.rvadapters.SearchAdapter
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 
@@ -15,7 +15,6 @@ class SearchItemViewHolder(val binding: SearchCoinItemBinding) :
     fun setData(
         coinPaprikaTickerDB: CoinPaprikaTickerDB,
         clickListener: SearchAdapter.OnItemClickListener,
-        position: Int
     ) {
         ticker = coinPaprikaTickerDB
         binding.coinSymbol.text = ticker.symbol

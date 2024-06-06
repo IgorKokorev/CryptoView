@@ -70,11 +70,11 @@ class SettingsFragment : Fragment() {
         binding.portfolioTimeSlider.value = portfolioNotificationTime
         binding.portfolioTimeSlider.isEnabled = toNotifyPortfolio
         setPortfolioNotificationTimeText()
-        binding.portfolioTimeSlider.addOnChangeListener { slider, value, fromUser ->
+        binding.portfolioTimeSlider.addOnChangeListener { _, value, _ ->
             portfolioNotificationTime = value
             setPortfolioNotificationTimeText()
         }
-        binding.portfolioCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.portfolioCheckbox.setOnCheckedChangeListener { _, isChecked ->
             // if user wants to get notification and the permission isn't granted
             toNotifyPortfolio = isChecked
             binding.portfolioTimeSlider.isEnabled = toNotifyPortfolio
@@ -105,12 +105,12 @@ class SettingsFragment : Fragment() {
         setFavoriteChangeValueText()
         
         
-        binding.favoriteChangeValueSlider.addOnChangeListener { slider, value, fromUser ->
-            favoriteChange = slider.value
+        binding.favoriteChangeValueSlider.addOnChangeListener { _, value, _ ->
+            favoriteChange = value
             setFavoriteChangeValueText()
         }
         
-        binding.favoriteChangeCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.favoriteChangeCheckbox.setOnCheckedChangeListener { _, isChecked ->
             // if user wants to get notification and the permission isn't granted
             toCheckFavorites = isChecked
             if (isChecked) (requireActivity() as MainActivity).askNotificationPermission()
@@ -123,8 +123,8 @@ class SettingsFragment : Fragment() {
         binding.numTopCoinsSlider.valueTo = TOP_COINS_TO.toFloat()
         binding.numTopCoinsSlider.value = nTopCoins.toFloat()
         setNumTopCoinsText()
-        binding.numTopCoinsSlider.addOnChangeListener { slider, value, fromUser ->
-            nTopCoins = slider.value.toInt()
+        binding.numTopCoinsSlider.addOnChangeListener { _, value, _ ->
+            nTopCoins = value.toInt()
             setNumTopCoinsText()
         }
     }
@@ -135,8 +135,8 @@ class SettingsFragment : Fragment() {
         binding.volSlider.valueFrom = 0.0f
         binding.volSlider.valueTo = (MIN_VOLS.size - 1).toFloat()
         setMinVolText()
-        binding.volSlider.addOnChangeListener { slider, fl, b ->
-            minVolIndex = slider.value.toInt()
+        binding.volSlider.addOnChangeListener { _, value, _ ->
+            minVolIndex = value.toInt()
             minVol = MIN_VOLS.get(minVolIndex)
             setMinVolText()
         }
@@ -149,8 +149,8 @@ class SettingsFragment : Fragment() {
         binding.mcapSlider.valueFrom = 0.0f
         binding.mcapSlider.valueTo = (MIN_MCAPS.size - 1).toFloat()
         setMinMcapText()
-        binding.mcapSlider.addOnChangeListener { slider, fl, b ->
-            minMcapIndex = slider.value.toInt()
+        binding.mcapSlider.addOnChangeListener { _, value, _ ->
+            minMcapIndex = value.toInt()
             minMcap = MIN_MCAPS.get(minMcapIndex)
             setMinMcapText()
         }

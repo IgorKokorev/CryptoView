@@ -4,7 +4,6 @@ import android.util.Log
 import okhttp3.CacheControl
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.lang.String
 import java.util.concurrent.TimeUnit
 
 

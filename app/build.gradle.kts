@@ -10,17 +10,17 @@ plugins {
 android {
     namespace = "dev.kokorev.cryptoview"
     compileSdk = 34
-
+    
     defaultConfig {
         applicationId = "dev.kokorev.cryptoview"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -30,9 +30,9 @@ android {
             )
         }
     }
-
+    
     flavorDimensions += "version"
-
+    
     productFlavors {
         create("basic") {
             // Assigns this product flavor to the "version" flavor dimension.
@@ -51,22 +51,23 @@ android {
     }
 
 //    compileOptions.incremental = false
-
+    
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
+    
     kotlinOptions {
         jvmTarget = "17"
     }
-
+    
     buildFeatures {
         viewBinding = true
         buildConfig = true
     }
-}
 
+
+}
 dependencies {
     implementation(project(":binance_api"))
     implementation(project(":cmc_api"))
@@ -88,6 +89,7 @@ dependencies {
     implementation(libs.coroutines.android)
 
     implementation(libs.viewPager2)
+    implementation(libs.flexbox)
 
     implementation(libs.work)
     implementation(libs.work.rxjava3)
@@ -112,7 +114,11 @@ dependencies {
 
     implementation(libs.moshi)
     implementation(libs.kotlinx.json)
+    
+    testImplementation(kotlin("test"))
     testImplementation(libs.junit)
+    testImplementation(libs.mockito)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
+
