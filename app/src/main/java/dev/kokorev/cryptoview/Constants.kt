@@ -32,7 +32,7 @@ object Constants {
     // Default timings
     const val CP_TICKERS_UPDATE_INTERVAL: Long = 1000L * 60 * 1 /* minutes */ * 1 /* hours */ * 1 /* days */ // Update cp tickers db interval
     const val BACK_CLICK_TIME_INTERVAL: Long = 1000L * 3 // time in millis between 2 backpresses to exit the app
-    const val CHAT_SHOW_TIME: Long = 1000L * 60 * 60 * 24 * 7 // Show in chat only messages not older than
+    const val CHAT_SHOW_TIME: Long = 1000L * 60 * 60 * 24 * 30 // Show in chat only messages not older than
     const val INTERVAL_TO_SHOW_FAVORITE_CHANGE = 1000L * 60 * 60 /* minutes */ * 12 /* hours */ * 1 /* days */  // Do not show favorite change notifications more often than
 
     // Settings defaults

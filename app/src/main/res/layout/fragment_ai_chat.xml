@@ -7,22 +7,16 @@
     android:background="@drawable/background_gradient315"
     tools:context=".views.fragments.AiChatFragment">
 
-    <ScrollView
-        android:id="@+id/container_answer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="@dimen/medium_padding"
-        android:contentDescription="@string/ai_chat_hint"
-        app:layout_constraintBottom_toTopOf="@+id/container_question"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:id="@+id/chat_window"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chat_rv"
+            android:nestedScrollingEnabled="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
-
-    </ScrollView>
+            android:layout_margin="@dimen/medium_padding"
+            app:reverseLayout="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/container_question"
+            tools:listitem="@layout/chat_item" />
 
     <LinearLayout
         android:id="@+id/container_question"

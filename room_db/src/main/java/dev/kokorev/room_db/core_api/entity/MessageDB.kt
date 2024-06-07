@@ -13,7 +13,7 @@ data class MessageDB(
     @ColumnInfo(name = "message") val message: String,
 )
 
-enum class MessageType {
-    IN,
-    OUT
+enum class MessageType(val value: Int) {
+    IN(1),
+    OUT(-1)
 }

@@ -73,6 +73,11 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="25"
                     android:paddingEnd="@dimen/medium_padding"
+                    android:maxLines="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="@dimen/tiny_text"
+                    android:autoSizeMaxTextSize="@dimen/medium_text"
+                    android:autoSizeStepGranularity="1sp"
                     android:text="@string/min_mcap" />
 
                 <com.google.android.material.slider.Slider
@@ -90,6 +95,11 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_weight="15"
                     android:paddingStart="@dimen/medium_padding"
+                    android:maxLines="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="@dimen/tiny_text"
+                    android:autoSizeMaxTextSize="@dimen/medium_text"
+                    android:autoSizeStepGranularity="1sp"
                     android:textAlignment="viewEnd"
                     tools:text="Number" />
 
@@ -113,6 +123,11 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="25"
                     android:paddingEnd="@dimen/medium_padding"
+                    android:maxLines="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="@dimen/tiny_text"
+                    android:autoSizeMaxTextSize="@dimen/medium_text"
+                    android:autoSizeStepGranularity="1sp"
                     android:text="@string/min_volume" />
 
                 <com.google.android.material.slider.Slider
@@ -130,6 +145,11 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_weight="15"
                     android:paddingStart="@dimen/medium_padding"
+                    android:maxLines="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="@dimen/tiny_text"
+                    android:autoSizeMaxTextSize="@dimen/medium_text"
+                    android:autoSizeStepGranularity="1sp"
                     android:textAlignment="viewEnd"
                     tools:text="Number" />
 
@@ -360,6 +380,11 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_weight="15"
                     android:paddingStart="@dimen/medium_padding"
+                    android:maxLines="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="@dimen/tiny_text"
+                    android:autoSizeMaxTextSize="@dimen/medium_text"
+                    android:autoSizeStepGranularity="1sp"
                     android:textAlignment="viewEnd"
                     tools:text="Number" />
 
