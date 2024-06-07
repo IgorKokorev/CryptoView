@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.kapt)
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "2.0.0"
+    alias(libs.plugins.googleGmsGoogleServices)
+    alias(libs.plugins.googleFirebaseCrashlytics)
+    alias(libs.plugins.googleFirebaseFirebasePerf)
 }
 
 android {
@@ -95,6 +98,8 @@ dependencies {
     implementation(libs.work.rxjava3)
 
     implementation(libs.glide)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.perf)
     kapt(libs.glide.annotation.processor)
 
     // airbnb paris lets you change view style programmatically

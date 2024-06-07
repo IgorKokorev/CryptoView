@@ -5,4 +5,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinJvm) apply false
     alias(libs.plugins.kapt) apply false
     alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.googleGmsGoogleServices) apply false
+    alias(libs.plugins.googleFirebaseCrashlytics) apply false
+    alias(libs.plugins.googleFirebaseFirebasePerf) apply false
 }
