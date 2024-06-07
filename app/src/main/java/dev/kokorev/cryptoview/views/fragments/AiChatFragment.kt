@@ -1,35 +1,38 @@
 package dev.kokorev.cryptoview.views.fragments
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.coinpaprika.apiclient.entity.MessageDB
-import com.coinpaprika.apiclient.entity.MessageType
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.vertexai.type.GenerateContentResponse
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentAiChatBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.AiChatViewModel
 import dev.kokorev.cryptoview.views.rvadapters.ChatAdapter
-import dev.kokorev.token_metrics_api.entity.AiQuestion
-import dev.kokorev.token_metrics_api.entity.AiQuestionMessage
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+
 
 // Fragment to chat with TokenMetrics AI chat bot
 class AiChatFragment : Fragment() {
     private val viewModel: AiChatViewModel by viewModels()
     private lateinit var binding: FragmentAiChatBinding
     private val autoDisposable = AutoDisposable()
-    private lateinit var greeting: MessageDB
     private lateinit var chatAdapter: ChatAdapter
     private var messages: List<MessageDB> = listOf()
         set(value) {
@@ -37,28 +40,23 @@ class AiChatFragment : Fragment() {
             field = value
             chatAdapter.addItems(field)
         }
+    private val scope = CoroutineScope(Job())
+    private var clipboard: ClipboardManager? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentAiChatBinding.inflate(layoutInflater)
         autoDisposable.bindTo(lifecycle)
-        // initializing greeting message from resources
-        greeting = MessageDB(
-            time = System.currentTimeMillis(),
-            type = MessageType.IN,
-            name = getString(R.string.tokenmetrics_bot),
-            message = getString(R.string.ai_greeting),
-        )
+        
+        clipboard = getSystemService(binding.root.context, ClipboardManager::class.java)
     }
     
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Show messages saved in db
         getMessagesFromDB()
         initRecycler()
-        // Setup question EditText view params
         setupQuestionEditText()
         binding.buttonSend.setOnClickListener {
             sendQuestion()
@@ -67,11 +65,17 @@ class AiChatFragment : Fragment() {
         return binding.root
     }
     
+    // Initialize chat RV
     private fun initRecycler() {
         chatAdapter = ChatAdapter(
             object : ChatAdapter.OnItemClickListener {
                 override fun click(messageDB: MessageDB) { // On item click
-                
+                    val clip = ClipData.newPlainText(getString(R.string.app_name), messageDB.message)
+                    clipboard?.setPrimaryClip(clip)
+                    Snackbar.make(binding.root, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT)
+                        .setBackgroundTint(resources.getColor(R.color.base3, null))
+                        .setTextColor(resources.getColor(R.color.textColor, null))
+                        .show()
                 }
             }).apply {
             addItems(messages)
@@ -79,6 +83,7 @@ class AiChatFragment : Fragment() {
         binding.chatRv.adapter = chatAdapter
     }
     
+    // Setup question edit text view
     private fun setupQuestionEditText() {
         binding.question.run {
             setImeOptions(EditorInfo.IME_ACTION_SEND) // show Send instead of Enter
@@ -94,19 +99,23 @@ class AiChatFragment : Fragment() {
         }
     }
     
+    // get messages from local db and send them to the RV adapter
     private fun getMessagesFromDB() {
         viewModel.messages
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { list ->
-                // If there's no messages saved the greeting is showed
-                if (list.isEmpty()) {
-                    viewModel.repository.saveMessage(greeting)
-                } else {
-                    messages = list.sortedByDescending { it.time }
-                    binding.chatRv.layoutManager?.scrollToPosition(0)
+            .subscribe(
+                { list ->
+                    // If there's no messages saved the greeting is showed
+                    if (list.isEmpty()) {
+                        viewModel.saveAnswer(getString(R.string.tokenmetrics_bot), getString(R.string.ai_greeting))
+                    } else {
+                        messages = list.sortedByDescending { it.time }
+                        binding.chatRv.layoutManager?.scrollToPosition(0) // on every new message
+                    }
+                },
+                {
+                    Log.d(this.javaClass.simpleName, "Error getting messages from local db: ${it.localizedMessage}, ${it.stackTrace}")
                 }
-            }
+            )
             .addTo(autoDisposable)
     }
     
@@ -114,37 +123,70 @@ class AiChatFragment : Fragment() {
         hideKeyboard()
         val question = binding.question.text.toString()
         binding.question.text?.clear()
-        
         // If the input is empty do nothing
         if (question.isBlank()) return
         
-        viewModel.repository.saveQuestion(getString(R.string.user), question)
+        viewModel.saveQuestion(getString(R.string.user), question)
         
-        val aiQuestionMessage = AiQuestionMessage(question)
-        val aiQuestion = AiQuestion(arrayListOf(aiQuestionMessage))
-        
-        viewModel.remoteApi.askAi(aiQuestion)
-            .subscribe({
+        var toAskGemini = true
+        viewModel.askTokenMetricsAi(question)
+            .doOnSuccess {
                 if (!it.answer.isNullOrBlank()) {
-                    viewModel.repository.saveAnswer(
-                        getString(R.string.tokenmetrics_bot),
-                        it.answer.toString()
-                    )
-                } else {
-                    viewModel.repository.saveAnswer(
-                        getString(R.string.system),
-                        getString(R.string.no_answer)
-                    )
+                    if (it.success ?: false) {
+                        viewModel.saveAnswer(
+                            getString(R.string.tokenmetrics_bot),
+                            it.answer.toString()
+                        )
+                        toAskGemini = false
+                    }
                 }
-//                binding.chatRv.layoutManager?.scrollToPosition(0)
-            },
-                {
-                    viewModel.repository.saveAnswer("Error", "Something went wrong, TM answer: ${it.localizedMessage}")
+            }
+            .doOnError(::errorAnswer)
+            .doAfterTerminate {
+                if (toAskGemini) {
+                    letsAskGemini()
+                    viewModel.askGemini(question)
+                        .doOnSuccess(::saveAnswer)
+                        .doOnError(::errorAnswer)
+                        .doOnComplete(::emptyAnswer)
+                        .subscribe()
+                        .addTo(autoDisposable)
                 }
-            )
+            }
+            .subscribe()
             .addTo(autoDisposable)
     }
+    
+    private fun letsAskGemini() {
+        viewModel.saveAnswer(
+            getString(R.string.tokenmetrics_bot),
+            getString(R.string.lets_ask_gemini)
+        )
+    }
+    
+    private fun saveAnswer(response: GenerateContentResponse) {
+        viewModel.saveAnswer(
+            getString(R.string.gemini),
+            response.text ?: getString(R.string.no_answer)
+        )
+    }
+    
+    private fun errorAnswer(it: Throwable) {
+        viewModel.saveAnswer(
+            getString(R.string.error),
+            getString(R.string.something_went_wrong_tm_answer, it.localizedMessage)
+        )
+    }
+    
+    private fun emptyAnswer() {
+        viewModel.saveAnswer(
+            getString(R.string.error),
+            getString(R.string.empty_ai_response)
+        )
+    }
+    
 }
+
 
 fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }

@@ -48,7 +48,7 @@ class AiReportFragment : Fragment() {
     }
     
     private fun getPricePrediction() {
-        viewModel.remoteApi.getPricePrediction(symbol = viewModel.symbol)
+        viewModel.getPricePrediction()
             .doOnSuccess {
                 if (it.success && it.data.isNotEmpty()) {
                     setPrediction(it.data[0])
@@ -121,7 +121,7 @@ class AiReportFragment : Fragment() {
     }
 
     private fun getAiReport() {
-        viewModel.remoteApi.getAIReport(viewModel.symbol)
+        viewModel.getAIReport()
             .subscribe {
                 // Selecting an item from the list
                 val aiReportData: AiReportData? = findReport(it.data)

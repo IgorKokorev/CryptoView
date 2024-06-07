@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
 
     implementation(libs.coroutines.core)
+    implementation(libs.coroutines.rx3)
     implementation(libs.coroutines.android)
 
     implementation(libs.viewPager2)
@@ -100,6 +101,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.perf)
+    implementation(libs.firebase.vertexai)
     kapt(libs.glide.annotation.processor)
 
     // airbnb paris lets you change view style programmatically

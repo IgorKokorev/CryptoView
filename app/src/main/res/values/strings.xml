@@ -99,4 +99,10 @@
     <string name="portfolio_service_description">CryptoView background service for portfolio evaluation</string>
     <string name="get_portfolio_notification_text">I want to receive the state of my portfolio every day at</string>
     <string name="portfolio_notification">Portfolio notifications</string>
+    <string name="gemini">Gemini</string>
+    <string name="error">Error</string>
+    <string name="something_went_wrong_tm_answer">Something went wrong, TM answer: %1$s</string>
+    <string name="empty_ai_response">And the silence was his only answer...</string>
+    <string name="lets_ask_gemini">I have no answer to the question. Let\'s ask Gemini...</string>
+    <string name="copied_to_clipboard">Message copied to clipboard</string>
 </resources>

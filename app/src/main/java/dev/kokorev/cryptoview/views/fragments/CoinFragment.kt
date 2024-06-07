@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentCoinBinding
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import kotlin.reflect.KClass
@@ -38,13 +38,11 @@ class CoinFragment : Fragment() {
         fragments = listOf(
             InfoFragment::class,
             ChartFragment::class,
-//        BinanceFragment::class,
             AiReportFragment::class,
         )
         icons = listOf(
             ResourcesCompat.getDrawable(resources, R.drawable.icon_info, null),
             ResourcesCompat.getDrawable(resources, R.drawable.icon_chart, null),
-//            ResourcesCompat.getDrawable(resources, R.drawable.binance_logo, null),
             ResourcesCompat.getDrawable(resources, R.drawable.svg_report, null),
         )
 

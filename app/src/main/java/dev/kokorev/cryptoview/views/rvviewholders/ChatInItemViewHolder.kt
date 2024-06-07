@@ -17,8 +17,9 @@ class ChatInItemViewHolder(val binding: ChatInItemBinding) : RecyclerView.ViewHo
         binding.name.text = message.name
         val format = SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.ENGLISH)
         binding.time.text = format.format(message.time)
-        binding.root.setOnClickListener {
+        binding.root.setOnLongClickListener {
             clickListener.click(message)
+            true
         }
     }
 }

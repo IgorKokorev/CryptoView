@@ -102,7 +102,7 @@ class ChartFragment : Fragment() {
     }
     
     private fun getCPTicks() {
-        viewModel.remoteApi.getCoinPaprikaTickerHistorical(viewModel.coinPaprikaId)
+        viewModel.getCoinPaprikaTickerHistorical()
             .subscribe({
                 Log.d("ChartFragment", "${it.size} ticks received for the chart")
                 ticks = it
@@ -120,7 +120,7 @@ class ChartFragment : Fragment() {
     }
     
     private fun getCPQuote() {
-        viewModel.remoteApi.getCoinPaprikaTicker(viewModel.coinPaprikaId)
+        viewModel.getCoinPaprikaTicker()
             .subscribe({
                 val nameAndSymbol = viewModel.name + " (" + viewModel.symbol + ")"
                 binding.symbol.text = nameAndSymbol

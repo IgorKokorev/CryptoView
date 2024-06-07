@@ -7,6 +7,7 @@ import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.CacheManager
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
+import dev.kokorev.token_metrics_api.entity.TMSentiment
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import javax.inject.Inject
@@ -37,4 +38,8 @@ class MainViewModel : ViewModel() {
         super.onCleared()
         compositeDisposable.dispose()
     }
+    
+    fun getSentiment() = remoteApi.getSentiment()
+    fun cacheTMSentiment(data: TMSentiment) = cacheManager.saveTMSentiment(data)
+    fun getCachedTMSentiment(): TMSentiment? = cacheManager.getTMSentiment()
 }

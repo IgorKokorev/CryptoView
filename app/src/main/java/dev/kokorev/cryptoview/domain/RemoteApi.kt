@@ -1,7 +1,9 @@
 package dev.kokorev.cryptoview.domain
 
 import android.content.Context
-import android.util.Log
+import com.google.firebase.Firebase
+import com.google.firebase.vertexai.type.GenerateContentResponse
+import com.google.firebase.vertexai.vertexAI
 import dev.kokorev.binance_api.BinanceApi
 import dev.kokorev.binance_api.entity.Binance24hrStatsType
 import dev.kokorev.binance_api.entity.BinanceKLineInterval
@@ -21,6 +23,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlinx.coroutines.rx3.rxMaybe
 import retrofit2.HttpException
 
 
@@ -33,6 +36,15 @@ class RemoteApi(
     private val tokenMetricsApi: TokenMetricsApi
 ) {
     var progressBarState: BehaviorSubject<Boolean> = BehaviorSubject.create()
+    val generativeModel = Firebase.vertexAI.generativeModel("gemini-1.5-flash-preview-0514")
+    
+    // Ask Google Gemini
+    fun askGemini(question: String): Maybe<GenerateContentResponse> {
+        return rxMaybe {
+            generativeModel.generateContent(question)
+        }
+            .addProgressBar()
+    }
     
     // Binance API info
     fun getBinanceInfo() = binanceApi.getExchangeInfo().addProgressBar()
@@ -67,18 +79,21 @@ class RemoteApi(
     fun getCoinPaprikaTop10Movers() = coinPaprikaApi.getTop10Movers().addProgressBar()
     fun getCoinPaprikaCoinInfo(id: String) =
         coinPaprikaApi.getCoin(id).addProgressBar()
+    
     fun getCoinPaprikaTicker(id: String) = coinPaprikaApi.getTicker(id)
         .addProgressBar()
+    
     fun getCoinPaprikaTickers() = coinPaprikaApi.getTickers().addProgressBar()
     fun getCoinPaprikaTickerHistorical(id: String) =
         coinPaprikaApi.getTickerHistoricalTicks(id).addProgressBar()
+    
     fun getCoinPaprikaOhlcvLatest(id: String) = coinPaprikaApi.getCoinOhlcvLatest(id).addProgressBar()
     
     // TokenMetrics API
     fun getAIReport(symbol: String): Maybe<TMResponse<AiReportData>> {
         return tokenMetricsApi.getAiReports(symbol = symbol)
             .onErrorReturn { e ->
-                return@onErrorReturn TMResponse(
+                TMResponse(
                     success = false,
                     message = exceptionToErrorText(e),
                     length = 0
@@ -87,14 +102,14 @@ class RemoteApi(
             .addProgressBar()
     }
     
-    fun askAi(aiQuestion: AiQuestion): Maybe<AiAnswer> {
+    fun askTokenMetricsAi(aiQuestion: AiQuestion): Maybe<AiAnswer> {
         return tokenMetricsApi.aiQuestion(aiQuestion)
             .onErrorReturn { e ->
                 val emptyAnswer = AiAnswer().apply {
                     success = false
                     answer = exceptionToErrorText(e)
                 }
-                return@onErrorReturn emptyAnswer
+                emptyAnswer
             }
             .addProgressBar()
     }
@@ -141,13 +156,9 @@ class RemoteApi(
             .doOnSubscribe {
                 progressBarState.onNext(true)
             }
-            .doAfterTerminate {
+            .doOnTerminate {
                 progressBarState.onNext(false)
             }
-            .doOnError {
-                Log.d(this.javaClass.simpleName, "Error calling API ${this.javaClass.simpleName}: ${it.localizedMessage}")
-            }
-            .onErrorComplete()
     }
     
     private fun <T : Any> Single<T>.addProgressBar(): Single<T> {
@@ -157,11 +168,8 @@ class RemoteApi(
             .doOnSubscribe {
                 progressBarState.onNext(true)
             }
-            .doAfterTerminate {
+            .doOnTerminate {
                 progressBarState.onNext(false)
-            }
-            .doOnError {
-                Log.d(this.javaClass.simpleName, "Error calling API: ${it.localizedMessage}")
             }
     }
     
@@ -172,12 +180,8 @@ class RemoteApi(
             .doOnSubscribe {
                 progressBarState.onNext(true)
             }
-            .doAfterTerminate {
+            .doOnTerminate {
                 progressBarState.onNext(false)
             }
-            .doOnError {
-                Log.d(this.javaClass.simpleName, "Error calling API: ${it.localizedMessage}")
-            }
-            .onErrorComplete()
     }
 }

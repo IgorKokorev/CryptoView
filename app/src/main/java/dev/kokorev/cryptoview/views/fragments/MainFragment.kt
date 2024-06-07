@@ -218,17 +218,17 @@ class MainFragment : Fragment() {
     private fun getSentiment() {
         val time = LocalDateTime.now(ZoneOffset.UTC)
         if (time.isAfter(tmSentimentTime.plusHours(1).plusMinutes(7))) {
-            viewModel.remoteApi.getSentiment()
+            viewModel.getSentiment()
                 .subscribe {
                     if (it.success && it.data.isNotEmpty()) {
                         val data = it.data.get(0)
-                        viewModel.cacheManager.saveTMSentiment(data)
+                        viewModel.cacheTMSentiment(data)
                         setSentimentData(data)
                     }
                 }
                 .addTo(autoDisposable)
         } else {
-            val data = viewModel.cacheManager.getTMSentiment()
+            val data = viewModel.getCachedTMSentiment()
             if (data == null) {
                 tmSentimentTime = time.withYear(time.year - 1)
             } else {

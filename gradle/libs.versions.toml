@@ -46,6 +46,7 @@ googleGmsGoogleServices = "4.4.2"
 googleFirebaseCrashlytics = "3.0.1"
 firebasePerf = "21.0.1"
 googleFirebaseFirebasePerf = "1.4.2"
+firebaseVertexai = "16.0.0-beta01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -91,6 +92,7 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 glide_annotation_processor = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide_version" }
 
 coroutines_core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines_version" }
+coroutines_rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "coroutines_version" }
 coroutines_android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines_version" }
 
 anychart = { group = "com.github.AnyChart", name = "AnyChart-Android", version.ref = "anychart_version" }
@@ -105,6 +107,7 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson_vers
 kotlinx_json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx_serialization_json_version"}
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-perf = { group = "com.google.firebase", name = "firebase-perf", version.ref = "firebasePerf" }
+firebase-vertexai = { group = "com.google.firebase", name = "firebase-vertexai", version.ref = "firebaseVertexai" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

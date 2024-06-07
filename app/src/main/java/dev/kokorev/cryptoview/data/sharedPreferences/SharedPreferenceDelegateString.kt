@@ -14,13 +14,18 @@ class SharedPreferenceDelegateString(
         App.instance.applicationContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
     }
     override fun getValue(thisRef: Any?, property: KProperty<*>): String {
-        return preferences.getString(name, defaultValue) ?: defaultValue
+        return when (name) {
+            "name" -> preferences.getString(name, defaultValue) ?: defaultValue
+            else -> defaultValue
+        }
     }
     
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
-        preferences.edit().putString(name, value).apply()
+        when (name) {
+            "name" -> preferences.edit().putString(name, value).apply()
+        }
     }
 }
 
-fun Context.sharedPreferences(name: String) = SharedPreferenceDelegateString(name)
-fun Fragment.preferences(name: String) = SharedPreferenceDelegateString(name)
+fun Context.preferencesString(name: String) = SharedPreferenceDelegateString(name)
+fun Fragment.preferencesString(name: String) = SharedPreferenceDelegateString(name)
