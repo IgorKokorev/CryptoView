@@ -21,10 +21,6 @@ class SharedPreferenceDelegateFloat(
                 KEY_FAVORITE_MIN_CHANGE,
                 DEFAULT_FAVORITE_MIN_CHANGE
             )
-            "portfolioNotificationTime" -> preferences.getFloat(
-                KEY_PORTFOLIO_NOTIFICATION_TIME,
-                DEFAULT_PORTFOLIO_NOTIFICATION_TIME
-            )
             else -> defaultValue
         }
     }
@@ -35,13 +31,10 @@ class SharedPreferenceDelegateFloat(
                 if (value in FAVORITE_CHECK_MIN_CHANGE.. FAVORITE_CHECK_MAX_CHANGE)
                     preferences.edit().putFloat(KEY_FAVORITE_MIN_CHANGE, value).apply()
             }
-            "portfolioNotificationTime" -> {
-            if (value in PORTFOLIO_NOTIFICATION_TIME_MIN .. PORTFOLIO_NOTIFICATION_TIME_MAX)
-                preferences.edit().putFloat(KEY_PORTFOLIO_NOTIFICATION_TIME, value).apply()
-        }
         }
     }
 }
 
+fun Context.preferencesFloat(name: String) = SharedPreferenceDelegateFloat(name)
 fun Fragment.preferencesFloat(name: String) = SharedPreferenceDelegateFloat(name)
 fun RxWorker.preferencesFloat(name: String) = SharedPreferenceDelegateFloat(name)

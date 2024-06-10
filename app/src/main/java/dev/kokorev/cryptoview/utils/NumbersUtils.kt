@@ -2,6 +2,7 @@ package dev.kokorev.cryptoview.utils
 
 import android.content.Context
 import android.icu.text.NumberFormat
+import android.icu.util.Calendar
 import android.icu.util.ULocale
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -104,6 +105,23 @@ object NumbersUtils {
         else if (number >= 1_000) formatWithPrecision(number / 1_000.0, 0) + "T"
         else formatWithPrecision(number.toDouble(), 0)
     }
+    
+    
+    fun getPortfolioNotificationMillis(portfolioNotificationTime: Int): Long {
+        
+        val hour = portfolioNotificationTime / 60
+        val minute = portfolioNotificationTime - hour * 60
+        
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
+        calendar.set(Calendar.MINUTE, minute)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        val now = Calendar.getInstance()
+        if (now.after(calendar)) calendar.add(Calendar.HOUR, 24)
+        return calendar.timeInMillis
+    }
+    
 }
 
 

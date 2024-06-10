@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.perf)
     implementation(libs.firebase.vertexai)
+    implementation(libs.firebase.analytics)
     kapt(libs.glide.annotation.processor)
 
     // airbnb paris lets you change view style programmatically

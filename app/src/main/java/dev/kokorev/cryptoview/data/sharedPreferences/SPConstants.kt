@@ -6,9 +6,9 @@ import dev.kokorev.cryptoview.views.fragments.SearchSorting
 const val SETTINGS = "settings"
 
 const val KEY_PORTFOLIO_NOTIFICATION_TIME: String = "portfolio_notification_time"
-const val DEFAULT_PORTFOLIO_NOTIFICATION_TIME: Float = 9.0F
-const val PORTFOLIO_NOTIFICATION_TIME_MIN: Float = 0.0F
-const val PORTFOLIO_NOTIFICATION_TIME_MAX: Float = 23.5F
+const val DEFAULT_PORTFOLIO_NOTIFICATION_TIME: Int = 9 * 60 // mins from day start
+const val PORTFOLIO_NOTIFICATION_TIME_MIN: Int = 0
+const val PORTFOLIO_NOTIFICATION_TIME_MAX: Int = 24 * 60 - 1 //  23:59
 const val KEY_TO_NOTIFY_PORTFOLIO: String = "to_notify_portfolio"
 const val KEY_TO_CHECK_FAVORITES: String = "to_check_favorites"
 const val KEY_TM_SENTIMENT_LAST_CALL_TIME = "last_tm_sentiment_time"

@@ -4,15 +4,15 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
 import com.coinpaprika.apiclient.entity.PortfolioEvaluationDB
 import com.coinpaprika.apiclient.entity.PortfolioPositionDB
 import com.coinpaprika.apiclient.entity.PortfolioTransactionDB
 import dev.kokorev.coin_paprika_api.entity.OHLCVEntity
-import dev.kokorev.cryptoview.App
+import dev.kokorev.cryptoview.appDagger
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesLong
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
+import dev.kokorev.cryptoview.logd
 import dev.kokorev.cryptoview.utils.toInstant
 import dev.kokorev.cryptoview.utils.toLocalDate
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -48,80 +48,26 @@ class PortfolioEvaluationService : Service() {
     
     
     init {
-        App.instance.dagger.inject(this)
+        appDagger.inject(this)
     }
     
     override fun onCreate() {
         super.onCreate()
-        Log.d(
-            this.javaClass.simpleName,
-            "onCreate"
-        )
         // Action when portfolio is evaluated
         val disposable = portfolioProcessed
             .subscribe({
                 if (it) {
                     saveNewEvaluation()
-                } else {
-                    Log.d(
-                        this.javaClass.simpleName,
-                        "onCreate. portfolioProcessed false state. Something went wrong..."
-                    )
-                }
+                } else logd("onCreate. portfolioProcessed false state. Something went wrong...")
             },
                 {
-                    Log.d(
-                        this.javaClass.simpleName,
-                        "onCreate. portfolioProcessed error: ${it.localizedMessage}, ${it.stackTrace}"
-                    )
+                    logd("onCreate. portfolioProcessed error", it)
                 })
         compositeDisposable.add(disposable)
     }
-    
-    // new valuation is already calculated. to persist it and set new evaluation date
-    private fun saveNewEvaluation() {
-        val newEvaluationInstant = Instant.ofEpochMilli(newEvaluationTime)
-        val disposable = repository.getPortfolioEvaluationByDate(newEvaluationInstant.toLocalDate())
-            // If evaluation for the date already exists. It means inflows/outflows were saved
-            .doOnSuccess { evaluation ->
-                Log.d(
-                    this.javaClass.simpleName,
-                    "saveNewEvaluation Saving existing evaluation. newValuation = ${newValuation}, time = ${newEvaluationInstant}, date = ${newEvaluationInstant.toLocalDate()}"
-                )
-                evaluation.valuation = newValuation
-                repository.savePortfolioEvaluation(evaluation)
-                portfolioEvaluationTime = newEvaluationInstant.toEpochMilli()
-            }
-            // No evaluation for the date - save a new one
-            .doOnComplete {
-                Log.d(
-                    this.javaClass.simpleName,
-                    "saveNewEvaluation creating and saving new evaluation"
-                )
-                val evaluation = PortfolioEvaluationDB(
-                    date = newEvaluationInstant.toLocalDate(),
-                    valuation = newValuation,
-                    inflow = 0.0
-                )
-                repository.savePortfolioEvaluation(evaluation)
-                portfolioEvaluationTime = newEvaluationInstant.toEpochMilli()
-            }
-            .doOnError {
-                Log.d(
-                    this.javaClass.simpleName,
-                    "saveNewEvaluation error: ${it.localizedMessage}, ${it.stackTrace}"
-                )
-            }
-            .subscribe()
-        compositeDisposable.add(disposable)
-    }
-    
+
     override fun onBind(intent: Intent): IBinder {
-        // No bind
-        Log.d(
-            this.javaClass.simpleName,
-            "onBind"
-        )
+        logd("onBind")
         return Binder()
     }
     
@@ -130,41 +76,30 @@ class PortfolioEvaluationService : Service() {
         nowDate = now.toLocalDate()
         lastEvaluationInstant = Instant.ofEpochMilli(portfolioEvaluationTime)
         lastEvaluationDate = lastEvaluationInstant.toLocalDate()
-        Log.d(
-            this.javaClass.simpleName,
-            "onStartCommand started. Now: ${now}, last evaluation instant: ${lastEvaluationInstant}"
-        )
+        logd("onStartCommand started. Now: ${now}, last evaluation instant: ${lastEvaluationInstant}")
+        
         // Check if time enough pasts since last evaluation
         if (now.toEpochMilli() < portfolioEvaluationTime + EVALUATION_INTERVAL) {
-            Log.d(
-                this.javaClass.simpleName,
-                "onStartCommand. not enough time pasts, stopping"
-            )
+            logd("onStartCommand. not enough time pasts, stopping")
             return START_NOT_STICKY
         }
-        val positionDisposable = repository.getAllPortfolioPositionsSingle()
+        
+        val positionDisposable = repository.getAllPortfolioPositionsMaybe()
             .doOnSuccess { positionsNow ->
-                Log.d(
-                    this.javaClass.simpleName,
-                    "onStartCommand. positionsMaybe success, num of positions in portfolio: ${positionsNow.size}"
-                )
+                logd("onStartCommand. positionsMaybe success, num of positions in portfolio: ${positionsNow.size}")
                 checkTransactionsAndEvaluate(positionsNow)
             }
             .doOnError {
-                Log.d(
-                    this.javaClass.simpleName,
-                    "onStartCommand. positionsMaybe error: ${it.localizedMessage}, ${it.stackTrace}"
-                )
+                logd("onStartCommand. positionsMaybe error", it)
             }
             .doOnComplete {
-                Log.d(this.javaClass.simpleName, "onStartCommand. positionsMaybe empty response")
+                logd("onStartCommand. positionsMaybe empty response")
+                checkTransactionsAndEvaluate(emptyList())
             }
             .subscribe()
         compositeDisposable.add(positionDisposable)
-        Log.d(
-            this.javaClass.simpleName,
-            "onStartCommand. Finished evaluation process"
-        )
+        
+        logd("onStartCommand. Evaluation process programmed")
         return super.onStartCommand(intent, flags, startId)
     }
     
@@ -174,24 +109,15 @@ class PortfolioEvaluationService : Service() {
     ) {
         val transactionDisposable = repository.findTransactionsFrom(nowDate)
             .doOnSuccess { transactions ->
-                Log.d(
-                    this.javaClass.simpleName,
-                    "onStartCommand. positionsMaybe -> transactionsMaybe success, found transactions: ${transactions.size}"
-                )
+                logd("onStartCommand. positionsMaybe -> transactionsMaybe success, found transactions: ${transactions.size}")
                 val positionsOld = revertTransactions(positionsNow, transactions)
                 evaluatePortfolio(positionsOld)
             }
             .doOnError {
-                Log.d(
-                    this.javaClass.simpleName,
-                    "onStartCommand. positionsMaybe -> transactionsMaybe error: ${it.localizedMessage}, ${it.stackTrace}"
-                )
+                logd("onStartCommand. positionsMaybe -> transactionsMaybe", it)
             }
             .doOnComplete {
-                Log.d(
-                    this.javaClass.simpleName,
-                    "onStartCommand. positionsMaybe -> transactionsMaybe empty: No today's transactions found"
-                )
+                logd("onStartCommand. positionsMaybe -> transactionsMaybe empty: No today's transactions found")
                 evaluatePortfolio(positionsNow)
             }
             .subscribe()
@@ -208,10 +134,7 @@ class PortfolioEvaluationService : Service() {
         transactions.forEach { transaction ->
             val position = positionsOld.find { it.coinPaprikaId == transaction.coinPaprikaId }
             if (position == null) {
-                Log.d(
-                    this.javaClass.simpleName,
-                    "onStartCommand. positionsMaybe -> transactionsMaybe -> revertTransactions. Restoring empty position: ${transaction.coinPaprikaId} qty: ${-transaction.quantity}"
-                )
+                logd("onStartCommand. positionsMaybe -> transactionsMaybe -> revertTransactions. Restoring empty position: ${transaction.coinPaprikaId} qty: ${-transaction.quantity}")
                 val oldPosition = PortfolioPositionDB(
                     coinPaprikaId = transaction.coinPaprikaId,
                     quantity = -transaction.quantity,
@@ -219,10 +142,7 @@ class PortfolioEvaluationService : Service() {
                 )
                 positionsOld.add(oldPosition)
             } else {
-                Log.d(
-                    this.javaClass.simpleName,
-                    "onStartCommand. positionsMaybe -> transactionsMaybe -> revertTransactions. Correcting position: ${transaction.coinPaprikaId} qty: ${-transaction.quantity}"
-                )
+                logd("onStartCommand. positionsMaybe -> transactionsMaybe -> revertTransactions. Correcting position: ${transaction.coinPaprikaId} qty: ${-transaction.quantity}")
                 position.quantity -= transaction.quantity
             }
         }
@@ -267,10 +187,7 @@ class PortfolioEvaluationService : Service() {
                     }
                 }
                 .doOnError {
-                    Log.d(
-                        this.javaClass.simpleName,
-                        "onStartCommand. evaluatePortfolio. Error: ${it.localizedMessage}, ${it.stackTrace}"
-                    )
+                    logd("onStartCommand. evaluatePortfolio", it)
                 }
                 .subscribe()
             compositeDisposable.add(disposable)
@@ -284,35 +201,52 @@ class PortfolioEvaluationService : Service() {
         val ohlcvTime = ohlcv.timeClose.toEpochMilli()
         val savedEvaluationTime = newEvaluationInstantMillisAtomic.get()
         if ((savedEvaluationTime != 0L) and (savedEvaluationTime != ohlcvTime)) {
-            Log.d(
-                this.javaClass.simpleName,
-                "onStartCommand. evaluatePortfolio. TimeClose for different positions differs. Saved time: ${savedEvaluationTime}, time for ${position.coinPaprikaId}: ${ohlcvTime}"
-            )
+            logd("onStartCommand. evaluatePortfolio. TimeClose for different positions differs. Saved time: ${savedEvaluationTime}, time for ${position.coinPaprikaId}: ${ohlcvTime}")
             portfolioProcessed.onNext(false)
             return 0.0
         } else {
             newEvaluationInstantMillisAtomic.set(ohlcvTime)
             val positionsProcessed = atomicNumOfPositions.incrementAndGet()
-            Log.d(
-                this.javaClass.simpleName,
-                "onStartCommand. evaluatePortfolio. Successfully added position valuation for ${position.coinPaprikaId}. Processed ${positionsProcessed} positions"
-            )
+            logd("onStartCommand. evaluatePortfolio. Successfully added position valuation for ${position.coinPaprikaId}. Processed ${positionsProcessed} positions")
             return position.quantity * ohlcv.close
         }
     }
     
+    // new valuation is already calculated. to persist it and set new evaluation date
+    private fun saveNewEvaluation() {
+        val newEvaluationInstant = Instant.ofEpochMilli(newEvaluationTime)
+        val disposable = repository.getPortfolioEvaluationByDate(newEvaluationInstant.toLocalDate())
+            // If evaluation for the date already exists. It means inflows/outflows were saved
+            .doOnSuccess { evaluation ->
+                logd("saveNewEvaluation Saving existing evaluation. newValuation = ${newValuation}, time = ${newEvaluationInstant}, date = ${newEvaluationInstant.toLocalDate()}")
+                evaluation.valuation = newValuation
+                repository.savePortfolioEvaluation(evaluation)
+                portfolioEvaluationTime = newEvaluationInstant.toEpochMilli()
+            }
+            // No evaluation for the date - save a new one
+            .doOnComplete {
+                logd("saveNewEvaluation creating and saving new empty evaluation")
+                val evaluation = PortfolioEvaluationDB(
+                    date = newEvaluationInstant.toLocalDate(),
+                    valuation = newValuation,
+                    inflow = 0.0
+                )
+                repository.savePortfolioEvaluation(evaluation)
+                portfolioEvaluationTime = newEvaluationInstant.toEpochMilli()
+            }
+            .doOnError {
+                logd("saveNewEvaluation error", it)
+            }
+            .subscribe()
+        compositeDisposable.add(disposable)
+    }
+    
     override fun onLowMemory() {
-        Log.d(
-            this.javaClass.simpleName,
-            "onLowMemory"
-        )
+        logd("onLowMemory")
         super.onLowMemory()
     }
     override fun onDestroy() {
-        Log.d(
-            this.javaClass.simpleName,
-            "onDestroy"
-        )
+        logd("onDestroy")
         compositeDisposable.clear()
         super.onDestroy()
     }

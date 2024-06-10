@@ -10,9 +10,9 @@ import java.time.LocalDate
 data class PortfolioEvaluationDB(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name = "date") var date: LocalDate,
-    @ColumnInfo(name = "valuation") var valuation: Double? = 0.0,
-    @ColumnInfo(name = "inflow") var inflow: Double? = 0.0,
-    @ColumnInfo(name = "change") var change: Double? = 0.0,
-    @ColumnInfo(name = "percent_change") var percentChange: Double? = 0.0,
-    @ColumnInfo(name = "positions") var positions: Int? = 0,
+    @ColumnInfo(name = "valuation") var valuation: Double? = null,
+    @ColumnInfo(name = "inflow") var inflow: Double? = null,
+    @ColumnInfo(name = "change") var change: Double? = null,
+    @ColumnInfo(name = "percent_change") var percentChange: Double? = null,
+    @ColumnInfo(name = "positions") var positions: Int? = null,
 )

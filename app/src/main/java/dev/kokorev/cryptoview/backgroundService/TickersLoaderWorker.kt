@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
 import dev.kokorev.cryptoview.App
+import dev.kokorev.cryptoview.COIN_ACTION
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.data.sharedPreferences.MIN_MCAPS
@@ -14,6 +15,8 @@ import dev.kokorev.cryptoview.data.sharedPreferences.preferencesFloat
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter
+import dev.kokorev.cryptoview.utils.NotificationData
+import dev.kokorev.cryptoview.utils.NotificationService
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 import kotlin.math.abs
@@ -84,12 +87,15 @@ class TickersLoaderWorker(
                         ) {
                             Log.d(this.javaClass.simpleName, "Sending notification")
                             repository.setFavoriteTimeNotified(coin)
-                            notificationService.send(
-                                context.getString(R.string.favorite_coin_price_change),
-                                "Your favorite coin ${coin.symbol} has ${if (change > 0) "grown" else "fallen"} by $change%",
-                                coin,
-                                coin.id
+                            val data = NotificationData(
+                                title = context.getString(R.string.favorite_coin_price_change),
+                                text = "Your favorite coin ${coin.symbol} has ${if (change > 0) "grown" else "fallen"} by $change%",
+                                keyExtra = Constants.INTENT_EXTRA_FAVORITE_COIN,
+                                extra = coin,
+                                action = COIN_ACTION,
+                                id = coin.id
                             )
+                            notificationService.send(data)
                         }
                     }
                 }

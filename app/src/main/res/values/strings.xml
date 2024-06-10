@@ -97,7 +97,6 @@
     <string name="change_24h">%24h</string>
     <string name="value">Value</string>
     <string name="portfolio_service_description">CryptoView background service for portfolio evaluation</string>
-    <string name="get_portfolio_notification_text">I want to receive the state of my portfolio every day at</string>
     <string name="portfolio_notification">Portfolio notifications</string>
     <string name="gemini">Gemini</string>
     <string name="error">Error</string>
@@ -105,4 +104,6 @@
     <string name="empty_ai_response">And the silence was his only answer...</string>
     <string name="lets_ask_gemini">I have no answer to the question. Let\'s ask Gemini...</string>
     <string name="copied_to_clipboard">Message copied to clipboard</string>
+    <string name="portfolio_no_notify">I don\'t want to be notified about the state of my portfolio</string>
+    <string name="portfolio_notify">I want to be notified about the state of the portfolio every day at %1$s</string>
 </resources>

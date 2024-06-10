@@ -342,51 +342,11 @@
                     android:checked="true" />
 
                 <TextView
+                    android:id="@+id/portfolio_notification_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/get_portfolio_notification_text" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/portfolio_time_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_padding"
-                android:layout_marginEnd="@dimen/medium_padding"
-                android:gravity="center"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/portfolio_checkbox_container">
-
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/portfolio_time_slider"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="65"
-                    android:contentDescription="@string/minimum_favorite_price_change"
-                    android:stepSize="0.5"
-                    android:valueFrom="0"
-                    android:valueTo="23.5"
-                    android:value="8"/>
-
-                <TextView
-                    android:id="@+id/portfolio_time_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_weight="15"
-                    android:paddingStart="@dimen/medium_padding"
-                    android:maxLines="1"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMinTextSize="@dimen/tiny_text"
-                    android:autoSizeMaxTextSize="@dimen/medium_text"
-                    android:autoSizeStepGranularity="1sp"
-                    android:textAlignment="viewEnd"
-                    tools:text="Number" />
+                    android:text="@string/portfolio_notify" />
 
             </LinearLayout>
 

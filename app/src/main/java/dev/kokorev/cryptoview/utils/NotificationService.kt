@@ -1,14 +1,12 @@
-package dev.kokorev.cryptoview.backgroundService
+package dev.kokorev.cryptoview.utils
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Parcelable
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
-import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.views.MainActivity
 
@@ -31,9 +29,9 @@ class NotificationService(val context: Context) {
         notificationManager?.createNotificationChannel(channel)
     }
 
-    fun sendNotification(id: Int, title: String, text: String, pendingIntent: PendingIntent) {
+    private fun sendNotification(title: String, text: String, pendingIntent: PendingIntent, id: Int) {
 
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(icon)
             .setContentTitle(title)
             .setContentText(text)
@@ -41,15 +39,17 @@ class NotificationService(val context: Context) {
             .setShowWhen(true)
             .setAutoCancel(true)
             .setOnlyAlertOnce(true)
-            .build()
 
-        notificationManager?.notify(id, notification)
+        notificationManager?.notify(id, notificationBuilder.build())
     }
 
-    fun send(title: String, text: String, extra: Parcelable, id: Int = Constants.NOTIFICATION_ID) {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.putExtra(Constants.INTENT_EXTRA_FAVORITE_COIN, extra)
-        intent.action = id.toString()
+    fun send(data: NotificationData) {
+        
+        val intent = Intent(context, MainActivity::class.java).apply {
+            action = data.action + data.id
+            if (data.keyExtra != null && data.extra != null) putExtra(data.keyExtra, data.extra)
+        }
+        
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,
@@ -57,6 +57,6 @@ class NotificationService(val context: Context) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
         )
 
-        sendNotification(id, title, text, pendingIntent)
+        sendNotification(data.title, data.text, pendingIntent, data.id)
     }
 }

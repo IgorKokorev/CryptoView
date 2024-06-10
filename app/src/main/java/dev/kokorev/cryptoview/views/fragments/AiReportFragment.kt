@@ -3,7 +3,6 @@ package dev.kokorev.cryptoview.views.fragments
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,22 +51,27 @@ class AiReportFragment : Fragment() {
             .doOnSuccess {
                 if (it.success && it.data.isNotEmpty()) {
                     setPrediction(it.data[0])
+                } else {
+                    showNoPrediction()
                 }
             }
-            .doOnError {
-                Log.d(this.javaClass.simpleName, "Error getting price prediction for ${viewModel.symbol}, message: ${it.localizedMessage}, ${it.stackTrace}")
-            }
             .doOnComplete {
-                val textViewBinding = SimpleTextViewBinding.inflate(layoutInflater)
-                textViewBinding.root.text = getString(R.string.price_prediction_not_found_for, viewModel.symbol)
-                binding.predictionContainer.addView(
-                    textViewBinding.root
-                )
-                Snackbar.make(binding.root,
-                    getString(R.string.price_prediction_not_found_for, viewModel.symbol), Snackbar.LENGTH_SHORT).show()
+                showNoPrediction()
             }
             .subscribe()
             .addTo(autoDisposable)
+    }
+    
+    private fun showNoPrediction() {
+        val textViewBinding = SimpleTextViewBinding.inflate(layoutInflater)
+        textViewBinding.root.text = getString(R.string.price_prediction_not_found_for, viewModel.symbol)
+        binding.predictionContainer.addView(
+            textViewBinding.root
+        )
+        Snackbar.make(
+            binding.root,
+            getString(R.string.price_prediction_not_found_for, viewModel.symbol), Snackbar.LENGTH_SHORT
+        ).show()
     }
     
     private fun setPrediction(prediction: TMPricePredictionData) {

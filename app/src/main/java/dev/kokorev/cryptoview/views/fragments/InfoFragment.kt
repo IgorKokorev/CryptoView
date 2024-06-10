@@ -49,16 +49,16 @@ class InfoFragment : Fragment() {
         portfolioInteractor = PortfolioInteractor(binding.root, autoDisposable)
         
         linkToImage = mapOf(
-            "announcement" to R.drawable.icon_announcement,
-            "blog" to R.drawable.icon_blog,
-            "explorer" to R.drawable.icon_explorer,
+            "announcement" to R.drawable.icon_announcement2,
+            "blog" to R.drawable.icon_blog2,
+            "explorer" to R.drawable.icon_explorer2,
             "facebook" to R.drawable.icon_facebook,
             "reddit" to R.drawable.icon_reddit,
             "slack" to R.drawable.icon_slack,
-            "source_code" to R.drawable.icon_source_code,
+            "source_code" to R.drawable.icon_github,
             "telegram" to R.drawable.icon_telegram,
             "twitter" to R.drawable.icon_twitter,
-            "website" to R.drawable.icon_website,
+            "website" to R.drawable.icon_website3,
             "youtube" to R.drawable.icon_youtube,
             "chat" to R.drawable.icon_chat,
             "discord" to R.drawable.icon_discord,

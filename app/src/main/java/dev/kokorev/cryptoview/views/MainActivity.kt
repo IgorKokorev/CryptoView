@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
@@ -21,13 +20,23 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import dev.kokorev.cryptoview.App
+import dev.kokorev.cryptoview.COIN_ACTION
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
+import dev.kokorev.cryptoview.backgroundService.AlarmScheduler
+import dev.kokorev.cryptoview.backgroundService.BinanceLoaderWorker
+import dev.kokorev.cryptoview.backgroundService.TickersLoaderWorker
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesBoolean
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesInt
 import dev.kokorev.cryptoview.databinding.ActivityMainBinding
+import dev.kokorev.cryptoview.logd
 import dev.kokorev.cryptoview.utils.AutoDisposable
+import dev.kokorev.cryptoview.utils.NumbersUtils.getPortfolioNotificationMillis
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.ActivityViewModel
 import dev.kokorev.cryptoview.views.fragments.AiChatFragment
@@ -38,6 +47,7 @@ import dev.kokorev.cryptoview.views.fragments.SavedFragment
 import dev.kokorev.cryptoview.views.fragments.SearchFragment
 import dev.kokorev.cryptoview.views.fragments.SettingsFragment
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
@@ -52,36 +62,50 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge() // To check wth is this
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        logd("testing simple logging")
         // Set portrait orientation while landscape layouts are not ready yet
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         autoDisposable.bindTo(lifecycle)
+        
         setInsets()
         setupOnBackPressed()
         initBottomBarButtons()
         setupProgressBar()
-
+        startScheduledTasks()
+        startWorks()
+        
         // If notifications are disabled do not check favorites price change
         if(!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
             toCheckFavorites = false
         }
 
         addFragment(MainFragment(), Constants.MAIN_FRAGMENT_TAG)
-
-        val coin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent?.getParcelableExtra(Constants.INTENT_EXTRA_FAVORITE_COIN, FavoriteCoin::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent?.getParcelableExtra(Constants.INTENT_EXTRA_FAVORITE_COIN) as FavoriteCoin?
-        }
-
-        if (coin != null) {
-//            launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name)
-            launchBinanceFragment(coin.symbol)
-        }
+        
+        handleIntent()
     }
-
+    
+    private fun handleIntent() {
+        if (intent == null || intent.action == null) return
+        
+        val action =  intent.action!!
+        if (action.startsWith(COIN_ACTION)) {
+            val coin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra(Constants.INTENT_EXTRA_FAVORITE_COIN, FavoriteCoin::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableExtra(Constants.INTENT_EXTRA_FAVORITE_COIN) as FavoriteCoin?
+            }
+            
+            if (coin != null) {
+                //            launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name)
+                launchBinanceFragment(coin.symbol)
+            }
+        }
+        
+        
+    }
+    
     private fun setInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             // System Bars' Insets
@@ -172,10 +196,6 @@ class MainActivity : AppCompatActivity() {
                 onBackPressedExitCallback.isEnabled = true
                 // Disable it after the interval
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Log.d(
-                        "MainActivity",
-                        "onBackPressedToastCallback setting onBackPressedExitCallback.isEnabled = false"
-                    )
                     onBackPressedExitCallback.isEnabled = false
                 }, Constants.BACK_CLICK_TIME_INTERVAL)
             }
@@ -263,4 +283,48 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    
+    
+    private fun startScheduledTasks() {
+        
+        // start periodic portfolio evaluation task
+        viewModel.alarmScheduler.schedule(AlarmScheduler.portfolioEvaluationData.apply { time = System.currentTimeMillis() })
+        
+        val toNotifyPortfolio: Boolean by preferencesBoolean("toNotifyPortfolio")
+        
+        if (toNotifyPortfolio) {
+            val portfolioNotificationTime: Int by preferencesInt("portfolioNotificationTime")
+            val notificationTime = getPortfolioNotificationMillis(portfolioNotificationTime)
+            viewModel.alarmScheduler.schedule(AlarmScheduler.portfolioNotificationData.apply { time = notificationTime })
+        }
+    }
+    
+    private fun startWorks() {
+        val workManager = WorkManager.getInstance(this)
+        
+        // periodic work request to load CoinPaprika tickers and check Favorites and Portfolio state
+        val tickerLoaderWorkRequest =
+            PeriodicWorkRequestBuilder<TickersLoaderWorker>(15, TimeUnit.MINUTES)
+                .addTag(Constants.TICKER_LOADER_TAG)
+                .build()
+        workManager
+            .enqueueUniquePeriodicWork(
+                Constants.TICKER_LOADER_WORK,
+                ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+                tickerLoaderWorkRequest
+            )
+        
+        // periodic work request to download and save Binance symbols
+        val binanceLoaderWorkRequest =
+            PeriodicWorkRequestBuilder<BinanceLoaderWorker>(15, TimeUnit.MINUTES)
+                .addTag(Constants.BINANCE_LOADER_TAG)
+                .build()
+        workManager
+            .enqueueUniquePeriodicWork(
+                Constants.BINANCE_LOADER_WORK,
+                ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+                binanceLoaderWorkRequest
+            )
+    }
+    
 }

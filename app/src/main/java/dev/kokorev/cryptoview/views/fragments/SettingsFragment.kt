@@ -1,5 +1,6 @@
 package dev.kokorev.cryptoview.views.fragments
 
+import android.app.TimePickerDialog
 import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dev.kokorev.cryptoview.App
+import dev.kokorev.cryptoview.R
+import dev.kokorev.cryptoview.backgroundService.AlarmScheduler
 import dev.kokorev.cryptoview.data.sharedPreferences.FAVORITE_CHECK_MAX_CHANGE
 import dev.kokorev.cryptoview.data.sharedPreferences.FAVORITE_CHECK_MIN_CHANGE
 import dev.kokorev.cryptoview.data.sharedPreferences.MIN_MCAPS
 import dev.kokorev.cryptoview.data.sharedPreferences.MIN_VOLS
-import dev.kokorev.cryptoview.data.sharedPreferences.PORTFOLIO_NOTIFICATION_TIME_MAX
-import dev.kokorev.cryptoview.data.sharedPreferences.PORTFOLIO_NOTIFICATION_TIME_MIN
 import dev.kokorev.cryptoview.data.sharedPreferences.TOP_COINS_FROM
 import dev.kokorev.cryptoview.data.sharedPreferences.TOP_COINS_TO
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesBoolean
@@ -21,6 +22,7 @@ import dev.kokorev.cryptoview.data.sharedPreferences.preferencesFloat
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesInt
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesLong
 import dev.kokorev.cryptoview.databinding.FragmentSettingsBinding
+import dev.kokorev.cryptoview.logd
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
@@ -41,7 +43,7 @@ class SettingsFragment : Fragment() {
     private var toCheckFavorites: Boolean by preferencesBoolean("toCheckFavorites")
     private var favoriteChange: Float by preferencesFloat("favoriteChange")
     private var toNotifyPortfolio: Boolean by preferencesBoolean("toNotifyPortfolio")
-    private var portfolioNotificationTime: Float by preferencesFloat("portfolioNotificationTime")
+    private var portfolioNotificationTime: Int by preferencesInt("portfolioNotificationTime")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,27 +67,54 @@ class SettingsFragment : Fragment() {
     
     private fun setPortfolioNotificationSelector() {
         binding.portfolioCheckbox.isChecked = toNotifyPortfolio
-        binding.portfolioTimeSlider.valueFrom = PORTFOLIO_NOTIFICATION_TIME_MIN
-        binding.portfolioTimeSlider.valueTo = PORTFOLIO_NOTIFICATION_TIME_MAX
-        binding.portfolioTimeSlider.value = portfolioNotificationTime
-        binding.portfolioTimeSlider.isEnabled = toNotifyPortfolio
-        setPortfolioNotificationTimeText()
-        binding.portfolioTimeSlider.addOnChangeListener { _, value, _ ->
-            portfolioNotificationTime = value
-            setPortfolioNotificationTimeText()
-        }
+        setPortfolioNotificationText()
         binding.portfolioCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            // if user wants to get notification and the permission isn't granted
-            toNotifyPortfolio = isChecked
-            binding.portfolioTimeSlider.isEnabled = toNotifyPortfolio
+            if (isChecked) {
+                setPortfolioNotificationTime()
+            } else {
+                toNotifyPortfolio = false
+                viewModel.cancelPortfolioNotifications()
+                setPortfolioNotificationText()
+            }
         }
     }
     
-    private fun setPortfolioNotificationTimeText() {
-        val hour = portfolioNotificationTime.toInt()
-        val minute = ((portfolioNotificationTime - hour.toFloat()) * 60).toInt()
-        val str = DecimalFormat("00").format(hour) + ":" + DecimalFormat("00").format(minute)
-        binding.portfolioTimeText.text = str
+    private fun setPortfolioNotificationTime() {
+        val hourSaved = portfolioNotificationTime / 60
+        val minSaved = portfolioNotificationTime - hourSaved * 60
+        val tpDialog = TimePickerDialog(
+            binding.root.context,
+            { view, hourOfDay, minute ->
+                logd("Timepicker onSuccess")
+                
+                toNotifyPortfolio = true
+                portfolioNotificationTime = hourOfDay * 60 + minute
+                val notificationTime = NumbersUtils.getPortfolioNotificationMillis(portfolioNotificationTime)
+                viewModel.alarmScheduler.schedule(AlarmScheduler.portfolioNotificationData.apply { time = notificationTime })
+                setPortfolioNotificationText()
+            },
+            hourSaved,
+            minSaved,
+            true
+        ).apply {
+            setOnCancelListener {
+                logd("Timepicker onCancel")
+                toNotifyPortfolio = false
+                binding.portfolioCheckbox.isChecked = false
+                viewModel.cancelPortfolioNotifications()
+            }
+        }
+            tpDialog.show()
+    }
+    
+    private fun setPortfolioNotificationText() {
+        val text = if (toNotifyPortfolio) {
+            val hour = portfolioNotificationTime / 60
+            val minute = portfolioNotificationTime - hour * 60
+            val str = DecimalFormat("00").format(hour) + ":" + DecimalFormat("00").format(minute)
+            getString(R.string.portfolio_notify, str)
+        } else getString(R.string.portfolio_no_notify)
+        binding.portfolioNotificationText.text = text
     }
     
     private fun setFavoriteCoinsNotificationSelector() {

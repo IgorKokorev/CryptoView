@@ -233,6 +233,6 @@ class OHLCDataEntry(x: Long?, open: Double?, high: Double?, low: Double?, close:
     init {
         setValue("open", open)
         setValue("close", close)
-        setValue("value", volume)
+        setValue("volume", volume)
     }
 }

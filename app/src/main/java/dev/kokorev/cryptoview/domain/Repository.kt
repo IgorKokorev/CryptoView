@@ -133,7 +133,7 @@ class Repository() {
         }
     }
     fun getAllPortfolioPositions(): Observable<List<PortfolioPositionDB>> = portfolioCoinDao.getAll().addSettings()
-    fun getAllPortfolioPositionsSingle() = portfolioCoinDao.getAllMaybe().addSettings()
+    fun getAllPortfolioPositionsMaybe() = portfolioCoinDao.getAllMaybe().addSettings()
     fun deletePortfolioPosition(id: Int) {
         Executors.newSingleThreadExecutor().execute {
             portfolioCoinDao.deleteById(id)

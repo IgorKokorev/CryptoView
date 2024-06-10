@@ -280,59 +280,20 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/tech_indicators"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
+            app:showDivider="middle"
+            app:dividerDrawable="@drawable/flexbox_divider"
+            app:flexDirection="row"
+            app:flexWrap="wrap"
             app:layout_constraintTop_toBottomOf="@+id/ohl"
             >
 
-            <TextView
-                android:id="@+id/stochastic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/min_padding"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_rectangle_base"
-                android:padding="@dimen/min_padding"
-                android:textAlignment="center"
-                android:text="Stochastic" />
-
-            <TextView
-                android:id="@+id/macd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/min_padding"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_rectangle_base"
-                android:padding="@dimen/min_padding"
-                android:textAlignment="center"
-                android:text="MACD" />
-
-            <TextView
-                android:id="@+id/momentum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/min_padding"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_rectangle_base"
-                android:padding="@dimen/min_padding"
-                android:textAlignment="center"
-                android:text="Momentum" />
-
-            <TextView
-                android:id="@+id/rsi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/min_padding"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_rectangle_base"
-                android:padding="@dimen/min_padding"
-                android:textAlignment="center"
-                android:text="RSI" />
-        </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

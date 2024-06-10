@@ -23,6 +23,10 @@ class SharedPreferenceDelegateInt(
                 KEY_SEARCH_SORTING_DIRECTION,
                 DEFAULT_SEARCH_SORTING_DIRECTION
             )
+            "portfolioNotificationTime" -> preferences.getInt(
+                KEY_PORTFOLIO_NOTIFICATION_TIME,
+                DEFAULT_PORTFOLIO_NOTIFICATION_TIME
+            )
             else -> defaultValue
         }
     }
@@ -37,9 +41,14 @@ class SharedPreferenceDelegateInt(
                 if (value != 0) preferences.edit().putInt(KEY_SEARCH_SORTING_DIRECTION, value.sign)
                     .apply()
             }
+            "portfolioNotificationTime" -> {
+                if (value in PORTFOLIO_NOTIFICATION_TIME_MIN .. PORTFOLIO_NOTIFICATION_TIME_MAX)
+                    preferences.edit().putInt(KEY_PORTFOLIO_NOTIFICATION_TIME, value).apply()
+            }
         }
     }
 }
 
+fun Context.preferencesInt(name: String) = SharedPreferenceDelegateInt(name)
 fun Fragment.preferencesInt(name: String) = SharedPreferenceDelegateInt(name)
 fun ViewModel.preferencesInt(name: String) = SharedPreferenceDelegateInt(name)

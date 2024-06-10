@@ -1,6 +1,7 @@
 package dev.kokorev.cryptoview.domain
 
 import android.content.Context
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.vertexai.type.GenerateContentResponse
 import com.google.firebase.vertexai.vertexAI
@@ -131,7 +132,16 @@ class RemoteApi(
         limit: Int? = null,
         page: Int? = null,
     ): Maybe<TMResponse<TMPricePredictionData>> =
-        tokenMetricsApi.getPricePrediction(tokenId, symbol, category, exchange, limit, page).addProgressBar()
+        tokenMetricsApi.getPricePrediction(tokenId, symbol, category, exchange, limit, page)
+            .onErrorReturn {
+                Log.d(this.javaClass.simpleName, "getPricePrediction error: ${it.localizedMessage}, ${it.stackTrace}")
+                TMResponse(
+                    false,
+                    it.localizedMessage ?: exceptionToErrorText(it),
+                    0
+                )
+            }
+            .addProgressBar()
     
     
     // Service functions

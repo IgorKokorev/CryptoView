@@ -17,6 +17,7 @@ import com.anychart.core.stock.Plot
 import com.anychart.core.stock.series.OHLC
 import com.anychart.data.Table
 import com.anychart.data.TableMapping
+import com.anychart.enums.MovingAverageType
 import com.anychart.enums.StockSeriesType
 import com.anychart.graphics.vector.SolidFill
 import com.anychart.graphics.vector.StrokeLineCap
@@ -26,6 +27,7 @@ import dev.kokorev.binance_api.entity.BinanceKLineInterval
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentBinanceBinding
+import dev.kokorev.cryptoview.databinding.TechIndicatorTextBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.NumbersUtils
@@ -36,6 +38,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlin.math.max
 
 class BinanceFragment : Fragment() {
     private lateinit var binding: FragmentBinanceBinding
@@ -54,16 +57,9 @@ class BinanceFragment : Fragment() {
     private lateinit var mapping: TableMapping
     private lateinit var stock: Stock
     private lateinit var plotMain: Plot
-    private lateinit var plotStochastic: Plot
-    private lateinit var plotMACD: Plot
-    private lateinit var plotMomentum: Plot
-    private lateinit var plotRSI: Plot
-    private var isStochasticEnabled: Boolean = false
-    private var isMACDEnabled: Boolean = false
-    private var isMomentumEnabled: Boolean = false
-    private var isRSIEnabled: Boolean = false
     private lateinit var ohlc: OHLC
     private var chartData: List<DataEntry> = arrayListOf()
+    private val techIndicators: MutableSet<TechInd> = mutableSetOf()
     
     // chart intervals to select from
     private val intervals: List<BinanceKLineInterval> = listOf(
@@ -96,8 +92,8 @@ class BinanceFragment : Fragment() {
         symbol = arguments?.getString(Constants.COIN_SYMBOL) ?: ""
         
         setupIntervalSpinner()
-        setupChart()
         findBinanceSymbols()
+        setupChart()
         
         // when ticker is selected get and show market info
         binanceSymbolIndexBehaviour
@@ -122,66 +118,6 @@ class BinanceFragment : Fragment() {
                 if (binanceSymbol != null) getChartData()
             }
             .addTo(autoDisposable)
-        
-        setTechIndicatorsToggles()
-    }
-    
-    private fun setTechIndicatorsToggles() {
-        // Turn tech indicators on and off
-        binding.stochastic.setOnClickListener {
-            isStochasticEnabled = !isStochasticEnabled
-            setStochasticPlotAndButtonVisibility()
-        }
-        binding.macd.setOnClickListener {
-            isMACDEnabled = !isMACDEnabled
-            setMACDPlotAndButtonVisibility()
-        }
-        binding.momentum.setOnClickListener {
-            isMomentumEnabled = !isMomentumEnabled
-            setMomentumPlotAndButtonVisibility()
-        }
-        binding.rsi.setOnClickListener {
-            isRSIEnabled = !isRSIEnabled
-            setRSIPlotAndButtonVisibility()
-        }
-    }
-    
-    private fun setStochasticPlotAndButtonVisibility() {
-        plotStochastic.enabled(isStochasticEnabled)
-        binding.stochastic.background = if (isStochasticEnabled) ContextCompat.getDrawable(
-            binding.root.context,
-            R.drawable.rounded_rectangle_accent
-        )
-        else ContextCompat.getDrawable(binding.root.context, R.drawable.rounded_rectangle_base)
-    }
-    
-    
-    private fun setMACDPlotAndButtonVisibility() {
-        plotMACD.enabled(isMACDEnabled)
-        binding.macd.background = if (isMACDEnabled) ContextCompat.getDrawable(
-            binding.root.context,
-            R.drawable.rounded_rectangle_accent
-        )
-        else ContextCompat.getDrawable(binding.root.context, R.drawable.rounded_rectangle_base)
-    }
-    
-    private fun setMomentumPlotAndButtonVisibility() {
-        plotMomentum.enabled(isMomentumEnabled)
-        binding.momentum.background = if (isMomentumEnabled) ContextCompat.getDrawable(
-            binding.root.context,
-            R.drawable.rounded_rectangle_accent
-        )
-        else ContextCompat.getDrawable(binding.root.context, R.drawable.rounded_rectangle_base)
-    }
-    
-    
-    private fun setRSIPlotAndButtonVisibility() {
-        plotRSI.enabled(isRSIEnabled)
-        binding.rsi.background = if (isRSIEnabled) ContextCompat.getDrawable(
-            binding.root.context,
-            R.drawable.rounded_rectangle_accent
-        )
-        else ContextCompat.getDrawable(binding.root.context, R.drawable.rounded_rectangle_base)
     }
     
     override fun onCreateView(
@@ -195,7 +131,7 @@ class BinanceFragment : Fragment() {
     private fun getMarketData() {
         if (binanceSymbol != null) {
             val ticker = binanceSymbol!!
-            viewModel.remoteApi.getBinance24hrStats(ticker.symbol)
+            viewModel.getBinance24hrStats(ticker.symbol)
                 .subscribe({ stats ->
                     binding.baseAsset.text = ticker.baseAsset
                     binding.quoteAsset.text = ticker.quoteAsset
@@ -223,10 +159,9 @@ class BinanceFragment : Fragment() {
     }
     
     private fun getChartData() {
-        viewModel.remoteApi.getBinanceKLines(
+        viewModel.getBinanceKLines(
             symbol = binanceSymbol!!.symbol,
             interval = interval,
-            limit = Constants.BINANCE_KLINES_LIMIT
         )
             .subscribe({ klineList ->
                 Log.d(this.javaClass.simpleName, "Received ${klineList.size} candles")
@@ -279,13 +214,11 @@ class BinanceFragment : Fragment() {
                     background().fill(backgroundFill)
                 }
                 table = Table.instantiate("x")
-                mapping = table.mapAs("{open: 'open', high: 'high', low: 'low', close: 'close', value: 'value'}")
+                mapping = table.mapAs("{open: 'open', high: 'high', low: 'low', close: 'close', volume: 'volume'}")
                 setMainPlot()
                 ohlc = plotMain.ohlc(mapping)
-                setStochasticPlot()
-                setMACDPlot()
-                setMomentumPlot()
-                setRSIPlot()
+                
+                setupTechIndicators()
                 setScroller()
             }
             .subscribe {
@@ -313,9 +246,8 @@ class BinanceFragment : Fragment() {
         }
     }
     
-    private fun setStochasticPlot() {
-        // Draw stochastic in a new plot
-        plotStochastic = stock.plot(1).apply {
+    inner abstract class TechInd(index: Int, name: String) {
+        val tiPlot: Plot = stock.plot(index).apply {
             noData("No data to display")
             legend(false)
             yGrid(false)
@@ -324,90 +256,158 @@ class BinanceFragment : Fragment() {
             xMinorGrid(false)
             height("30%")
             xAxis(false)
-            stochastic(mapping, 14, 3, 3, "line", "line", "line", "line")
         }
-        val plotStochasticController = plotStochastic.annotations()
-        val line1 = plotStochasticController.horizontalLine("{valueAnchor:'80.0'}").apply {
-            stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+        val tiView: View
+        var isEnabled: Boolean = false
+        
+        init {
+            val tiBinding = TechIndicatorTextBinding.inflate(layoutInflater)
+            tiView = tiBinding.root.apply {
+                text = name
+            }
+            tiView.setOnClickListener {
+                isEnabled = !isEnabled
+                setVisibility()
+            }
+            binding.techIndicators.addView(tiView)
+            techIndicators.add(this)
+            setVisibility()
         }
-        val line2 = plotStochasticController.horizontalLine("{valueAnchor:'20.0'}").apply {
-            stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+        
+        fun setVisibility() {
+            tiPlot.enabled(isEnabled)
+            tiView.background = if (isEnabled) ContextCompat.getDrawable(
+                binding.root.context,
+                R.drawable.rounded_rectangle_accent
+            )
+            else ContextCompat.getDrawable(binding.root.context, R.drawable.rounded_rectangle_base)
         }
-        setStochasticPlotAndButtonVisibility()
+        
+        abstract fun setPlot()
     }
     
-    private fun setMACDPlot() {
-        // Draw stochastic in a new plot
-        plotMACD = stock.plot(2).apply {
-            noData("No data to display")
-            legend(false)
-            yGrid(false)
-            xGrid(false)
-            yMinorGrid(false)
-            xMinorGrid(false)
-            height("30%")
-            xAxis(false)
+    private fun setupTechIndicators() {
+        var index = 1
+        object : TechInd(index++, "ADL") {
+            override fun setPlot() {
+                tiPlot.adl(mapping, StockSeriesType.LINE)
+                val plotController = tiPlot.annotations()
+                val line = plotController.horizontalLine("{valueAnchor:'0.0'}").apply {
+                    stroke("#808080", 0.5, "50 0", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+            }
+        }
+        object : TechInd(index++, "Aroon") {
+            override fun setPlot() {
+                tiPlot.aroon(mapping, 25, StockSeriesType.LINE, StockSeriesType.LINE)
+            }
+        }
+        object : TechInd(index++, "CHO") {
+            override fun setPlot() {
+                tiPlot.cho(mapping, 3, 10, MovingAverageType.EMA, StockSeriesType.LINE)
+                val plotController = tiPlot.annotations()
+                val line = plotController.horizontalLine("{valueAnchor:'0.0'}").apply {
+                    stroke("#808080", 0.5, "50 0", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+            }
+        }
+        object : TechInd(index++, "MACD") {
+            override fun setPlot() {
+                val redColorString = "#" + getColorHex(R.color.red)
+                val blueColorString = "#" + getColorHex(R.color.blue)
+                val macd =
+                    tiPlot.macd(mapping, 12, 26, 9, StockSeriesType.LINE, StockSeriesType.LINE, StockSeriesType.COLUMN)
+                macd.macdSeries().normal().stroke(redColorString, 1, "50 0", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                macd.signalSeries().normal()
+                    .stroke(redColorString, 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                macd.histogramSeries().normal().fill(SolidFill(blueColorString, 1))
+                val plotController = tiPlot.annotations()
+                val line = plotController.horizontalLine("{valueAnchor:'0.0'}").apply {
+                    stroke("#808080", 0.5, "50 0", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+            }
+        }
+        object : TechInd(index++, "MFI") {
+            override fun setPlot() {
+                tiPlot.mfi(mapping, 10, StockSeriesType.LINE)
+                val plotController = tiPlot.annotations()
+                val line1 = plotController.horizontalLine("{valueAnchor:'80.0'}").apply {
+                    stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+                val line2 = plotController.horizontalLine("{valueAnchor:'20.0'}").apply {
+                    stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+            }
+        }
+        object : TechInd(index++, "Mom") {
+            override fun setPlot() {
+                tiPlot.momentum(mapping, 14, StockSeriesType.LINE)
+                val plotController = tiPlot.annotations()
+                val line = plotController.horizontalLine("{valueAnchor:'0.0'}").apply {
+                    stroke("#808080", 0.5, "50 0", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+            }
             
         }
-        val redColorString = "#" + getColorHex(R.color.red)
-        val blueColorString = "#" + getColorHex(R.color.blue)
-        
-        val macd = plotMACD.macd(mapping, 12, 26, 9, StockSeriesType.LINE, StockSeriesType.LINE, StockSeriesType.COLUMN)
-        
-        macd.macdSeries().normal().stroke(redColorString, 1, "50 0", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
-        macd.signalSeries().normal().stroke(redColorString, 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
-        macd.histogramSeries().normal().fill(SolidFill(blueColorString, 1))
-        
-        val plotMACDController = plotMACD.annotations()
-        val line = plotMACDController.horizontalLine("{valueAnchor:'0.0'}").apply {
-            stroke("#808080", 0.5, "50 0", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+        object : TechInd(index++, "OBV") {
+            override fun setPlot() {
+                tiPlot.obv(mapping, StockSeriesType.LINE)
+                val plotController = tiPlot.annotations()
+                val line = plotController.horizontalLine("{valueAnchor:'0.0'}").apply {
+                    stroke("#808080", 0.5, "50 0", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+            }
         }
-        setMACDPlotAndButtonVisibility()
-    }
-    
-    private fun setMomentumPlot() {
-        // Draw stochastic in a new plot
-        plotMomentum = stock.plot(3).apply {
-            noData("No data to display")
-            legend(false)
-            yGrid(false)
-            xGrid(false)
-            yMinorGrid(false)
-            xMinorGrid(false)
-            height("30%")
-            xAxis(false)
-            momentum(mapping, 14 , StockSeriesType.LINE)
-            
+        object : TechInd(index++, "ROC") {
+            override fun setPlot() {
+                tiPlot.roc(mapping, 30, StockSeriesType.LINE)
+                val plotController = tiPlot.annotations()
+                val line = plotController.horizontalLine("{valueAnchor:'0.0'}").apply {
+                    stroke("#808080", 0.5, "50 0", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+            }
         }
-        val plotMomentumController = plotMomentum.annotations()
-        val line = plotMomentumController.horizontalLine("{valueAnchor:'0.0'}").apply {
-            stroke("#808080", 0.5, "50 0", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+        object : TechInd(index++, "RSI") {
+            override fun setPlot() {
+                tiPlot.rsi(mapping, 14, StockSeriesType.LINE)
+                val plotController = tiPlot.annotations()
+                val line1 = plotController.horizontalLine("{valueAnchor:'30.0'}").apply {
+                    stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+                val line2 = plotController.horizontalLine("{valueAnchor:'70.0'}").apply {
+                    stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+            }
         }
-        setMomentumPlotAndButtonVisibility()
-    }
-    
-    private fun setRSIPlot() {
-        // Draw stochastic in a new plot
-        plotRSI = stock.plot(4).apply {
-            noData("No data to display")
-            legend(false)
-            yGrid(false)
-            xGrid(false)
-            yMinorGrid(false)
-            xMinorGrid(false)
-            height("30%")
-            xAxis(false)
-            rsi(mapping, 14, StockSeriesType.LINE)
-            
+        object : TechInd(index++, "Stoch") {
+            override fun setPlot() {
+                tiPlot.stochastic(mapping, 14, 3, 3, "line", "line", "line", "line")
+                
+                val plotController = tiPlot.annotations()
+                val line1 = plotController.horizontalLine("{valueAnchor:'80.0'}").apply {
+                    stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+                val line2 = plotController.horizontalLine("{valueAnchor:'20.0'}").apply {
+                    stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+            }
         }
-        val plotRSIController = plotRSI.annotations()
-        val line1 = plotRSIController.horizontalLine("{valueAnchor:'30.0'}").apply {
-            stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+        object : TechInd(index++, "Williams") {
+            override fun setPlot() {
+                tiPlot.williamsR(mapping, 10, StockSeriesType.LINE)
+                val plotController = tiPlot.annotations()
+                val line1 = plotController.horizontalLine("{valueAnchor:'-80.0'}").apply {
+                    stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+                val line2 = plotController.horizontalLine("{valueAnchor:'-20.0'}").apply {
+                    stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+                }
+            }
         }
-        val line2 = plotRSIController.horizontalLine("{valueAnchor:'70.0'}").apply {
-            stroke("#808080", 0.5, "5 5", StrokeLineJoin.BEVEL, StrokeLineCap.SQUARE)
+
+        techIndicators.forEach {
+            it.setPlot()
         }
-        setRSIPlotAndButtonVisibility()
     }
     
     private fun getColorHex(colorResource: Int) =
@@ -415,7 +415,7 @@ class BinanceFragment : Fragment() {
             .substring(2)
     
     private fun findBinanceSymbols() {
-        viewModel.repository.findBinanceSymbolsByBaseAsset(symbol)
+        viewModel.findBinanceSymbolsByBaseAsset(symbol)
             .subscribe { list ->
                 if (list.isEmpty()) {
                     MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
@@ -428,7 +428,8 @@ class BinanceFragment : Fragment() {
                 } else {
                     binanceSymbols = list
                     val indexOfFirstAsset =
-                        list.indexOfFirst { symbol -> symbol.quoteAsset == Constants.BINANCE_FIRST_ASSET }
+                        max(0, list.indexOfFirst { symbol -> symbol.quoteAsset == Constants.BINANCE_FIRST_ASSET })
+                    
                     binanceSymbolIndexBehaviour.onNext(indexOfFirstAsset)
                     setupSymbolSpinner(list, indexOfFirstAsset)
                     Log.d(
