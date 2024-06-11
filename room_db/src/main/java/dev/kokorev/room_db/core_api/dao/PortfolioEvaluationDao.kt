@@ -12,12 +12,15 @@ import java.time.LocalDate
 
 @Dao
 interface PortfolioEvaluationDao {
-    @Query("SELECT * FROM portfolio_evaluation ORDER BY date DESC")
+    @Query("SELECT * FROM portfolio_evaluation ORDER BY date ASC")
     fun getAll(): Observable<List<PortfolioEvaluationDB>>
+    
+    @Query("SELECT * FROM portfolio_evaluation WHERE date >= :dateFrom ORDER BY date ASC")
+    fun getLatest(dateFrom: LocalDate): Single<List<PortfolioEvaluationDB>>
 
-    @Query("SELECT * FROM portfolio_evaluation ORDER BY date DESC")
+    @Query("SELECT * FROM portfolio_evaluation ORDER BY date ASC")
     fun getAllSingle(): Single<List<PortfolioEvaluationDB>>
-
+    
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPortfolioEvaluation(portfolioEvaluationDB: PortfolioEvaluationDB)
 
@@ -29,10 +32,6 @@ interface PortfolioEvaluationDao {
 
     @Query("DELETE FROM portfolio_evaluation WHERE id = :id")
     fun deleteById(id: Int)
-
-    @Query("SELECT * FROM portfolio_evaluation WHERE date > :startDate ORDER BY date DESC")
-    fun findEvaluationsFrom(startDate: LocalDate): Maybe<List<PortfolioEvaluationDB>>
-    
     
     @Query("SELECT * FROM portfolio_evaluation WHERE date = :date")
     fun getEvaluationByDate(date: LocalDate): Maybe<PortfolioEvaluationDB>

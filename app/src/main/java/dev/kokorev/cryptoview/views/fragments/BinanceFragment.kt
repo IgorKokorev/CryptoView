@@ -28,6 +28,7 @@ import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentBinanceBinding
 import dev.kokorev.cryptoview.databinding.TechIndicatorTextBinding
+import dev.kokorev.cryptoview.logd
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.NumbersUtils
@@ -97,11 +98,9 @@ class BinanceFragment : Fragment() {
         
         // when ticker is selected get and show market info
         binanceSymbolIndexBehaviour
-            .subscribe {
-                if (it >= 0) {
-                    binanceSymbol = binanceSymbols[it]
-                    getMarketData()
-                }
+            .subscribe { index ->
+                logd("binanceSymbolIndexBehaviour, index = ${index}")
+                if (index >= 0)  getMarketData(binanceSymbols[index])
             }
             .addTo(autoDisposable)
         
@@ -110,13 +109,16 @@ class BinanceFragment : Fragment() {
             intervalBehaviour,
             binanceSymbolIndexBehaviour
         ) { newInterval, newBSIndex ->
-            interval = newInterval
-            if (newBSIndex >= 0) binanceSymbol = binanceSymbols[newBSIndex]
-        }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            if (newInterval == interval && binanceSymbol == binanceSymbols[newBSIndex]) {
+                logd("intervalBehaviour + binanceSymbolIndexBehaviour - nothing changed")
+            } else {
+                interval = newInterval
+                if (newBSIndex >= 0) binanceSymbol = binanceSymbols[newBSIndex]
                 if (binanceSymbol != null) getChartData()
             }
+        }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
             .addTo(autoDisposable)
     }
     
@@ -128,34 +130,31 @@ class BinanceFragment : Fragment() {
         return binding.root
     }
     
-    private fun getMarketData() {
-        if (binanceSymbol != null) {
-            val ticker = binanceSymbol!!
-            viewModel.getBinance24hrStats(ticker.symbol)
-                .subscribe({ stats ->
-                    binding.baseAsset.text = ticker.baseAsset
-                    binding.quoteAsset.text = ticker.quoteAsset
-                    binding.lastPrice.text = NumbersUtils.formatPrice(stats.lastPrice.toDouble())
-                    NumbersUtils.setChangeView(
-                        stats.priceChangePercent?.toDouble(),
-                        binding.root.context,
-                        binding.change24h,
-                        "%"
+    private fun getMarketData(ticker: BinanceSymbolDB) {
+        viewModel.getBinance24hrStats(ticker.symbol)
+            .subscribe({ stats ->
+                binding.baseAsset.text = ticker.baseAsset
+                binding.quoteAsset.text = ticker.quoteAsset
+                binding.lastPrice.text = NumbersUtils.formatPrice(stats.lastPrice.toDouble())
+                NumbersUtils.setChangeView(
+                    stats.priceChangePercent?.toDouble(),
+                    binding.root.context,
+                    binding.change24h,
+                    "%"
+                )
+                binding.volume.text = NumbersUtils.formatBigNumber(stats.volume.toDouble())
+                binding.value.text = NumbersUtils.formatBigNumber(stats.quoteVolume.toDouble())
+                binding.openPrice.text = NumbersUtils.formatPrice(stats.openPrice.toDouble())
+                binding.highPrice.text = NumbersUtils.formatPrice(stats.highPrice.toDouble())
+                binding.lowPrice.text = NumbersUtils.formatPrice(stats.lowPrice.toDouble())
+            },
+                {
+                    Log.d(
+                        this.javaClass.simpleName,
+                        "Error getting Binance 24 hr stat for symbol ${binanceSymbol!!.symbol}"
                     )
-                    binding.volume.text = NumbersUtils.formatBigNumber(stats.volume.toDouble())
-                    binding.value.text = NumbersUtils.formatBigNumber(stats.quoteVolume.toDouble())
-                    binding.openPrice.text = NumbersUtils.formatPrice(stats.openPrice.toDouble())
-                    binding.highPrice.text = NumbersUtils.formatPrice(stats.highPrice.toDouble())
-                    binding.lowPrice.text = NumbersUtils.formatPrice(stats.lowPrice.toDouble())
-                },
-                    {
-                        Log.d(
-                            this.javaClass.simpleName,
-                            "Error getting Binance 24 hr stat for symbol ${binanceSymbol!!.symbol}"
-                        )
-                    })
-                .addTo(autoDisposable)
-        }
+                })
+            .addTo(autoDisposable)
     }
     
     private fun getChartData() {
@@ -171,7 +170,7 @@ class BinanceFragment : Fragment() {
                 if (chartData.isNotEmpty()) {
                     val start = getX(0)
                     val end = getX(chartData.size - 1)
-                    table.remove(start, end)
+                    if (start.isNotEmpty() and end.isNotEmpty()) table.remove(start, end)
                 }
                 if (newData.isNotEmpty()) {
                     chartData = newData
@@ -404,7 +403,7 @@ class BinanceFragment : Fragment() {
                 }
             }
         }
-
+        
         techIndicators.forEach {
             it.setPlot()
         }
@@ -430,11 +429,11 @@ class BinanceFragment : Fragment() {
                     val indexOfFirstAsset =
                         max(0, list.indexOfFirst { symbol -> symbol.quoteAsset == Constants.BINANCE_FIRST_ASSET })
                     
-                    binanceSymbolIndexBehaviour.onNext(indexOfFirstAsset)
+//                    binanceSymbolIndexBehaviour.onNext(indexOfFirstAsset)
                     setupSymbolSpinner(list, indexOfFirstAsset)
                     Log.d(
                         this.javaClass.simpleName,
-                        "Found ${list.size} Binance symbols, USDT index: ${binanceSymbolIndexBehaviour}"
+                        "Found ${list.size} Binance symbols"
                     )
                 }
             }

@@ -18,7 +18,7 @@ class SharedPreferenceDelegateMainPriceSorting(
     }
     override fun getValue(thisRef: Any?, property: KProperty<*>): MainPriceSorting {
         return when(name) {
-            "mainPriceSorting" -> {
+            KEY_MAIN_PRICE_SORTING -> {
                 val str = preferences.getString(KEY_MAIN_PRICE_SORTING, DEFAULT_MAIN_PRICE_SORTING.str)
                 (MainPriceSorting from str) ?: defaultValue
             }
@@ -28,7 +28,7 @@ class SharedPreferenceDelegateMainPriceSorting(
     
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: MainPriceSorting) {
         when (name) {
-            "mainPriceSorting" -> {
+            KEY_MAIN_PRICE_SORTING -> {
                 preferences.edit().putString(KEY_MAIN_PRICE_SORTING, value.str).apply()
             }
         }

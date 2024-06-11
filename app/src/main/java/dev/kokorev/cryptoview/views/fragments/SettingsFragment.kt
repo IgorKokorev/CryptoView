@@ -11,8 +11,15 @@ import androidx.fragment.app.viewModels
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.backgroundService.AlarmScheduler
-import dev.kokorev.cryptoview.data.sharedPreferences.FAVORITE_CHECK_MAX_CHANGE
-import dev.kokorev.cryptoview.data.sharedPreferences.FAVORITE_CHECK_MIN_CHANGE
+import dev.kokorev.cryptoview.data.sharedPreferences.FAVORITE_MAX_CHANGE
+import dev.kokorev.cryptoview.data.sharedPreferences.FAVORITE_MIN_CHANGE
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_FAVORITE_CHANGE
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_MIN_MCAP
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_MIN_VOL
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_NUM_TOP_COINS
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_PORTFOLIO_NOTIFICATION_TIME
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_TO_CHECK_FAVORITES
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_TO_NOTIFY_PORTFOLIO
 import dev.kokorev.cryptoview.data.sharedPreferences.MIN_MCAPS
 import dev.kokorev.cryptoview.data.sharedPreferences.MIN_VOLS
 import dev.kokorev.cryptoview.data.sharedPreferences.TOP_COINS_FROM
@@ -37,13 +44,15 @@ class SettingsFragment : Fragment() {
 
     private var minMcapIndex: Int = 0
     private var minVolIndex: Int = 0
-    private var minMcap: Long by preferencesLong("minMcap")
-    private var minVol: Long by preferencesLong("minVol")
-    private var nTopCoins: Int by preferencesInt("nTopCoins")
-    private var toCheckFavorites: Boolean by preferencesBoolean("toCheckFavorites")
-    private var favoriteChange: Float by preferencesFloat("favoriteChange")
-    private var toNotifyPortfolio: Boolean by preferencesBoolean("toNotifyPortfolio")
-    private var portfolioNotificationTime: Int by preferencesInt("portfolioNotificationTime")
+    
+    // from SharedPreferences
+    private var minMcap: Long by preferencesLong(KEY_MIN_MCAP)
+    private var minVol: Long by preferencesLong(KEY_MIN_VOL)
+    private var nTopCoins: Int by preferencesInt(KEY_NUM_TOP_COINS)
+    private var toCheckFavorites: Boolean by preferencesBoolean(KEY_TO_CHECK_FAVORITES)
+    private var favoriteChange: Float by preferencesFloat(KEY_FAVORITE_CHANGE)
+    private var toNotifyPortfolio: Boolean by preferencesBoolean(KEY_TO_NOTIFY_PORTFOLIO)
+    private var portfolioNotificationTime: Int by preferencesInt(KEY_PORTFOLIO_NOTIFICATION_TIME)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,8 +136,8 @@ class SettingsFragment : Fragment() {
             }
             .addTo(autoDisposable)
         
-        binding.favoriteChangeValueSlider.valueFrom = FAVORITE_CHECK_MIN_CHANGE
-        binding.favoriteChangeValueSlider.valueTo = FAVORITE_CHECK_MAX_CHANGE
+        binding.favoriteChangeValueSlider.valueFrom = FAVORITE_MIN_CHANGE
+        binding.favoriteChangeValueSlider.valueTo = FAVORITE_MAX_CHANGE
         binding.favoriteChangeValueSlider.value = favoriteChange
         binding.favoriteChangeValueSlider.isEnabled = toCheckFavorites
         setFavoriteChangeValueText()

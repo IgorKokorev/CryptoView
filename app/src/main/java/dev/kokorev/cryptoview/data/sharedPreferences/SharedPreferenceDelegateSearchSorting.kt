@@ -17,7 +17,7 @@ class SharedPreferenceDelegateSearchSorting(
     }
     override fun getValue(thisRef: Any?, property: KProperty<*>): SearchSorting {
         return when(name) {
-            "searchSorting" -> {
+            KEY_SEARCH_SORTING -> {
                 val str = preferences.getString(KEY_SEARCH_SORTING, DEFAULT_SEARCH_SORTING.str)
                 (SearchSorting from str) ?: defaultValue
             }
@@ -27,7 +27,7 @@ class SharedPreferenceDelegateSearchSorting(
     
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: SearchSorting) {
         when (name) {
-            "searchSorting" -> {
+            KEY_SEARCH_SORTING -> {
                 preferences.edit().putString(KEY_SEARCH_SORTING, value.str).apply()
             }
         }

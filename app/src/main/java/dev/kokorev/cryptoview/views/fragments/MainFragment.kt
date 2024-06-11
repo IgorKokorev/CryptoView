@@ -12,10 +12,14 @@ import androidx.transition.TransitionManager
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.data.entity.GainerCoin
-import dev.kokorev.cryptoview.data.sharedPreferences.preferencesDateTime
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_MAIN_PRICE_SORTING
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_NUM_TOP_COINS
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_TM_SENTIMENT_CALL_TIME
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesInstant
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesInt
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesMainPriceSorting
 import dev.kokorev.cryptoview.databinding.FragmentMainBinding
+import dev.kokorev.cryptoview.logd
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.addTo
@@ -41,9 +45,9 @@ class MainFragment : Fragment() {
     private lateinit var topMoverAdapter: TopMoverAdapter
     private var sortingBS: BehaviorSubject<MainPriceSorting> = BehaviorSubject.create()
     
-    private var nTopCoins: Int by preferencesInt("nTopCoins")
-    private var sorting: MainPriceSorting by preferencesMainPriceSorting("mainPriceSorting")
-    private var tmSentimentTime: LocalDateTime by preferencesDateTime("tmSentimentTime")
+    private var nTopCoins: Int by preferencesInt(KEY_NUM_TOP_COINS)
+    private var sorting: MainPriceSorting by preferencesMainPriceSorting(KEY_MAIN_PRICE_SORTING)
+    private var tmSentimentTime: Instant by preferencesInstant(KEY_TM_SENTIMENT_CALL_TIME)
 
     // Map TokenMetrics sentiment grades to colors
     private val tmGradeToColor: Map<String, Int> = mapOf(
@@ -216,32 +220,55 @@ class MainFragment : Fragment() {
 
     // Get Sentiment from API if more than 1 hour have passed since the last saved sentiment. Othewise get it from cache
     private fun getSentiment() {
-        val time = LocalDateTime.now(ZoneOffset.UTC)
-        if (time.isAfter(tmSentimentTime.plusHours(1).plusMinutes(7))) {
-            viewModel.getSentiment()
-                .subscribe {
+        val time = Instant.now()
+        if (time.isAfter(tmSentimentTime.plusSeconds( 67 * 60 /* 67 minutes */))) {
+            viewModel.getSentimentFromApi()
+                .doOnSuccess {
+                    logd("getSentiment success")
                     if (it.success && it.data.isNotEmpty()) {
                         val data = it.data.get(0)
                         viewModel.cacheTMSentiment(data)
                         setSentimentData(data)
                     }
                 }
+                .doOnComplete {
+                    logd("getSentiment complete")
+                    setSentimentFromCache()
+                }
+                .doOnError {
+                    logd("getSentiment error", it)
+                    setSentimentFromCache()
+                }
+                .subscribe()
                 .addTo(autoDisposable)
         } else {
-            val data = viewModel.getCachedTMSentiment()
-            if (data == null) {
-                tmSentimentTime = time.withYear(time.year - 1)
-            } else {
-                setSentimentData(data)
-            }
+            setSentimentFromCache()
         }
     }
-
+    
+    private fun setSentimentFromCache() {
+        viewModel.getCachedTMSentiment()
+            .doOnSuccess {
+                logd("setSentimentFromCache success")
+                setSentimentData(it)
+            }
+            .doOnComplete {
+                logd("setSentimentFromCache complete")
+                tmSentimentTime = Instant.now().minusSeconds(120 * 60 /* couple of hours back */)
+            }
+            .doOnError {
+                logd("setSentimentFromCache error")
+                tmSentimentTime = Instant.now().minusSeconds(120 * 60 /* couple of hours back */)
+            }
+            .onErrorComplete()
+            .subscribe()
+            .addTo(autoDisposable)
+    }
+    
     // Show sentiment data
     private fun setSentimentData(data: TMSentiment) {
         // DateTime of the sentiment
-        val timeString = data.dateTime
-        if (timeString != null) setDateTime(timeString)
+        if (data.dateTime != null) setDateTime(data.dateTime!!)
 
         // Market sentiment grade
         binding.marketSentimentGrade.text = data.marketSentimentGrade.toString()
@@ -292,15 +319,15 @@ class MainFragment : Fragment() {
         // Time in Sentiment
         val ldt = LocalDateTime.parse(timeString.replace(' ', 'T'))
         
-        if (ldt.isAfter(tmSentimentTime)) {
-            tmSentimentTime = ldt
+        val instant = ldt.toInstant(ZoneOffset.UTC)
+        if (instant.isAfter(tmSentimentTime)) {
+            tmSentimentTime = instant
         }
         
         // converting UTC to local time
-        val timeInMillis = ldt.toEpochSecond(ZoneOffset.UTC) * 1000
-        val localTime =
-            Instant.ofEpochMilli(timeInMillis).atZone(ZoneId.systemDefault()).toLocalDateTime()
+        val localTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime()
         val localTimeStr = localTime.toString().replace('T', ' ')
+        
         binding.sentimentDate.text = localTimeStr
     }
     

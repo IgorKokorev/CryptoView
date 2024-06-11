@@ -31,6 +31,9 @@ import dev.kokorev.cryptoview.backgroundService.AlarmScheduler
 import dev.kokorev.cryptoview.backgroundService.BinanceLoaderWorker
 import dev.kokorev.cryptoview.backgroundService.TickersLoaderWorker
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_PORTFOLIO_NOTIFICATION_TIME
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_TO_CHECK_FAVORITES
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_TO_NOTIFY_PORTFOLIO
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesBoolean
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesInt
 import dev.kokorev.cryptoview.databinding.ActivityMainBinding
@@ -55,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: ActivityViewModel by viewModels()
     private val autoDisposable = AutoDisposable()
     
-    private var toCheckFavorites: Boolean by preferencesBoolean("toCheckFavorites")
+    private var toCheckFavorites: Boolean by preferencesBoolean(KEY_TO_CHECK_FAVORITES)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -197,7 +200,7 @@ class MainActivity : AppCompatActivity() {
                 // Disable it after the interval
                 Handler(Looper.getMainLooper()).postDelayed({
                     onBackPressedExitCallback.isEnabled = false
-                }, Constants.BACK_CLICK_TIME_INTERVAL)
+                }, Constants.BACK_CLICK_TIME_MILLIS)
             }
         }
 
@@ -290,10 +293,10 @@ class MainActivity : AppCompatActivity() {
         // start periodic portfolio evaluation task
         viewModel.alarmScheduler.schedule(AlarmScheduler.portfolioEvaluationData.apply { time = System.currentTimeMillis() })
         
-        val toNotifyPortfolio: Boolean by preferencesBoolean("toNotifyPortfolio")
+        val toNotifyPortfolio: Boolean by preferencesBoolean(KEY_TO_NOTIFY_PORTFOLIO)
         
         if (toNotifyPortfolio) {
-            val portfolioNotificationTime: Int by preferencesInt("portfolioNotificationTime")
+            val portfolioNotificationTime: Int by preferencesInt(KEY_PORTFOLIO_NOTIFICATION_TIME)
             val notificationTime = getPortfolioNotificationMillis(portfolioNotificationTime)
             viewModel.alarmScheduler.schedule(AlarmScheduler.portfolioNotificationData.apply { time = notificationTime })
         }

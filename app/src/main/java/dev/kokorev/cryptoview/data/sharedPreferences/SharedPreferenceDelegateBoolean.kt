@@ -9,29 +9,18 @@ import kotlin.reflect.KProperty
 
 class SharedPreferenceDelegateBoolean(
     private val name: String,
-    private val defaultValue: Boolean = false
+    private val defaultValue: Boolean = true
 ): ReadWriteProperty<Any?, Boolean> {
     
     private val preferences by lazy {
         App.instance.applicationContext.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
     }
     override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean {
-        return when(name) {
-            "toCheckFavorites" -> preferences.getBoolean(KEY_TO_CHECK_FAVORITES, true)
-            "toNotifyPortfolio" -> preferences.getBoolean(KEY_TO_NOTIFY_PORTFOLIO, true)
-            else -> defaultValue
-        }
+        return preferences.getBoolean(name, defaultValue)
     }
     
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
-        when (name) {
-            "toCheckFavorites" -> {
-                preferences.edit().putBoolean(KEY_TO_CHECK_FAVORITES, value).apply()
-            }
-            "toNotifyPortfolio" -> {
-                preferences.edit().putBoolean(KEY_TO_NOTIFY_PORTFOLIO, value).apply()
-            }
-        }
+        preferences.edit().putBoolean(name, value).apply()
     }
 }
 

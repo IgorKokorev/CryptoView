@@ -22,7 +22,7 @@ class SharedPreferenceDelegateDateTime(
     override fun getValue(thisRef: Any?, property: KProperty<*>): LocalDateTime {
         return when(name) {
             "tmSentimentTime" -> {
-                val timeStr = preferences.getString(KEY_TM_SENTIMENT_LAST_CALL_TIME, defaultTime) ?: defaultTime
+                val timeStr = preferences.getString(KEY_TM_SENTIMENT_CALL_TIME, defaultTime) ?: defaultTime
                 return LocalDateTime.parse(timeStr, dateTimeFormatter)
             }
             else -> defaultValue
@@ -33,7 +33,7 @@ class SharedPreferenceDelegateDateTime(
         when (name) {
             "tmSentimentTime" -> {
                 val timeStr = value.withMinute(0).withSecond(0).withNano(0).format(dateTimeFormatter)
-                preferences.edit().putString(KEY_TM_SENTIMENT_LAST_CALL_TIME, timeStr).apply()
+                preferences.edit().putString(KEY_TM_SENTIMENT_CALL_TIME, timeStr).apply()
             }
         }
     }

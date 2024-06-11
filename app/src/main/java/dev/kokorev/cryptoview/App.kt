@@ -22,6 +22,8 @@ import dev.kokorev.room_db.core_api.dao.PortfolioTransactionDao
 import dev.kokorev.room_db.core_api.dao.RecentCoinDao
 import dev.kokorev.room_db.core_api.dao.TopMoverDao
 import dev.kokorev.token_metrics_api.DaggerTokenMetricsComponent
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Inject
 
@@ -84,5 +86,9 @@ fun Any.logd(log: String) {
 }
 
 fun Any.logd(log: String, throwable: Throwable) {
-    Log.d(this.javaClass.simpleName, log + "\nError: " + throwable.localizedMessage + "\nStackTrace:\n" + throwable.stackTrace)
+    Log.d(this.javaClass.simpleName, log + "\nError: " + throwable.localizedMessage + "\nStackTrace:\n" + throwable.stackTraceToString())
+}
+
+fun Disposable.addToComposite(compositeDisposable: CompositeDisposable) {
+    compositeDisposable.add(this)
 }

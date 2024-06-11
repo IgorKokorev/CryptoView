@@ -18,31 +18,36 @@ class SharedPreferenceDelegateLong(
     }
     override fun getValue(thisRef: Any?, property: KProperty<*>): Long {
         return when(name) {
-            "minMcap" -> preferences.getLong(KEY_MIN_MCAP, DEFAULT_MIN_MCAP)
-            "minVol" -> preferences.getLong(KEY_MIN_VOL, DEFAULT_MIN_VOL)
-            "cpTickersTime" -> preferences.getLong(KEY_CP_TICKERS_LAST_CALL_TIME, 0L)
-            "portfolioEvaluationTime" -> preferences.getLong(KEY_LAST_PORTFOLIO_EVALUATION_TIME, 0L)
-            else -> defaultValue
+            KEY_MIN_MCAP -> preferences.getLong(KEY_MIN_MCAP, DEFAULT_MIN_MCAP)
+            KEY_MIN_VOL -> preferences.getLong(KEY_MIN_VOL, DEFAULT_MIN_VOL)
+            "cpTickersTime" -> preferences.getLong(KEY_CP_TICKERS_CALL_TIME, 0L)
+            "portfolioEvaluationTime" -> preferences.getLong(KEY_PORTFOLIO_EVALUATION_TIME, 0L)
+            "portfolioChangeTime" -> preferences.getLong(KEY_PORTFOLIO_CHANGE_TIME, 0L)
+            else -> preferences.getLong(name, defaultValue)
         }
     }
     
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: Long) {
         when (name) {
-            "minMcap" -> {
+            KEY_MIN_MCAP -> {
                 if (MIN_MCAPS.contains(value))
                     preferences.edit().putLong(KEY_MIN_MCAP, value).apply()
             }
-            "minVol" -> {
+            KEY_MIN_VOL -> {
                 if (MIN_VOLS.contains(value))
                     preferences.edit().putLong(KEY_MIN_VOL, value).apply()
             }
             "cpTickersTime" -> {
                 val time = if (value == 0L) System.currentTimeMillis() else value
-                preferences.edit().putLong(KEY_CP_TICKERS_LAST_CALL_TIME, time).apply()
+                preferences.edit().putLong(KEY_CP_TICKERS_CALL_TIME, time).apply()
             }
             "portfolioEvaluationTime" -> {
                 val time = if (value == 0L) System.currentTimeMillis() else value
-                preferences.edit().putLong(KEY_LAST_PORTFOLIO_EVALUATION_TIME, time).apply()
+                preferences.edit().putLong(KEY_PORTFOLIO_EVALUATION_TIME, time).apply()
+            }
+            "portfolioChangeTime" -> {
+                val time = if (value == 0L) System.currentTimeMillis() else value
+                preferences.edit().putLong(KEY_PORTFOLIO_CHANGE_TIME, time).apply()
             }
         }
     }

@@ -1,13 +1,11 @@
 package dev.kokorev.cryptoview
 
-const val INTENT_ACTION: String = "notification_"
+// actions for intents
+const val INTENT_ACTION: String = "notification_" // default action
 const val COIN_ACTION: String = "coin_"
 const val PORTFOLIO_ACTION: String = "portfolio_"
 
 object Constants {
-    
-    
-    const val SETTINGS: String = "settings"
     
     // For Binance Fragment
     const val BINANCE_FIRST_ASSET = "USDT"
@@ -32,10 +30,10 @@ object Constants {
     const val COIN_PAPRIKA_ID: String = "coin_paprika_id"
 
     // Default timings
-    const val CP_TICKERS_UPDATE_INTERVAL: Long = 1000L * 60 * 1 /* minutes */ * 1 /* hours */ * 1 /* days */ // Update cp tickers db interval
-    const val BACK_CLICK_TIME_INTERVAL: Long = 1000L * 3 // time in millis between 2 backpresses to exit the app
-    const val CHAT_SHOW_TIME: Long = 1000L * 60 * 60 * 24 * 30 // Show in chat only messages not older than
-    const val INTERVAL_TO_SHOW_FAVORITE_CHANGE = 1000L * 60 * 60 /* minutes */ * 24 /* hours */ * 1 /* days */  // Do not show favorite change notifications more often than
+    const val CP_TICKERS_UPDATE_SECONDS: Long = 60 /* seconds */ * 1 /* minutes */ * 1 /* hours */ * 1 /* days */ // Update cp tickers db interval
+    const val BACK_CLICK_TIME_MILLIS: Long = 1000L * 3 // time in millis between 2 backpresses to exit the app
+    const val CHAT_SHOW_TIME_MILLIS: Long = 1000L * 60 * 60 * 24 * 30 // Show in chat only messages not older than
+    const val SHOW_FAVORITE_CHANGE_TIME_MILLIS = 1000L * 60 * 60 /* minutes */ * 24 /* hours */ * 1 /* days */  // Do not show favorite change notifications more often than
 
 
     // Fragments tags for fragment manager

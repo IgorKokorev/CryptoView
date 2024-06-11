@@ -18,33 +18,33 @@ class SharedPreferenceDelegateInt(
     }
     override fun getValue(thisRef: Any?, property: KProperty<*>): Int {
         return when(name) {
-            "nTopCoins" -> preferences.getInt(KEY_NUM_TOP_COINS, TOP_COINS_DEFAULT)
-            "searchSortingDirection" -> preferences.getInt(
+            KEY_NUM_TOP_COINS -> preferences.getInt(KEY_NUM_TOP_COINS, DEFAULT_NUM_TOP_COINS)
+            KEY_SEARCH_SORTING_DIRECTION -> preferences.getInt(
                 KEY_SEARCH_SORTING_DIRECTION,
                 DEFAULT_SEARCH_SORTING_DIRECTION
             )
-            "portfolioNotificationTime" -> preferences.getInt(
+            KEY_PORTFOLIO_NOTIFICATION_TIME -> preferences.getInt(
                 KEY_PORTFOLIO_NOTIFICATION_TIME,
                 DEFAULT_PORTFOLIO_NOTIFICATION_TIME
             )
-            else -> defaultValue
+            else -> preferences.getInt(name, defaultValue)
         }
     }
     
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
         when (name) {
-            "nTopCoins" -> {
+            KEY_NUM_TOP_COINS -> {
                 if (value in TOP_COINS_FROM .. TOP_COINS_TO)
                     preferences.edit().putInt(KEY_NUM_TOP_COINS, value).apply()
             }
-            "searchSortingDirection" -> {
-                if (value != 0) preferences.edit().putInt(KEY_SEARCH_SORTING_DIRECTION, value.sign)
-                    .apply()
+            KEY_SEARCH_SORTING_DIRECTION -> {
+                if (value != 0) preferences.edit().putInt(KEY_SEARCH_SORTING_DIRECTION, value.sign).apply()
             }
-            "portfolioNotificationTime" -> {
+            KEY_PORTFOLIO_NOTIFICATION_TIME -> {
                 if (value in PORTFOLIO_NOTIFICATION_TIME_MIN .. PORTFOLIO_NOTIFICATION_TIME_MAX)
                     preferences.edit().putInt(KEY_PORTFOLIO_NOTIFICATION_TIME, value).apply()
             }
+            else -> preferences.edit().putInt(name, value).apply()
         }
     }
 }

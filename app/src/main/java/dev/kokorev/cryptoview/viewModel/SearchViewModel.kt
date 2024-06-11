@@ -4,6 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_CP_TICKERS_CALL_TIME
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_MIN_MCAP
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_MIN_VOL
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesInstant
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesLong
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
@@ -25,9 +29,9 @@ class SearchViewModel : ViewModel() {
     
     var allTickers: Observable<List<CoinPaprikaTickerDB>>
     
-    private var minMcap: Long by preferencesLong("minMcap")
-    private var minVol: Long by preferencesLong("minVol")
-    private var cpTickersTime: Long by preferencesLong("cpTickersTime")
+    private var minMcap: Long by preferencesLong(KEY_MIN_MCAP)
+    private var minVol: Long by preferencesLong(KEY_MIN_VOL)
+    private var cpTickersTime: Instant by preferencesInstant(KEY_CP_TICKERS_CALL_TIME)
     
     init {
         App.instance.dagger.inject(this)
@@ -36,8 +40,8 @@ class SearchViewModel : ViewModel() {
     }
     
     fun loadTickers() {
-        val nowLong = Instant.now().toEpochMilli()
-        if (nowLong > (cpTickersTime + Constants.CP_TICKERS_UPDATE_INTERVAL)) {
+        val now = Instant.now()
+        if (now.isAfter(cpTickersTime.plusSeconds(Constants.CP_TICKERS_UPDATE_SECONDS))) {
             
             val disposable = remoteApi.getCoinPaprikaTickers()
                 .doOnSuccess { list ->
@@ -45,7 +49,7 @@ class SearchViewModel : ViewModel() {
                         .map { dto -> Converter.dtoToCoinPaprikaTicker(dto) }
                         .toList()
                     repository.saveCoinPaprikaTickers(tickers)
-                    cpTickersTime = nowLong
+                    cpTickersTime = now
                 }
                 .doOnError {
                     Log.d(

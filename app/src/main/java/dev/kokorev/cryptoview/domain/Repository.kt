@@ -144,13 +144,19 @@ class Repository() {
     
     // Portfolio evaluations
     fun getAllPortfolioEvaluationsSingle() = portfolioEvaluationDao.getAllSingle().addSettings()
+    fun getLatestPortfolioEvaluations(dateFrom: LocalDate) = portfolioEvaluationDao.getLatest(dateFrom).addSettings()
     fun savePortfolioEvaluation(portfolioEvaluationDB: PortfolioEvaluationDB) {
         Executors.newSingleThreadExecutor().execute {
             portfolioEvaluationDao.insertPortfolioEvaluation(portfolioEvaluationDB)
         }
     }
+    fun saveAllPortfolioEvaluations(list: List<PortfolioEvaluationDB>) {
+        Executors.newSingleThreadExecutor().execute {
+            portfolioEvaluationDao.insertAll(list)
+        }
+    }
+    
     fun getPortfolioEvaluationByDate(date: LocalDate) = portfolioEvaluationDao.getEvaluationByDate(date).addSettings()
-    fun findPortfolioEvaluationsFrom(date: LocalDate) = portfolioEvaluationDao.findEvaluationsFrom(date).addSettings()
     
     
     
@@ -215,7 +221,7 @@ class Repository() {
     }
 
     fun getNewMessages(): Observable<List<MessageDB>> {
-        val time = System.currentTimeMillis() - Constants.CHAT_SHOW_TIME
+        val time = System.currentTimeMillis() - Constants.CHAT_SHOW_TIME_MILLIS
         return messageDao.getNewMessages(time).addSettings()
     }
 
@@ -246,6 +252,7 @@ class Repository() {
             .doOnError {
                 Log.d(this.javaClass.simpleName, "Error calling local db: ${it.localizedMessage}")
             }
+            .onErrorComplete()
     }
 
 

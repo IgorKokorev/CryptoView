@@ -8,6 +8,8 @@ import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.COIN_ACTION
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_FAVORITE_CHANGE
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_TO_CHECK_FAVORITES
 import dev.kokorev.cryptoview.data.sharedPreferences.MIN_MCAPS
 import dev.kokorev.cryptoview.data.sharedPreferences.MIN_VOLS
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesBoolean
@@ -33,8 +35,8 @@ class TickersLoaderWorker(
     @Inject
     lateinit var notificationService: NotificationService
     
-    private var toCheckFavorites: Boolean by preferencesBoolean("toCheckFavorites")
-    private var favoriteChange: Float by preferencesFloat("favoriteChange")
+    private var toCheckFavorites: Boolean by preferencesBoolean(KEY_TO_CHECK_FAVORITES)
+    private var favoriteChange: Float by preferencesFloat(KEY_FAVORITE_CHANGE)
     
     init {
         App.instance.dagger.inject(this)
@@ -83,7 +85,7 @@ class TickersLoaderWorker(
                         val change = coin.percentChange ?: 0.0
                         Log.d(this.javaClass.simpleName, "Coin ${coin.symbol} has changed by ${change}%")
                         if (abs(change) >= favoriteChange &&
-                            coin.timeNotified + Constants.INTERVAL_TO_SHOW_FAVORITE_CHANGE < System.currentTimeMillis()
+                            coin.timeNotified + Constants.SHOW_FAVORITE_CHANGE_TIME_MILLIS < System.currentTimeMillis()
                         ) {
                             Log.d(this.javaClass.simpleName, "Sending notification")
                             repository.setFavoriteTimeNotified(coin)
