@@ -243,6 +243,7 @@ class PortfolioEvaluationService : Service() {
             .doOnSuccess { evaluation ->
                 logd("saveNewEvaluation Saving existing evaluation. newValuation = ${newValuation}, time = ${newEvaluationInstant}, date = ${newEvaluationInstant.toLocalDate()}")
                 evaluation.valuation = newValuation
+                evaluation.positions = totalPositions
                 repository.savePortfolioEvaluation(evaluation)
                 setPortfolioEvaluationTime.onNext(newEvaluationInstant)
             }
@@ -252,6 +253,7 @@ class PortfolioEvaluationService : Service() {
                 val evaluation = PortfolioEvaluationDB(
                     date = newEvaluationInstant.toLocalDate(),
                     valuation = newValuation,
+                    positions = totalPositions,
                     inflow = 0.0
                 )
                 repository.savePortfolioEvaluation(evaluation)

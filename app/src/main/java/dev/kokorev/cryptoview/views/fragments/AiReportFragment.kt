@@ -68,10 +68,10 @@ class AiReportFragment : Fragment() {
         binding.predictionContainer.addView(
             textViewBinding.root
         )
-        Snackbar.make(
+        /*Snackbar.make(
             binding.root,
             getString(R.string.price_prediction_not_found_for, viewModel.symbol), Snackbar.LENGTH_SHORT
-        ).show()
+        ).show()*/
     }
     
     private fun setPrediction(prediction: TMPricePredictionData) {

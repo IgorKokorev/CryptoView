@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient135"
-    android:padding="@dimen/medium_padding"
+    android:paddingTop="@dimen/medium_padding"
+    android:paddingStart="@dimen/medium_padding"
+    android:paddingEnd="@dimen/medium_padding"
+    android:paddingBottom="0dp"
     tools:context=".views.fragments.BinanceFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -304,6 +307,14 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/market_data" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:background="@color/base1"
+        app:layout_constraintBottom_toBottomOf="@+id/any_chart_view"
+        app:layout_constraintStart_toStartOf="@+id/any_chart_view"
+        app:layout_constraintEnd_toEndOf="@+id/any_chart_view" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

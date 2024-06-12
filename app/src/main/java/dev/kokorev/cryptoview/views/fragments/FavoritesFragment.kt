@@ -51,7 +51,11 @@ class FavoritesFragment : Fragment() {
         setupDataFromViewModel()
         initRecycler()
     }
-
+    
+    override fun onResume() {
+        super.onResume()
+    }
+    
     private fun initRecycler() {
         savedAdapter = SavedAdapter(
             object : SavedAdapter.OnItemClickListener {

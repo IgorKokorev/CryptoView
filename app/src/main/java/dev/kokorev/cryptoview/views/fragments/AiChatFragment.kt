@@ -72,10 +72,10 @@ class AiChatFragment : Fragment() {
                 override fun click(messageDB: MessageDB) { // On item click
                     val clip = ClipData.newPlainText(getString(R.string.app_name), messageDB.message)
                     clipboard?.setPrimaryClip(clip)
-                    Snackbar.make(binding.root, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT)
+                    /*Snackbar.make(binding.root, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(resources.getColor(R.color.base3, null))
                         .setTextColor(resources.getColor(R.color.textColor, null))
-                        .show()
+                        .show()*/
                 }
             }).apply {
             addItems(messages)

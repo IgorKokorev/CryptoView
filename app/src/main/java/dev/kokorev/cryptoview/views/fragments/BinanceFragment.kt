@@ -18,6 +18,7 @@ import com.anychart.core.stock.series.OHLC
 import com.anychart.data.Table
 import com.anychart.data.TableMapping
 import com.anychart.enums.MovingAverageType
+import com.anychart.enums.ScaleTypes
 import com.anychart.enums.StockSeriesType
 import com.anychart.graphics.vector.SolidFill
 import com.anychart.graphics.vector.StrokeLineCap
@@ -100,7 +101,7 @@ class BinanceFragment : Fragment() {
         binanceSymbolIndexBehaviour
             .subscribe { index ->
                 logd("binanceSymbolIndexBehaviour, index = ${index}")
-                if (index >= 0)  getMarketData(binanceSymbols[index])
+                if (index >= 0) getMarketData(binanceSymbols[index])
             }
             .addTo(autoDisposable)
         
@@ -211,11 +212,32 @@ class BinanceFragment : Fragment() {
                 val backgroundFill = SolidFill(backgroundColorString, 1)
                 stock = AnyChart.stock().apply {
                     background().fill(backgroundFill)
+                    padding(0, 50, 20, 0)
                 }
                 table = Table.instantiate("x")
                 mapping = table.mapAs("{open: 'open', high: 'high', low: 'low', close: 'close', volume: 'volume'}")
                 setMainPlot()
-                ohlc = plotMain.ohlc(mapping)
+                
+                val redColorString = "#" + getColorHex(R.color.red)
+                val greenColorString = "#" + getColorHex(R.color.green)
+                ohlc = plotMain.ohlc(mapping).apply {
+                    risingStroke(greenColorString)
+                    fallingStroke(redColorString)
+                }
+                
+                
+                // setup volume bars
+                val volumeColorString = "#" + getColorHex(R.color.volumeColor)
+                val volume =
+                    plotMain.volumeMa(mapping, 20, MovingAverageType.EMA, StockSeriesType.COLUMN, StockSeriesType.LINE)
+                volume.volumeSeries().apply {
+                    zIndex(-100)
+                    maxHeight(500)
+                    bottom(0)
+                    yScale(ScaleTypes.LINEAR)
+                    normal().fill(volumeColorString)
+                }
+                volume.maSeries().zIndex(100).maxHeight(0).bottom(0).yScale(ScaleTypes.LOG)
                 
                 setupTechIndicators()
                 setScroller()
@@ -239,6 +261,7 @@ class BinanceFragment : Fragment() {
             xGrid(false)
             yMinorGrid(false)
             xMinorGrid(false)
+            yAxis("{orientation:'right'}")
             ema(table.mapAs("{value: 'close'}"), 20.0, StockSeriesType.LINE)
             ema(table.mapAs("{value: 'close'}"), 50.0, StockSeriesType.LINE)
             ema(table.mapAs("{value: 'close'}"), 100.0, StockSeriesType.LINE)
@@ -255,6 +278,7 @@ class BinanceFragment : Fragment() {
             xMinorGrid(false)
             height("30%")
             xAxis(false)
+            yAxis("{orientation:'right'}")
         }
         val tiView: View
         var isEnabled: Boolean = false
@@ -428,8 +452,6 @@ class BinanceFragment : Fragment() {
                     binanceSymbols = list
                     val indexOfFirstAsset =
                         max(0, list.indexOfFirst { symbol -> symbol.quoteAsset == Constants.BINANCE_FIRST_ASSET })
-                    
-//                    binanceSymbolIndexBehaviour.onNext(indexOfFirstAsset)
                     setupSymbolSpinner(list, indexOfFirstAsset)
                     Log.d(
                         this.javaClass.simpleName,

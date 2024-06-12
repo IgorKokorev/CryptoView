@@ -41,5 +41,6 @@
 
     <color name="coinColor">@color/lightGolden</color>
     <color name="tokenColor">@color/lightGrey</color>
+    <color name="volumeColor">#606060</color>
 
 </resources>
