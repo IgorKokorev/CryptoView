@@ -18,9 +18,9 @@ class TopMoverItemViewHolder(val binding: GainerCoinItemBinding) : RecyclerView.
         binding.coinSymbol.text = coin.symbol
         binding.coinPrice.text = formatPrice(coin.price)
         setChangeView(
-            coin.percentChange,
             binding.root.context,
             binding.coinChange,
+            coin.percentChange,
             "%"
         )
         val volume = NumbersUtils.formatBigNumber(coin.dailyVolume ?: 0.0)

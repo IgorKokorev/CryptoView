@@ -1,6 +1,5 @@
 package dev.kokorev.cryptoview.views.fragments
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
@@ -9,9 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.transition.TransitionManager
-import com.google.android.material.snackbar.Snackbar
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentAiReportsBinding
+import dev.kokorev.cryptoview.databinding.PredictedReturnItemBinding
 import dev.kokorev.cryptoview.databinding.PricePredictionItemBinding
 import dev.kokorev.cryptoview.databinding.SimpleTextViewBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
@@ -77,20 +76,26 @@ class AiReportFragment : Fragment() {
     private fun setPrediction(prediction: TMPricePredictionData) {
         binding.date.text = prediction.date
         binding.coinName.text = prediction.tokenName
-        prediction.forecastForNext7Days.forEach { (key, value) ->
+        prediction.forecastForNext7Days.forEach { (key, forecast) ->
             val itemBinding = PricePredictionItemBinding.inflate(layoutInflater)
-            itemBinding.name.text = key
-            val priceStr = NumbersUtils.formatPriceUSD(value)
-            itemBinding.value.text = priceStr
+            
+            val forecastName = key.replace('-', ' ')
+            itemBinding.name.text = forecastName
+            
+            val lowerStr = NumbersUtils.formatPriceWithCurrency(forecast.forecastLower)
+            itemBinding.lower.text = lowerStr
+            val forecastStr = NumbersUtils.formatPriceWithCurrency(forecast.forecast)
+            itemBinding.forecast.text = forecastStr
+            val upperStr = NumbersUtils.formatPriceWithCurrency(forecast.forecastUpper)
+            itemBinding.upper.text = upperStr
+            
             binding.predictionContainer.addView(itemBinding.root)
         }
         val yield = prediction.predictedReturns7d
         if (yield != null) {
-            val yieldBinding = PricePredictionItemBinding.inflate(layoutInflater)
-            NumbersUtils.setChangeView(yield * 100.0, binding.root.context, yieldBinding.value, "%")
+            val yieldBinding = PredictedReturnItemBinding.inflate(layoutInflater)
+            NumbersUtils.setChangeView(binding.root.context, yieldBinding.forecast, yield * 100.0, "%")
             yieldBinding.name.text = getString(R.string.predicted_return_in_7_days)
-            yieldBinding.name.setTypeface(null, Typeface.BOLD)
-            yieldBinding.value.setTypeface(null, Typeface.BOLD)
             binding.predictionContainer.addView(yieldBinding.root)
         }
     }

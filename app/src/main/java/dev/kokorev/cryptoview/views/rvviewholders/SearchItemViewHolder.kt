@@ -21,8 +21,8 @@ class SearchItemViewHolder(val binding: SearchCoinItemBinding) :
         binding.coinName.text = ticker.name
         binding.coinPrice.text = formatPrice(ticker.price)
         binding.coinAth.text = formatPrice(ticker.athPrice)
-        setChangeView(ticker.percentChange24h, binding.root.context, binding.coinChange, "%")
-        setChangeView(ticker.percentFromPriceAth, binding.root.context, binding.coinAthChange, "%")
+        setChangeView(binding.root.context, binding.coinChange, ticker.percentChange24h, "%")
+        setChangeView(binding.root.context, binding.coinAthChange, ticker.percentFromPriceAth, "%")
 
         val volume = NumbersUtils.formatBigNumber(ticker.dailyVolume ?: 0.0)
         binding.coinVolume.text = volume

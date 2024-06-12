@@ -22,16 +22,16 @@ class PortfolioItemViewHolder(val binding: PortfolioCoinItemBinding) : RecyclerV
         binding.coinPrice.text = formatPrice(coin.priceLastEvaluation)
         val percentChange = (coin.priceLastEvaluation / coin.priceOpen - 1.0) * 100.0
         setChangeView(
-            percentChange,
             binding.root.context,
             binding.coinChange,
+            percentChange,
             "%"
         )
         binding.coinQty.text = formatPrice(coin.quantity)
         binding.coinVal.text = formatPrice(coin.quantity * coin.priceLastEvaluation)
 
         val pnlNumber = coin.quantity * (coin.priceLastEvaluation - coin.priceOpen)
-        setChangeView(pnlNumber, binding.root.context, binding.coinPnl, "")
+        setChangeView(binding.root.context, binding.coinPnl, pnlNumber, "")
 
         binding.root.setOnClickListener {
             clickListener.click(coin)

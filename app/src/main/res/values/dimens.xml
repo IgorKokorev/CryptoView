@@ -13,4 +13,5 @@
     <dimen name="tiny_text">10sp</dimen>
     <dimen name="logo_min_width">24dp</dimen>
     <dimen name="card_elevation">6dp</dimen>
+    <dimen name="biggest_text">18sp</dimen>
 </resources>

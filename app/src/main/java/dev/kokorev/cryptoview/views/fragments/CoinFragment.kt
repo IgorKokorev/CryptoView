@@ -53,6 +53,7 @@ class CoinFragment : Fragment() {
             tab.icon = icons.get(position)
         }.attach()
         binding.coinPager.isSaveEnabled = false // To avoid exceptions on back pressed
+        binding.coinPager.setCurrentItem(1, true)
     }
 
     override fun onCreateView(
@@ -63,8 +64,8 @@ class CoinFragment : Fragment() {
     }
 
     // ViewPager adapter
-    inner class CoinPagerAdapter(fragment: Fragment, private val args: Bundle?) :
-        FragmentStateAdapter(fragment) {
+    inner class CoinPagerAdapter(parentFragment: Fragment, private val args: Bundle?) :
+        FragmentStateAdapter(parentFragment) {
         override fun getItemCount(): Int = fragments.size
 
         override fun createFragment(position: Int): Fragment {

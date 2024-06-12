@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -38,10 +37,6 @@ android {
     
     productFlavors {
         create("basic") {
-            // Assigns this product flavor to the "version" flavor dimension.
-            // If you are using only one dimension, this property is optional,
-            // and the plugin automatically assigns all the module's flavors to
-            // that dimension.
             dimension = "version"
             applicationIdSuffix = ".basic"
             versionNameSuffix = "-basic"
@@ -68,9 +63,25 @@ android {
         viewBinding = true
         buildConfig = true
     }
-
-
+    
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true // If you need Android resources in tests
+            isReturnDefaultValues = true // Helps with mocking final classes
+            
+            all {
+                it.useJUnitPlatform()
+                // Set JVM arguments for all unit tests
+                it.jvmArgs("--add-opens", "java.base/java.lang=ALL-UNNAMED")
+                // Add more --add-opens flags if needed
+                
+                // Enable Mockito's inline mock maker
+                it.systemProperty("mockito.inline.mockmaker", "true")
+            }
+        }
+    }
 }
+
 dependencies {
     implementation(project(":binance_api"))
     implementation(project(":cmc_api"))
@@ -126,7 +137,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.junit)
     testImplementation(libs.mockito)
+    testImplementation(libs.mockito.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
-

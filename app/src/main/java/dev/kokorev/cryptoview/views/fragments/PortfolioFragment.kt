@@ -100,13 +100,13 @@ class PortfolioFragment : Fragment() {
                 binding.totalValue.text = valueStr
 
                 val pnl = value - cost
-                setChangeView(pnl, binding.root.context, binding.totalPnl, "$")
+                setChangeView(binding.root.context, binding.totalPnl, pnl, "$")
 
                 val percentChange = if (cost == 0.0) 0.0 else (pnl / cost) * 100.0
                 setChangeView(
-                    percentChange,
                     binding.root.context,
                     binding.totalPnlPercent,
+                    percentChange,
                     "%"
                 )
 

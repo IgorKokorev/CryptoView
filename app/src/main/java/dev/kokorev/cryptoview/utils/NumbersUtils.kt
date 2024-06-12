@@ -3,7 +3,6 @@ package dev.kokorev.cryptoview.utils
 import android.content.Context
 import android.icu.text.NumberFormat
 import android.icu.util.Calendar
-import android.icu.util.ULocale
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import dev.kokorev.cryptoview.R
@@ -11,39 +10,34 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.Locale
 
 object NumbersUtils {
     // get user locale
-    private val uloc: ULocale = try {
-        ULocale.getAvailableLocales().get(0)
-    } catch (e: Exception) {
-        ULocale("en")
-    }
+    private val locale: Locale = Locale.getAvailableLocales().firstOrNull() ?: Locale.ENGLISH
 
     const val MIN_PRECISION = 2
     const val MAX_PRECISION = 7
 
-    val numberFormat = NumberFormat.getInstance(uloc).apply {
+    val numberFormat = NumberFormat.getInstance(locale).apply {
         minimumFractionDigits = MIN_PRECISION
         maximumFractionDigits = MIN_PRECISION
         minimumIntegerDigits = 1
         isGroupingUsed = true
     }
 
-    fun formatPriceUSD(price: Double?): String =
+    fun formatPriceWithCurrency(price: Double?, currencySymbol: String = "$"): String =
         if (price == null) "-"
-        else formatPrice(price) + "$"
+        else formatPrice(price) + currencySymbol
 
 
     fun getPrecision(number: Double): Int {
         if (number == 0.0) return MIN_PRECISION
-
-        for (i in 0 until (MAX_PRECISION - MIN_PRECISION)) {
-            if (Math.pow(10.0, i.toDouble()) * number > 10) return (MIN_PRECISION + i)
-        }
-        return MAX_PRECISION
+        val magnitude = Math.log10(Math.abs(number)).toInt().coerceAtMost(3)
+        return (MIN_PRECISION + 1 - magnitude).coerceAtMost(MAX_PRECISION)
     }
-
+    
+    
     fun formatBigNumber(number: Double): String {
         return when {
             (number > 1_000_000_000_000) -> formatWithPrecision(number / 1_000_000_000.0, 0) + "B"
@@ -61,7 +55,6 @@ object NumbersUtils {
             else -> formatPrice(number)
         }
     }
-
     fun formatPrice(price: Double?): String {
         return if (price == null) "0"
         else formatWithPrecision(price, getPrecision(price))
@@ -69,16 +62,22 @@ object NumbersUtils {
     
     fun formatWithPrecision(num: Double, precision: Int): String {
         numberFormat.maximumFractionDigits = precision
+        numberFormat.minimumFractionDigits = precision
         return numberFormat.format(num)
     }
 
     fun parseDouble(str: String): Double {
-        return numberFormat.parse(str).toDouble()
+        return try {
+            numberFormat.parse(str)?.toDouble() ?: 0.0
+        } catch (e: Exception) {
+            0.0
+        }
     }
     
-    fun setChangeView(change: Double?, context: Context, view: TextView, suffix: String = "") {
+    fun setChangeView(context: Context, view: TextView, change: Double?, suffix: String = "") {
         val changeNumber = change ?: 0.0
         numberFormat.maximumFractionDigits = MIN_PRECISION
+        numberFormat.minimumFractionDigits = MIN_PRECISION
         var changeString = numberFormat.format(changeNumber) + suffix
         if (changeNumber < 0) {
             view.setTextColor(
@@ -100,15 +99,16 @@ object NumbersUtils {
     }
 
     fun formatBigNumberShort(number: Long): String {
-        return if (number >= 1_000_000_000) formatWithPrecision(number / 1_000_000_000.0, 0) + "B"
-        else if (number >= 1_000_000)  formatWithPrecision(number / 1_000_000.0, 0) + "M"
-        else if (number >= 1_000) formatWithPrecision(number / 1_000.0, 0) + "T"
-        else formatWithPrecision(number.toDouble(), 0)
+        return when {
+            number >= 1_000_000_000 -> formatWithPrecision(number / 1_000_000_000.0, 0) + "B"
+            number >= 1_000_000 -> formatWithPrecision(number / 1_000_000.0, 0) + "M"
+            number >= 1_000 -> formatWithPrecision(number / 1_000.0, 0) + "T"
+            else -> formatWithPrecision(number.toDouble(), 0)
+        }
     }
     
     
     fun getPortfolioNotificationMillis(portfolioNotificationTime: Int): Long {
-        
         val hour = portfolioNotificationTime / 60
         val minute = portfolioNotificationTime - hour * 60
         
@@ -121,7 +121,6 @@ object NumbersUtils {
         if (now.after(calendar)) calendar.add(Calendar.HOUR, 24)
         return calendar.timeInMillis
     }
-    
 }
 
 

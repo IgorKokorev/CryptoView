@@ -101,12 +101,10 @@ class MainActivity : AppCompatActivity() {
             }
             
             if (coin != null) {
-                //            launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name)
+                launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name)
                 launchBinanceFragment(coin.symbol)
             }
         }
-        
-        
     }
     
     private fun setInsets() {

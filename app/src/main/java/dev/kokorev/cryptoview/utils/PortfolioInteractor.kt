@@ -58,14 +58,14 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
     ) {
         if (price == 0.0) return
 
-        val priceStr = NumbersUtils.formatPriceUSD(price)
+        val priceStr = NumbersUtils.formatPriceWithCurrency(price)
         val symbol = coin.symbol
 
         // custom alert view
         val inputViewBinding = AlertViewOpenPositionBinding.inflate(layoutInflater)
         inputViewBinding.price.text = priceStr
         inputViewBinding.symbol.text = symbol
-        inputViewBinding.inputValue.text = NumbersUtils.formatPriceUSD(0.0)
+        inputViewBinding.inputValue.text = NumbersUtils.formatPriceWithCurrency(0.0)
         inputViewBinding.input.addTextChangedListener {
             // on input calculate position value
             val num = try {
@@ -73,7 +73,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
             } catch (e: NumberFormatException) {
                 0.0
             }
-            inputViewBinding.inputValue.text = NumbersUtils.formatPriceUSD(num * price)
+            inputViewBinding.inputValue.text = NumbersUtils.formatPriceWithCurrency(num * price)
         }
 
         MaterialAlertDialogBuilder(context, R.style.CVDialogStyle)
@@ -145,7 +145,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
     ) {
         if (price == 0.0) return
 
-        val priceStr = NumbersUtils.formatPriceUSD(price)
+        val priceStr = NumbersUtils.formatPriceWithCurrency(price)
         val symbol = position.symbol
         val oldQty = position.quantity
 
@@ -153,7 +153,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
         val inputViewBinding = AlertViewChangePositionBinding.inflate(layoutInflater)
         inputViewBinding.price.text = priceStr
         inputViewBinding.symbol.text = symbol
-        inputViewBinding.inputValue.text = NumbersUtils.formatPriceUSD(oldQty * price)
+        inputViewBinding.inputValue.text = NumbersUtils.formatPriceWithCurrency(oldQty * price)
         inputViewBinding.input.text = oldQty.toString().toEditable()
         inputViewBinding.input.addTextChangedListener {
             // on input calculate position value
@@ -162,7 +162,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
             } catch (e: NumberFormatException) {
                 0.0
             }
-            inputViewBinding.inputValue.text = NumbersUtils.formatPriceUSD(num * price)
+            inputViewBinding.inputValue.text = NumbersUtils.formatPriceWithCurrency(num * price)
         }
 
         MaterialAlertDialogBuilder(context, R.style.CVDialogStyle)
@@ -237,7 +237,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
     ) {
         val oldQty = position.quantity
         val pnl = oldQty * (price - position.priceOpen)
-        val pnlStr = NumbersUtils.formatPriceUSD(pnl)
+        val pnlStr = NumbersUtils.formatPriceWithCurrency(pnl)
         MaterialAlertDialogBuilder(context, R.style.CVDialogStyle)
             .setTitle(getString(context, R.string.portfolio_operation))
             .setMessage(getString(context, R.string.position_closed_text) + pnlStr)

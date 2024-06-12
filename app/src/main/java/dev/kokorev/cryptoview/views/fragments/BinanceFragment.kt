@@ -46,6 +46,8 @@ class BinanceFragment : Fragment() {
     private lateinit var binding: FragmentBinanceBinding
     private val autoDisposable = AutoDisposable()
     private val viewModel: BinanceViewModel by viewModels<BinanceViewModel>()
+    
+    // selected coin symbol
     private lateinit var symbol: String
     
     // list of Binance tickers with given symbol
@@ -138,9 +140,9 @@ class BinanceFragment : Fragment() {
                 binding.quoteAsset.text = ticker.quoteAsset
                 binding.lastPrice.text = NumbersUtils.formatPrice(stats.lastPrice.toDouble())
                 NumbersUtils.setChangeView(
-                    stats.priceChangePercent?.toDouble(),
                     binding.root.context,
                     binding.change24h,
+                    stats.priceChangePercent?.toDouble(),
                     "%"
                 )
                 binding.volume.text = NumbersUtils.formatBigNumber(stats.volume.toDouble())
