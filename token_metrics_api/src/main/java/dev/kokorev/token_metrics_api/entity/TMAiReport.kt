@@ -2,7 +2,7 @@ package dev.kokorev.token_metrics_api.entity
 
 import com.google.gson.annotations.SerializedName
 
-data class AiReportData(
+data class TMAiReport(
     @SerializedName("TOKEN_ID") var tokenId: Int,
     @SerializedName("TOKEN_NAME") var tokenName: String,
     @SerializedName("SYMBOL") var symbol: String,

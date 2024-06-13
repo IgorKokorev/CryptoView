@@ -14,7 +14,6 @@ import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentCoinBinding
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
-import dev.kokorev.cryptoview.views.MainActivity
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -58,7 +57,7 @@ class CoinFragment : Fragment() {
         
         if (toOpenChart) {
             binding.coinPager.setCurrentItem(1, true)
-            (requireActivity() as MainActivity).launchBinanceFragment(viewModel.symbol)
+//            (requireActivity() as MainActivity).launchBinanceFragment(viewModel.symbol)
         }
         
     }

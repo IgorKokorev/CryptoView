@@ -52,8 +52,10 @@ val DEFAULT_SEARCH_SORTING = SearchSorting.NONE
 const val KEY_SEARCH_SORTING_DIRECTION = "search_sorting_direction"
 const val DEFAULT_SEARCH_SORTING_DIRECTION = 1
 
-// Token metrics sentiment last request time
+// TokenMetrics sentiment last request time
 const val KEY_TM_SENTIMENT_CALL_TIME = "tm_sentiment_time"
+// TokenMetrics market metrics last request time
+const val KEY_TM_MARKET_METRICS_CALL_TIME = "tm_market_metrics_time"
 // CoinPaprika all tickers last request time
 const val KEY_CP_TICKERS_CALL_TIME = "cp_tickers_time"
 // Last portfolio evaluation time

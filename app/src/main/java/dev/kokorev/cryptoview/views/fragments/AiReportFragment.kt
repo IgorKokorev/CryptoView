@@ -17,7 +17,7 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
-import dev.kokorev.token_metrics_api.entity.AiReportData
+import dev.kokorev.token_metrics_api.entity.TMAiReport
 import dev.kokorev.token_metrics_api.entity.TMPricePredictionData
 
 // AI reports fragment to show Token Metrics reports
@@ -133,12 +133,12 @@ class AiReportFragment : Fragment() {
         viewModel.getAIReport()
             .subscribe {
                 // Selecting an item from the list
-                val aiReportData: AiReportData? = findReport(it.data)
-                if (aiReportData != null) {
+                val TMAiReport: TMAiReport? = findReport(it.data)
+                if (TMAiReport != null) {
                     val fundamentalReportHTML =
                         Html.fromHtml(
                             reportTextToHtml(
-                                aiReportData.fundamentalReport
+                                TMAiReport.fundamentalReport
                                     ?: getString(R.string.no_report_found)
                             ), Html.FROM_HTML_MODE_COMPACT
                         )
@@ -147,7 +147,7 @@ class AiReportFragment : Fragment() {
                     val traderReportHTML =
                         Html.fromHtml(
                             reportTextToHtml(
-                                aiReportData.traderReport
+                                TMAiReport.traderReport
                                     ?: getString(R.string.no_report_found)
                             ), Html.FROM_HTML_MODE_COMPACT
                         )
@@ -156,7 +156,7 @@ class AiReportFragment : Fragment() {
                     val technologyReportHTML =
                         Html.fromHtml(
                             reportTextToHtml(
-                                aiReportData.technologyReport
+                                TMAiReport.technologyReport
                                     ?: getString(R.string.no_report_found)
                             ), Html.FROM_HTML_MODE_COMPACT
                         )
@@ -167,19 +167,19 @@ class AiReportFragment : Fragment() {
     }
 
     // in a list of reports find the one we need
-    private fun findReport(aiReportDataList: ArrayList<AiReportData>): AiReportData? {
-        if (aiReportDataList.isEmpty()) return null
-        var aiReportData: AiReportData? = null
-        if (aiReportDataList.size == 1) aiReportData = aiReportDataList[0]
+    private fun findReport(TMAiReportList: ArrayList<TMAiReport>): TMAiReport? {
+        if (TMAiReportList.isEmpty()) return null
+        var TMAiReport: TMAiReport? = null
+        if (TMAiReportList.size == 1) TMAiReport = TMAiReportList[0]
         else {
-            for (data in aiReportDataList) {
+            for (data in TMAiReportList) {
                 if (data.tokenName.lowercase() == viewModel.name.lowercase()) {
-                    aiReportData = data
+                    TMAiReport = data
                     break
                 }
             }
         }
-        return aiReportData
+        return TMAiReport
     }
 
     // Convert TokenMetrics ai text report to html

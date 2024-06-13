@@ -1,6 +1,7 @@
 package dev.kokorev.cryptoview.utils
 
 import android.util.Log
+import com.anychart.chart.common.dataentry.DataEntry
 import com.anychart.chart.common.dataentry.HighLowDataEntry
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
@@ -12,10 +13,12 @@ import dev.kokorev.binance_api.entity.BinanceSymbolDTO
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
 import dev.kokorev.cryptoview.data.entity.GainerCoin
 import dev.kokorev.cryptoview.data.entity.RecentCoin
+import dev.kokorev.cryptoview.logd
 import dev.kokorev.cryptoview.views.fragments.MainPriceSorting
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import dev.kokorev.room_db.core_api.entity.TopMoverDB
+import dev.kokorev.token_metrics_api.entity.TMMarketMetrics
 
 object Converter {
     fun dtoToBinanceSymbol(dto: BinanceSymbolDTO) : BinanceSymbolDB {
@@ -225,7 +228,14 @@ object Converter {
             volume
         )
     }
-
+    
+    fun tmMarketMetricsToDataEntry(tmMarketMetrics: TMMarketMetrics, divisor: Double): DataEntry {
+        val dataEntry = DataEntry()
+        dataEntry.setValue("x", tmMarketMetrics.date)
+        dataEntry.setValue("value", (tmMarketMetrics.totalCryptoMcap ?: 0.0) / divisor)
+        return dataEntry
+    }
+    
 }
 
 class OHLCDataEntry(x: Long?, open: Double?, high: Double?, low: Double?, close: Double?, volume: Double?) :
