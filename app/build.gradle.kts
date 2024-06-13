@@ -1,26 +1,28 @@
-
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kapt)
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "2.0.0"
+    alias(libs.plugins.googleGmsGoogleServices)
+    alias(libs.plugins.googleFirebaseCrashlytics)
+    alias(libs.plugins.googleFirebaseFirebasePerf)
 }
 
 android {
     namespace = "dev.kokorev.cryptoview"
     compileSdk = 34
-
+    
     defaultConfig {
         applicationId = "dev.kokorev.cryptoview"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -30,15 +32,11 @@ android {
             )
         }
     }
-
+    
     flavorDimensions += "version"
-
+    
     productFlavors {
         create("basic") {
-            // Assigns this product flavor to the "version" flavor dimension.
-            // If you are using only one dimension, this property is optional,
-            // and the plugin automatically assigns all the module's flavors to
-            // that dimension.
             dimension = "version"
             applicationIdSuffix = ".basic"
             versionNameSuffix = "-basic"
@@ -51,19 +49,36 @@ android {
     }
 
 //    compileOptions.incremental = false
-
+    
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
+    
     kotlinOptions {
         jvmTarget = "17"
     }
-
+    
     buildFeatures {
         viewBinding = true
         buildConfig = true
+    }
+    
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true // If you need Android resources in tests
+            isReturnDefaultValues = true // Helps with mocking final classes
+            
+            all {
+                it.useJUnitPlatform()
+                // Set JVM arguments for all unit tests
+                it.jvmArgs("--add-opens", "java.base/java.lang=ALL-UNNAMED")
+                // Add more --add-opens flags if needed
+                
+                // Enable Mockito's inline mock maker
+                it.systemProperty("mockito.inline.mockmaker", "true")
+            }
+        }
     }
 }
 
@@ -85,14 +100,20 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
 
     implementation(libs.coroutines.core)
+    implementation(libs.coroutines.rx3)
     implementation(libs.coroutines.android)
 
     implementation(libs.viewPager2)
+    implementation(libs.flexbox)
 
     implementation(libs.work)
     implementation(libs.work.rxjava3)
 
     implementation(libs.glide)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.perf)
+    implementation(libs.firebase.vertexai)
+    implementation(libs.firebase.analytics)
     kapt(libs.glide.annotation.processor)
 
     // airbnb paris lets you change view style programmatically
@@ -112,7 +133,11 @@ dependencies {
 
     implementation(libs.moshi)
     implementation(libs.kotlinx.json)
+    
+    testImplementation(kotlin("test"))
     testImplementation(libs.junit)
+    testImplementation(libs.mockito)
+    testImplementation(libs.mockito.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

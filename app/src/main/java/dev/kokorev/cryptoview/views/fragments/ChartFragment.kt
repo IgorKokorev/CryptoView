@@ -102,7 +102,7 @@ class ChartFragment : Fragment() {
     }
     
     private fun getCPTicks() {
-        viewModel.remoteApi.getCoinPaprikaTickerHistorical(viewModel.coinPaprikaId)
+        viewModel.getCoinPaprikaTickerHistorical()
             .subscribe({
                 Log.d("ChartFragment", "${it.size} ticks received for the chart")
                 ticks = it
@@ -120,7 +120,7 @@ class ChartFragment : Fragment() {
     }
     
     private fun getCPQuote() {
-        viewModel.remoteApi.getCoinPaprikaTicker(viewModel.coinPaprikaId)
+        viewModel.getCoinPaprikaTicker()
             .subscribe({
                 val nameAndSymbol = viewModel.name + " (" + viewModel.symbol + ")"
                 binding.symbol.text = nameAndSymbol
@@ -307,16 +307,16 @@ class ChartFragment : Fragment() {
             .centerCrop()
             .into(binding.logo)
 
-        binding.price.text = NumbersUtils.formatPriceUSD(quotes.price)
-        binding.ath.text = NumbersUtils.formatPriceUSD(quotes.athPrice)
+        binding.price.text = NumbersUtils.formatPriceWithCurrency(quotes.price)
+        binding.ath.text = NumbersUtils.formatPriceWithCurrency(quotes.athPrice)
         
-        NumbersUtils.setChangeView(quotes.percentChange1h, binding.root.context, binding.change1h)
-        NumbersUtils.setChangeView(quotes.percentChange12h, binding.root.context, binding.change12h)
-        NumbersUtils.setChangeView(quotes.percentChange24h, binding.root.context, binding.change24h)
-        NumbersUtils.setChangeView(quotes.percentChange7d, binding.root.context, binding.change7d)
-        NumbersUtils.setChangeView(quotes.percentChange30d, binding.root.context, binding.change30d)
-        NumbersUtils.setChangeView(quotes.percentChange1y, binding.root.context, binding.change1y)
-        NumbersUtils.setChangeView(quotes.percentFromPriceAth, binding.root.context, binding.changeAth)
+        NumbersUtils.setChangeView(binding.root.context, binding.change1h, quotes.percentChange1h)
+        NumbersUtils.setChangeView(binding.root.context, binding.change12h, quotes.percentChange12h)
+        NumbersUtils.setChangeView(binding.root.context, binding.change24h, quotes.percentChange24h)
+        NumbersUtils.setChangeView(binding.root.context, binding.change7d, quotes.percentChange7d)
+        NumbersUtils.setChangeView(binding.root.context, binding.change30d, quotes.percentChange30d)
+        NumbersUtils.setChangeView(binding.root.context, binding.change1y, quotes.percentChange1y)
+        NumbersUtils.setChangeView(binding.root.context, binding.changeAth, quotes.percentFromPriceAth)
 
         binding.volume.text = NumbersUtils.formatBigNumber(quotes.dailyVolume)
         binding.mcap.text = NumbersUtils.formatBigNumber(quotes.marketCap)

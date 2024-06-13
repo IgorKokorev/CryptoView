@@ -2,17 +2,21 @@ package dev.kokorev.cryptoview.domain
 
 import android.content.Context
 import android.util.Log
+import com.google.firebase.Firebase
+import com.google.firebase.vertexai.type.GenerateContentResponse
+import com.google.firebase.vertexai.vertexAI
 import dev.kokorev.binance_api.BinanceApi
 import dev.kokorev.binance_api.entity.Binance24hrStatsType
 import dev.kokorev.binance_api.entity.BinanceKLineInterval
 import dev.kokorev.cmc_api.CmcApi
 import dev.kokorev.coin_paprika_api.CoinPaprikaApi
+import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.token_metrics_api.TokenMetricsApi
-import dev.kokorev.token_metrics_api.entity.AiAnswer
-import dev.kokorev.token_metrics_api.entity.AiQuestion
-import dev.kokorev.token_metrics_api.entity.AiReportData
-import dev.kokorev.token_metrics_api.entity.TMMarketMetricsData
+import dev.kokorev.token_metrics_api.entity.TMAiAnswer
+import dev.kokorev.token_metrics_api.entity.TMAiQuestion
+import dev.kokorev.token_metrics_api.entity.TMAiReport
+import dev.kokorev.token_metrics_api.entity.TMMarketMetrics
 import dev.kokorev.token_metrics_api.entity.TMPricePredictionData
 import dev.kokorev.token_metrics_api.entity.TMResponse
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -21,7 +25,10 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlinx.coroutines.rx3.rxMaybe
 import retrofit2.HttpException
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 // Interactor to communicate with remote apis
@@ -33,6 +40,15 @@ class RemoteApi(
     private val tokenMetricsApi: TokenMetricsApi
 ) {
     var progressBarState: BehaviorSubject<Boolean> = BehaviorSubject.create()
+    val generativeModel = Firebase.vertexAI.generativeModel("gemini-1.5-flash-preview-0514")
+    
+    // Ask Google Gemini
+    fun askGemini(question: String): Maybe<GenerateContentResponse> {
+        return rxMaybe {
+            generativeModel.generateContent(question)
+        }
+            .addProgressBar()
+    }
     
     // Binance API info
     fun getBinanceInfo() = binanceApi.getExchangeInfo().addProgressBar()
@@ -75,11 +91,13 @@ class RemoteApi(
     fun getCoinPaprikaTickerHistorical(id: String) =
         coinPaprikaApi.getTickerHistoricalTicks(id).addProgressBar()
     
+    fun getCoinPaprikaOhlcvLatest(id: String) = coinPaprikaApi.getCoinOhlcvLatest(id).addProgressBar()
+    
     // TokenMetrics API
-    fun getAIReport(symbol: String): Maybe<TMResponse<AiReportData>> {
+    fun getAIReport(symbol: String): Maybe<TMResponse<TMAiReport>> {
         return tokenMetricsApi.getAiReports(symbol = symbol)
             .onErrorReturn { e ->
-                return@onErrorReturn TMResponse(
+                TMResponse(
                     success = false,
                     message = exceptionToErrorText(e),
                     length = 0
@@ -88,14 +106,14 @@ class RemoteApi(
             .addProgressBar()
     }
     
-    fun askAi(aiQuestion: AiQuestion): Maybe<AiAnswer> {
-        return tokenMetricsApi.aiQuestion(aiQuestion)
+    fun askTokenMetricsAi(TMAiQuestion: TMAiQuestion): Maybe<TMAiAnswer> {
+        return tokenMetricsApi.aiQuestion(TMAiQuestion)
             .onErrorReturn { e ->
-                val emptyAnswer = AiAnswer().apply {
+                val emptyAnswer = TMAiAnswer().apply {
                     success = false
                     answer = exceptionToErrorText(e)
                 }
-                return@onErrorReturn emptyAnswer
+                emptyAnswer
             }
             .addProgressBar()
     }
@@ -106,8 +124,14 @@ class RemoteApi(
         endDate: String? = null,
         limit: Int? = null,
         page: Int? = null,
-    ): Maybe<TMResponse<TMMarketMetricsData>> =
-        tokenMetricsApi.getMarketMetrics(startDate, endDate, limit, page).addProgressBar()
+    ): Maybe<TMResponse<TMMarketMetrics>> {
+        val start = if (startDate == null ) {
+            val ld = LocalDate.now().minusDays(Constants.DAYS_MARKET_METRICS)
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            ld.format(formatter)
+        } else startDate
+        return tokenMetricsApi.getMarketMetrics(start, endDate, limit, page).addProgressBar()
+    }
     
     fun getPricePrediction(
         tokenId: Int? = null,
@@ -117,7 +141,16 @@ class RemoteApi(
         limit: Int? = null,
         page: Int? = null,
     ): Maybe<TMResponse<TMPricePredictionData>> =
-        tokenMetricsApi.getPricePrediction(tokenId, symbol, category, exchange, limit, page).addProgressBar()
+        tokenMetricsApi.getPricePrediction(tokenId, symbol, category, exchange, limit, page)
+            .onErrorReturn {
+                Log.d(this.javaClass.simpleName, "getPricePrediction error: ${it.localizedMessage}, ${it.stackTrace}")
+                TMResponse(
+                    false,
+                    it.localizedMessage ?: exceptionToErrorText(it),
+                    0
+                )
+            }
+            .addProgressBar()
     
     
     // Service functions
@@ -142,13 +175,9 @@ class RemoteApi(
             .doOnSubscribe {
                 progressBarState.onNext(true)
             }
-            .doAfterTerminate {
+            .doOnTerminate {
                 progressBarState.onNext(false)
             }
-            .doOnError {
-                Log.d(this.javaClass.simpleName, "Error calling API ${this.javaClass.simpleName}: ${it.localizedMessage}")
-            }
-            .onErrorComplete()
     }
     
     private fun <T : Any> Single<T>.addProgressBar(): Single<T> {
@@ -158,11 +187,8 @@ class RemoteApi(
             .doOnSubscribe {
                 progressBarState.onNext(true)
             }
-            .doAfterTerminate {
+            .doOnTerminate {
                 progressBarState.onNext(false)
-            }
-            .doOnError {
-                Log.d(this.javaClass.simpleName, "Error calling API: ${it.localizedMessage}")
             }
     }
     
@@ -173,12 +199,8 @@ class RemoteApi(
             .doOnSubscribe {
                 progressBarState.onNext(true)
             }
-            .doAfterTerminate {
+            .doOnTerminate {
                 progressBarState.onNext(false)
             }
-            .doOnError {
-                Log.d(this.javaClass.simpleName, "Error calling API: ${it.localizedMessage}")
-            }
-            .onErrorComplete()
     }
 }

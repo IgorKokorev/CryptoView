@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="dev.kokorev.cryptoview.basic" />
+                  <option name="mobileSdkAppId" value="1:345003714136:android:2ee21524e967ba44450c2d" />
+                  <option name="projectId" value="cryptoview-ac52b" />
+                  <option name="projectNumber" value="345003714136" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

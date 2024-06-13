@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.coinpaprika.apiclient.entity.PortfolioCoinDB
+import com.coinpaprika.apiclient.entity.PortfolioPositionDB
 import dev.kokorev.cryptoview.databinding.FragmentPortfolioBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.NumbersUtils.formatPrice
@@ -28,7 +28,7 @@ class PortfolioFragment : Fragment() {
         ownerProducer = { requireParentFragment() }
     )
     private lateinit var portfolioAdapter: PortfolioAdapter
-    private var recyclerData: List<PortfolioCoinDB> = listOf()
+    private var recyclerData: List<PortfolioPositionDB> = listOf()
         set(value) {
             if (field == value) return
             field = value
@@ -45,7 +45,7 @@ class PortfolioFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPortfolioBinding.inflate(layoutInflater)
-        portfolioInteractor = PortfolioInteractor(binding.root, autoDisposable)
+        portfolioInteractor = PortfolioInteractor(autoDisposable)
         return binding.root
     }
 
@@ -58,8 +58,8 @@ class PortfolioFragment : Fragment() {
     private fun initRecycler() {
         portfolioAdapter = PortfolioAdapter(
             object : PortfolioAdapter.OnItemClickListener {
-                override fun click(portfolioCoinDB: PortfolioCoinDB) { // On item click Coin fragment opens
-                    portfolioInteractor.changePosition(portfolioCoinDB)
+                override fun click(portfolioPositionDB: PortfolioPositionDB) { // On item click Coin fragment opens
+                    portfolioInteractor.changePosition(portfolioPositionDB)
                 }
             }).apply {
             addItems(recyclerData)
@@ -83,25 +83,30 @@ class PortfolioFragment : Fragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ list ->
-                val value = list
-                    .map { coin -> coin.quantity * coin.priceLastEvaluation }
-                    .reduce { acc, d -> acc + d }
+                
+                val value = if (list.isNotEmpty()) {
+                    list
+                        .map { coin -> coin.quantity * coin.priceLastEvaluation }
+                        .reduce { acc, d -> acc + d }
+                } else 0.0
 
-                val cost = list
-                    .map { coin -> coin.quantity * coin.priceOpen }
-                    .reduce { acc, d -> acc + d }
+                val cost = if (list.isNotEmpty()) {
+                    list
+                        .map { coin -> coin.quantity * coin.priceOpen }
+                        .reduce { acc, d -> acc + d }
+                } else 0.0
 
                 val valueStr = formatPrice(value) + "$"
                 binding.totalValue.text = valueStr
 
                 val pnl = value - cost
-                setChangeView(pnl, binding.root.context, binding.totalPnl, "$")
+                setChangeView(binding.root.context, binding.totalPnl, pnl, "$")
 
                 val percentChange = if (cost == 0.0) 0.0 else (pnl / cost) * 100.0
                 setChangeView(
-                    percentChange,
                     binding.root.context,
                     binding.totalPnlPercent,
+                    percentChange,
                     "%"
                 )
 

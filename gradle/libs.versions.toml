@@ -1,21 +1,24 @@
 [versions]
-agp = "8.4.1"
+agp = "8.4.2"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
+mockito = "1.10.19"
 espressoCore = "3.5.1"
-appcompat = "1.6.1"
+appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
 legacySupportV4 = "1.0.0"
-lifecycleLivedataKtx = "2.8.0"
-lifecycleViewmodelKtx = "2.8.0"
+lifecycleLivedataKtx = "2.8.1"
+lifecycleViewmodelKtx = "2.8.1"
 fragmentKtx = "1.7.1"
 jetbrainsKotlinJvm = "1.9.0"
+mockitoCore = "4.8.0"
 viewPager2_version = "1.1.0"
 parcelize_version = "2.0.0"
+flexbox = "3.0.0"
 
 room_version = "2.6.1"
 okhttp_version = "4.12.0"
@@ -39,10 +42,18 @@ airbnb_paris_version = "2.0.0"
 
 kotlin_parcelize_version = "2.0.0"
 kotlinx_serialization_json_version = "1.6.3"
+firebaseCrashlytics = "19.0.1"
+googleGmsGoogleServices = "4.4.2"
+googleFirebaseCrashlytics = "3.0.1"
+firebasePerf = "21.0.1"
+googleFirebaseFirebasePerf = "1.4.2"
+firebaseVertexai = "16.0.0-beta01"
+firebaseAnalytics = "22.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+mockito = { group = "org.mockito", name = "mockito-all", version.ref = "mockito" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -54,7 +65,9 @@ androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecy
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 viewPager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewPager2_version" }
+flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
 
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
@@ -82,6 +95,7 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 glide_annotation_processor = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide_version" }
 
 coroutines_core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines_version" }
+coroutines_rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "coroutines_version" }
 coroutines_android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines_version" }
 
 anychart = { group = "com.github.AnyChart", name = "AnyChart-Android", version.ref = "anychart_version" }
@@ -94,6 +108,10 @@ airbnb_paris_processor = { group = "com.airbnb.android", name = "paris-processor
 moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi_version" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson_version" }
 kotlinx_json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx_serialization_json_version"}
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
+firebase-perf = { group = "com.google.firebase", name = "firebase-perf", version.ref = "firebasePerf" }
+firebase-vertexai = { group = "com.google.firebase", name = "firebase-vertexai", version.ref = "firebaseVertexai" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -102,4 +120,7 @@ kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 parcelize = { id = "kotlin-parcelize", version.ref = "kotlin_parcelize_version" }
+googleGmsGoogleServices = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+googleFirebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
+googleFirebaseFirebasePerf = { id = "com.google.firebase.firebase-perf", version.ref = "googleFirebaseFirebasePerf" }
 

@@ -8,6 +8,7 @@ import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter
+import dev.kokorev.cryptoview.utils.NotificationService
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 

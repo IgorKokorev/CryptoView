@@ -10,6 +10,7 @@ import com.coinpaprika.apiclient.entity.MarketEntity
 import com.coinpaprika.apiclient.entity.TickerEntity
 import com.coinpaprika.apiclient.entity.TopMoversEntity
 import com.coinpaprika.apiclient.entity.TweetEntity
+import dev.kokorev.coin_paprika_api.entity.OHLCVEntity
 import dev.kokorev.coin_paprika_api.entity.TickerTickEntity
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
@@ -26,7 +27,12 @@ interface CoinPaprikaApi {
     fun getCoin(
         @Path("id") id: String
     ): Single<CoinDetailsEntity>
-
+    
+    @GET("coins/{id}/ohlcv/latest")
+    fun getCoinOhlcvLatest(
+        @Path("id") id: String
+    ): Single<List<OHLCVEntity>>
+    
     @GET("coins")
     fun getCoins(
         @Query("additional_fields") additionalFields: String? = null

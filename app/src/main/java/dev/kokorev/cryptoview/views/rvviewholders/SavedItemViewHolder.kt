@@ -7,8 +7,8 @@ import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.data.entity.SavedCoin
 import dev.kokorev.cryptoview.databinding.SavedCoinItemBinding
 import dev.kokorev.cryptoview.utils.NumbersUtils
-import dev.kokorev.cryptoview.utils.NumbersUtils.setChangeView
 import dev.kokorev.cryptoview.utils.NumbersUtils.formatPrice
+import dev.kokorev.cryptoview.utils.NumbersUtils.setChangeView
 import dev.kokorev.cryptoview.views.rvadapters.SavedAdapter
 
 class SavedItemViewHolder(val binding: SavedCoinItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -16,7 +16,6 @@ class SavedItemViewHolder(val binding: SavedCoinItemBinding) : RecyclerView.View
     fun setData(
         coin: SavedCoin,
         clickListener: SavedAdapter.OnItemClickListener,
-        position: Int
     ) {
         Glide.with(binding.root)
             .load(coin.logo)
@@ -25,9 +24,9 @@ class SavedItemViewHolder(val binding: SavedCoinItemBinding) : RecyclerView.View
         binding.coinSymbol.text = coin.symbol
         binding.coinPrice.text = formatPrice(coin.price)
         setChangeView(
-            coin.percentChange,
             binding.root.context,
             binding.coinChange,
+            coin.percentChange,
             "%"
         )
         val volume = NumbersUtils.formatBigNumber(coin.dailyVolume ?: 0.0)

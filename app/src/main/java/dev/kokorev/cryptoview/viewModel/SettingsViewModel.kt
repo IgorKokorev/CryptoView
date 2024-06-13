@@ -1,18 +1,15 @@
 package dev.kokorev.cryptoview.viewModel
 
 import androidx.lifecycle.ViewModel
-import dev.kokorev.cryptoview.App
-import dev.kokorev.cryptoview.backgroundService.NotificationService
-import dev.kokorev.cryptoview.domain.Repository
+import dev.kokorev.cryptoview.appDagger
+import dev.kokorev.cryptoview.backgroundService.AlarmScheduler
 import javax.inject.Inject
 
 class SettingsViewModel : ViewModel() {
-    @Inject
-    lateinit var repository: Repository
-    @Inject
-    lateinit var notificationService: NotificationService
-
-    init {
-        App.instance.dagger.inject(this)
+    @Inject lateinit var alarmScheduler: AlarmScheduler
+    init { appDagger.inject(this) }
+    
+    fun cancelPortfolioNotifications() {
+        alarmScheduler.cancel(AlarmScheduler.portfolioNotificationData)
     }
 }

@@ -28,7 +28,9 @@
     <color name="accent1">@color/red8</color>
 
     <color name="green">@color/lightGreen</color>
+    <color name="greenFaded">@color/lightGreen2</color>
     <color name="red">@color/lightRed</color>
+    <color name="redFaded">@color/lightRed2</color>
     <color name="blue">@color/light_blue_600</color>
 
     <color name="iconColor">@color/base8</color>
@@ -39,5 +41,6 @@
 
     <color name="coinColor">@color/lightGolden</color>
     <color name="tokenColor">@color/lightGrey</color>
+    <color name="volumeColor">#606060</color>
 
 </resources>

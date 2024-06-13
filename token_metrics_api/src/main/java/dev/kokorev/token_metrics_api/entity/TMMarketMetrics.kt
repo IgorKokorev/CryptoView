@@ -1,17 +1,10 @@
 package dev.kokorev.token_metrics_api.entity
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TMMarketMetrics(
-
-    @SerializedName("success") var success: Boolean? = null,
-    @SerializedName("message") var message: String? = null,
-    @SerializedName("length") var length: Int? = null,
-    @SerializedName("data") var data: ArrayList<TMMarketMetricsData> = arrayListOf()
-
-)
-
-data class TMMarketMetricsData(
 
     @SerializedName("DATE") var date: String? = null,
     @SerializedName("TOTAL_CRYPTO_MCAP") var totalCryptoMcap: Double? = null,

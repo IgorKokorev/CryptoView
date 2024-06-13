@@ -1,8 +1,16 @@
 package dev.kokorev.cryptoview
 
+// actions for intents
+const val INTENT_ACTION: String = "notification_" // default action
+const val COIN_ACTION: String = "coin_"
+const val PORTFOLIO_ACTION: String = "portfolio_"
+
+val TM_SENTIMENT_TIME_SECONDS: Long = 67 * 60 /* 67 minutes */
+val TM_MARKET_METRICS_TIME_SECONDS: Long = 60 * 60 /* 1 hour */
+
 object Constants {
-    
-    const val SETTINGS: String = "settings"
+    // for main fragment - how many days is fetched from market metrics endpoint
+    const val DAYS_MARKET_METRICS: Long = 50
     
     // For Binance Fragment
     const val BINANCE_FIRST_ASSET = "USDT"
@@ -18,32 +26,21 @@ object Constants {
     
     // working with notifications
     const val NOTIFICATION_PERMISSION_REQUEST_CODE: Int = 1
-    const val NOTIFICATION_ID: Int = 1
+    const val NOTIFICATION_ID: Int = 1 // default notification id
     const val INTENT_EXTRA_FAVORITE_COIN: String = "intent_extra_favorite_coin"
 
     // tags to transfer data in bundles
     const val COIN_SYMBOL: String = "coin_symbol" // constants to use as key in bundles
     const val COIN_NAME: String = "coin_name"
     const val COIN_PAPRIKA_ID: String = "coin_paprika_id"
+    const val TO_OPEN_CHART: String = "to_open_chart"
 
     // Default timings
-    const val CP_TICKERS_UPDATE_INTERVAL: Long = 1000L * 60 * 1 /* minutes */ * 1 /* hours */ * 1 /* days */ // Update cp tickers db interval
-    const val BACK_CLICK_TIME_INTERVAL: Long = 1000L * 3 // time in millis between 2 backpresses to exit the app
-    const val CHAT_SHOW_TIME: Long = 1000L * 60 * 60 * 24 * 7 // Show in chat only messages not older than
-    const val INTERVAL_TO_SHOW_FAVORITE_CHANGE = 1000L * 60 * 60 /* minutes */ * 12 /* hours */ * 1 /* days */  // Do not show favorite change notifications more often than
+    const val CP_TICKERS_UPDATE_SECONDS: Long = 60 /* seconds */ * 1 /* minutes */ * 1 /* hours */ * 1 /* days */ // Update cp tickers db interval
+    const val BACK_CLICK_TIME_MILLIS: Long = 1000L * 3 // time in millis between 2 backpresses to exit the app
+    const val CHAT_SHOW_TIME_MILLIS: Long = 1000L * 60 * 60 * 24 * 30 // Show in chat only messages not older than
+    const val SHOW_FAVORITE_CHANGE_TIME_MILLIS = 1000L * 60 * 60 /* minutes */ * 24 /* hours */ * 1 /* days */  // Do not show favorite change notifications more often than
 
-    // Settings defaults
-    const val FAVORITE_CHECK_MIN_CHANGE: Float = 1.0f
-    const val FAVORITE_CHECK_MAX_CHANGE: Float = 20.0f
-    val minMCaps = listOf<Long>(
-        10_000L, 100_000L, 1_000_000L, 10_000_000L, 100_000_000L, 250_000_000L, 500_000_000L, 1_000_000_000L, 10_000_000_000L
-    )   // List of possible "min mcap" values
-    val minVols = listOf<Long>(
-        1_000L, 10_000L, 100_000L, 1_000_000L, 10_000_000L, 100_000_000L, 1_000_000_000L
-    )   // List of possible "min mcap" values
-    const val TOP_COINS_FROM = 3
-    const val TOP_COINS_TO = 20
-    const val TOP_COINS_DEFAULT = 10
 
     // Fragments tags for fragment manager
     const val MAIN_FRAGMENT_TAG = "main"

@@ -1,21 +1,24 @@
 package dev.kokorev.cryptoview.utils
 
 import android.util.Log
+import com.anychart.chart.common.dataentry.DataEntry
 import com.anychart.chart.common.dataentry.HighLowDataEntry
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import com.coinpaprika.apiclient.entity.MoverEntity
-import com.coinpaprika.apiclient.entity.PortfolioCoinDB
+import com.coinpaprika.apiclient.entity.PortfolioPositionDB
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import com.coinpaprika.apiclient.entity.TickerEntity
 import dev.kokorev.binance_api.entity.BinanceSymbolDTO
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
 import dev.kokorev.cryptoview.data.entity.GainerCoin
 import dev.kokorev.cryptoview.data.entity.RecentCoin
+import dev.kokorev.cryptoview.logd
 import dev.kokorev.cryptoview.views.fragments.MainPriceSorting
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
 import dev.kokorev.room_db.core_api.entity.TopMoverDB
+import dev.kokorev.token_metrics_api.entity.TMMarketMetrics
 
 object Converter {
     fun dtoToBinanceSymbol(dto: BinanceSymbolDTO) : BinanceSymbolDB {
@@ -145,9 +148,9 @@ object Converter {
         )
     }
 
-    fun createPortfolioCoin(coin: CoinDetailsEntity, price: Double, qty: Double): PortfolioCoinDB {
+    fun createPortfolioPosition(coin: CoinDetailsEntity, price: Double, qty: Double): PortfolioPositionDB {
         val currentTime = System.currentTimeMillis()
-        return PortfolioCoinDB(
+        return PortfolioPositionDB(
             coinPaprikaId = coin.id,
             name = coin.name,
             symbol = coin.symbol,
@@ -225,7 +228,16 @@ object Converter {
             volume
         )
     }
-
+    
+    fun tmMarketMetricsToDataEntry(tmMarketMetrics: TMMarketMetrics): DataEntry {
+        val dataEntry = DataEntry()
+        dataEntry.setValue("x", tmMarketMetrics.date)
+        dataEntry.setValue("value", (tmMarketMetrics.totalCryptoMcap ?: 0.0) / 1e12)
+        
+        logd("tmMarketMetricsToDataEntry dataEntry = ${dataEntry.generateJs()}")
+        return dataEntry
+    }
+    
 }
 
 class OHLCDataEntry(x: Long?, open: Double?, high: Double?, low: Double?, close: Double?, volume: Double?) :
@@ -233,6 +245,6 @@ class OHLCDataEntry(x: Long?, open: Double?, high: Double?, low: Double?, close:
     init {
         setValue("open", open)
         setValue("close", close)
-        setValue("value", volume)
+        setValue("volume", volume)
     }
 }

@@ -11,7 +11,7 @@
 
     <style name="CVTextAppearance" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/roboto</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/medium_text</item>
         <item name="color">@color/textColor</item>
         <item name="android:textColor">@color/textColor</item>
         <item name="android:textColorLink">@color/textColor</item>
@@ -26,7 +26,7 @@
 
     <style name="CVTextViewStyle" parent="android:Widget.TextView">
         <item name="fontFamily">@font/roboto</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/medium_text</item>
         <item name="color">@color/textColor</item>
         <item name="android:textColor">@color/textColor</item>
         <item name="android:textColorLink">@color/textColor</item>
@@ -49,16 +49,22 @@
         <item name="color">@color/textColor</item>
         <item name="android:colorAccent">@color/textColor</item>
         <item name="buttonBarNegativeButtonStyle">@style/CVNegativeButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/CVNeutralButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/CVPositiveButtonStyle</item>
     </style>
 
     <style name="CVNegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="backgroundTint">@color/base1</item>
+        <item name="backgroundTint">@color/base3</item>
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+
+    <style name="CVNeutralButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="backgroundTint">@color/base3</item>
         <item name="android:textColor">@color/textColor</item>
     </style>
 
     <style name="CVPositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="backgroundTint">@color/base1</item>
+        <item name="backgroundTint">@color/base3</item>
         <item name="android:textColor">@color/textColor</item>
     </style>
 

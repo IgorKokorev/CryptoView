@@ -6,7 +6,6 @@
     <string name="menu_text_info">Info</string>
     <string name="menu_text_settings">Settings</string>
     <string name="menu_text_chart">Chart</string>
-    <string name="settings_toast">Settings are not ready yet, please check it out later!</string>
     <string name="tags">Tags:</string>
     <string name="links">Links:</string>
     <string name="team">Team:</string>
@@ -61,7 +60,7 @@
     <string name="favorite_change_text">I want to receive notifications if market price of one of my favorites changes more than:</string>
     <string name="minimum_favorite_price_change">Minimum favorite coin price change</string>
     <string name="favorite_coin_price_change">Favorite coin price change</string>
-    <string name="open_position_text">Enter a positive number if you want to open a long position or negative number for short position.</string>
+    <string name="open_position_text">Enter a positive quantity of coins if you want to open a long position or negative quantity for short position.</string>
     <string name="qty_hint">Quantity</string>
     <string name="portfolio_operation">Portfolio operation</string>
     <string name="no_quantity_entered_the_position_isn_t_saved">No quantity entered, the position isn\'t saved.</string>
@@ -71,14 +70,12 @@
     <string name="reddit_summary">Reddit summary</string>
     <string name="twitter_summary">Twitter summary</string>
     <string name="position_created">Position created</string>
-    <string name="change_position_text">Enter the new quantity to change the position or 0 to close it:</string>
+    <string name="change_position_text">Enter the new coin quantity to change the position or press \"Close\" to close the position:</string>
     <string name="position_closed_text">Position closed, P/L = </string>
     <string name="ok">Ok</string>
     <string name="price_not_found">Price hasn\'t been found for symbol: </string>
     <string name="position_not_changed">The position has not been changed</string>
     <string name="position_changed_text">"Position ha been changed, new quantity: "</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="tokenmetrics_summary">TokenMetrics summary</string>
     <string name="market_sentiment_grade">Market sentiment grade:</string>
     <string name="news_sentiment_grade">News sentiment grade:</string>
@@ -96,4 +93,14 @@
     <string name="binance_ticker">Binance ticker:</string>
     <string name="change_24h">%24h</string>
     <string name="value">Value</string>
+    <string name="portfolio_service_description">CryptoView background service for portfolio evaluation</string>
+    <string name="portfolio_notification">Portfolio notifications</string>
+    <string name="gemini">Gemini</string>
+    <string name="error">Error</string>
+    <string name="something_went_wrong_tm_answer">Something went wrong, TM answer: %1$s</string>
+    <string name="empty_ai_response">And the silence was his only answer…</string>
+    <string name="lets_ask_gemini">I have no answer to the question. Let\'s ask Gemini…</string>
+    <string name="copied_to_clipboard">Message copied to clipboard</string>
+    <string name="portfolio_no_notify">I don\'t want to be notified about the state of my portfolio</string>
+    <string name="portfolio_notify">I want to be notified about the state of the portfolio every day at %1$s</string>
 </resources>

@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.Constants
+import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentCoinBinding
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import kotlin.reflect.KClass
@@ -34,17 +34,16 @@ class CoinFragment : Fragment() {
         viewModel.coinPaprikaId = arguments?.getString(Constants.COIN_PAPRIKA_ID) ?: ""
         viewModel.symbol = arguments?.getString(Constants.COIN_SYMBOL) ?: ""
         viewModel.name = arguments?.getString(Constants.COIN_NAME) ?: ""
+        val toOpenChart = arguments?.getBoolean(Constants.TO_OPEN_CHART) ?: false
 
         fragments = listOf(
             InfoFragment::class,
             ChartFragment::class,
-//        BinanceFragment::class,
             AiReportFragment::class,
         )
         icons = listOf(
             ResourcesCompat.getDrawable(resources, R.drawable.icon_info, null),
             ResourcesCompat.getDrawable(resources, R.drawable.icon_chart, null),
-//            ResourcesCompat.getDrawable(resources, R.drawable.binance_logo, null),
             ResourcesCompat.getDrawable(resources, R.drawable.svg_report, null),
         )
 
@@ -55,6 +54,12 @@ class CoinFragment : Fragment() {
             tab.icon = icons.get(position)
         }.attach()
         binding.coinPager.isSaveEnabled = false // To avoid exceptions on back pressed
+        
+        if (toOpenChart) {
+            binding.coinPager.setCurrentItem(1, true)
+//            (requireActivity() as MainActivity).launchBinanceFragment(viewModel.symbol)
+        }
+        
     }
 
     override fun onCreateView(
@@ -65,8 +70,8 @@ class CoinFragment : Fragment() {
     }
 
     // ViewPager adapter
-    inner class CoinPagerAdapter(fragment: Fragment, private val args: Bundle?) :
-        FragmentStateAdapter(fragment) {
+    inner class CoinPagerAdapter(parentFragment: Fragment, private val args: Bundle?) :
+        FragmentStateAdapter(parentFragment) {
         override fun getItemCount(): Int = fragments.size
 
         override fun createFragment(position: Int): Fragment {

@@ -38,7 +38,7 @@ class SavedAdapter(
         when (holder) {
             is SavedItemViewHolder -> {
                 val savedCoin = data[position]
-                holder.setData(savedCoin, clickListener, position)
+                holder.setData(savedCoin, clickListener)
             }
         }
     }

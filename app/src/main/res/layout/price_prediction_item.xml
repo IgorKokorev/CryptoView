@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="bottom"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal">
 
     <TextView
@@ -13,16 +15,55 @@
         android:maxLines="1"
         android:padding="@dimen/small_padding"
         android:textAlignment="viewStart"
+        tools:text="Period"
         android:textSize="@dimen/medium_text" />
 
     <TextView
-        android:id="@+id/value"
-        android:layout_width="0dp"
+        android:id="@+id/lower"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:layout_weight="3"
+        tools:text="Lower"
+        android:textColor="@color/red"
+        android:fontFamily="@font/redditmono"
+        android:textSize="@dimen/small_text" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text=".."
         android:padding="@dimen/small_padding"
-        android:textAlignment="viewEnd"
+        android:fontFamily="@font/redditmono"
         android:textSize="@dimen/medium_text" />
+
+    <TextView
+        android:id="@+id/forecast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:fontFamily="@font/redditmono"
+        tools:text="Forecast"
+        android:textSize="@dimen/medium_text" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text=".."
+        android:fontFamily="@font/redditmono"
+        android:padding="@dimen/small_padding"
+        android:textSize="@dimen/medium_text" />
+
+    <TextView
+        android:id="@+id/upper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        tools:text="Higher"
+        android:fontFamily="@font/redditmono"
+        android:textColor="@color/green"
+        android:textSize="@dimen/small_text"
+        android:paddingEnd="@dimen/small_padding"/>
 
 </LinearLayout>

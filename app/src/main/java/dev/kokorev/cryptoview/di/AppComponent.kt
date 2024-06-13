@@ -5,6 +5,8 @@ import dev.kokorev.binance_api.BinanceProvider
 import dev.kokorev.cmc_api.CmcProvider
 import dev.kokorev.coin_paprika_api.CoinPaprikaProvider
 import dev.kokorev.cryptoview.backgroundService.BinanceLoaderWorker
+import dev.kokorev.cryptoview.backgroundService.PortfolioEvaluationService
+import dev.kokorev.cryptoview.backgroundService.PortfolioNotificationReceiver
 import dev.kokorev.cryptoview.backgroundService.TickersLoaderWorker
 import dev.kokorev.cryptoview.di.modules.DomainModule
 import dev.kokorev.cryptoview.utils.PortfolioInteractor
@@ -41,4 +43,6 @@ interface AppComponent {
     fun inject(tickersLoaderWorker: TickersLoaderWorker)
     fun inject(binanceLoaderWorker: BinanceLoaderWorker)
     fun inject(portfolioInteractor: PortfolioInteractor)
+    fun inject(portfolioEvaluationService: PortfolioEvaluationService)
+    fun inject(portfolioNotificationReceiver: PortfolioNotificationReceiver)
 }

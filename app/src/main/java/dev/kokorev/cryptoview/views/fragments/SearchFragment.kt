@@ -9,8 +9,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.data.preferencesInt
-import dev.kokorev.cryptoview.data.preferencesSearchSorting
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_SEARCH_SORTING
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_SEARCH_SORTING_DIRECTION
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesInt
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesSearchSorting
 import dev.kokorev.cryptoview.databinding.FragmentSearchBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.addTo
@@ -37,8 +39,8 @@ class SearchFragment : Fragment() {
     private lateinit var searchAdapter: SearchAdapter
     private var tickers: List<CoinPaprikaTickerDB> = listOf()
     
-    private var sortingDirection: Int by preferencesInt("searchSortingDirection")
-    private var sorting: SearchSorting by preferencesSearchSorting("searchSorting")
+    private var sortingDirection: Int by preferencesInt(KEY_SEARCH_SORTING_DIRECTION)
+    private var sorting: SearchSorting by preferencesSearchSorting(KEY_SEARCH_SORTING)
 
     private var tickersToShow: List<CoinPaprikaTickerDB> = listOf()
         set(value) {
@@ -79,7 +81,8 @@ class SearchFragment : Fragment() {
                 (requireActivity() as MainActivity).launchCoinFragment(
                     coinPaprikaTickerDB.coinPaprikaId,
                     coinPaprikaTickerDB.symbol,
-                    coinPaprikaTickerDB.name
+                    coinPaprikaTickerDB.name,
+                    false
                 )
             }
         })

@@ -5,13 +5,20 @@ import android.util.Log
 import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
 import dev.kokorev.cryptoview.App
+import dev.kokorev.cryptoview.COIN_ACTION
 import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
-import dev.kokorev.cryptoview.data.preferencesBoolean
-import dev.kokorev.cryptoview.data.preferencesFloat
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_FAVORITE_CHANGE
+import dev.kokorev.cryptoview.data.sharedPreferences.KEY_TO_CHECK_FAVORITES
+import dev.kokorev.cryptoview.data.sharedPreferences.MIN_MCAPS
+import dev.kokorev.cryptoview.data.sharedPreferences.MIN_VOLS
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesBoolean
+import dev.kokorev.cryptoview.data.sharedPreferences.preferencesFloat
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.Converter
+import dev.kokorev.cryptoview.utils.NotificationData
+import dev.kokorev.cryptoview.utils.NotificationService
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 import kotlin.math.abs
@@ -28,17 +35,16 @@ class TickersLoaderWorker(
     @Inject
     lateinit var notificationService: NotificationService
     
-    
-    private var toCheckFavorites: Boolean by preferencesBoolean("toCheckFavorites")
-    private var favoriteChange: Float by preferencesFloat("favoriteChange")
+    private var toCheckFavorites: Boolean by preferencesBoolean(KEY_TO_CHECK_FAVORITES)
+    private var favoriteChange: Float by preferencesFloat(KEY_FAVORITE_CHANGE)
     
     init {
         App.instance.dagger.inject(this)
     }
 
     override fun createWork(): Single<Result> {
-        val minMcap = Constants.minMCaps.get(0)
-        val minVol = Constants.minVols.get(0)
+        val minMcap = MIN_MCAPS.get(0)
+        val minVol = MIN_VOLS.get(0)
 
         val tickersSingle = remoteApi.getCoinPaprikaTickers()
             .map { list ->
@@ -79,16 +85,19 @@ class TickersLoaderWorker(
                         val change = coin.percentChange ?: 0.0
                         Log.d(this.javaClass.simpleName, "Coin ${coin.symbol} has changed by ${change}%")
                         if (abs(change) >= favoriteChange &&
-                            coin.timeNotified + Constants.INTERVAL_TO_SHOW_FAVORITE_CHANGE < System.currentTimeMillis()
+                            coin.timeNotified + Constants.SHOW_FAVORITE_CHANGE_TIME_MILLIS < System.currentTimeMillis()
                         ) {
                             Log.d(this.javaClass.simpleName, "Sending notification")
                             repository.setFavoriteTimeNotified(coin)
-                            notificationService.send(
-                                context.getString(R.string.favorite_coin_price_change),
-                                "Your favorite coin ${coin.symbol} has ${if (change > 0) "grown" else "fallen"} by $change%",
-                                coin,
-                                coin.id
+                            val data = NotificationData(
+                                title = context.getString(R.string.favorite_coin_price_change),
+                                text = "Your favorite coin ${coin.symbol} has ${if (change > 0) "grown" else "fallen"} by $change%",
+                                keyExtra = Constants.INTENT_EXTRA_FAVORITE_COIN,
+                                extra = coin,
+                                action = COIN_ACTION,
+                                id = coin.id
                             )
+                            notificationService.send(data)
                         }
                     }
                 }

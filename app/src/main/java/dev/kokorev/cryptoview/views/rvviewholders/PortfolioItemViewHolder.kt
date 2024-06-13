@@ -2,7 +2,7 @@ package dev.kokorev.cryptoview.views.rvviewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.coinpaprika.apiclient.entity.PortfolioCoinDB
+import com.coinpaprika.apiclient.entity.PortfolioPositionDB
 import dev.kokorev.cryptoview.databinding.PortfolioCoinItemBinding
 import dev.kokorev.cryptoview.utils.NumbersUtils.formatPrice
 import dev.kokorev.cryptoview.utils.NumbersUtils.setChangeView
@@ -11,9 +11,8 @@ import dev.kokorev.cryptoview.views.rvadapters.PortfolioAdapter
 class PortfolioItemViewHolder(val binding: PortfolioCoinItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun setData(
-        coin: PortfolioCoinDB,
+        coin: PortfolioPositionDB,
         clickListener: PortfolioAdapter.OnItemClickListener,
-        position: Int
     ) {
         Glide.with(binding.root)
             .load(coin.logo)
@@ -23,16 +22,16 @@ class PortfolioItemViewHolder(val binding: PortfolioCoinItemBinding) : RecyclerV
         binding.coinPrice.text = formatPrice(coin.priceLastEvaluation)
         val percentChange = (coin.priceLastEvaluation / coin.priceOpen - 1.0) * 100.0
         setChangeView(
-            percentChange,
             binding.root.context,
             binding.coinChange,
+            percentChange,
             "%"
         )
         binding.coinQty.text = formatPrice(coin.quantity)
         binding.coinVal.text = formatPrice(coin.quantity * coin.priceLastEvaluation)
 
         val pnlNumber = coin.quantity * (coin.priceLastEvaluation - coin.priceOpen)
-        setChangeView(pnlNumber, binding.root.context, binding.coinPnl, "")
+        setChangeView(binding.root.context, binding.coinPnl, pnlNumber, "")
 
         binding.root.setOnClickListener {
             clickListener.click(coin)

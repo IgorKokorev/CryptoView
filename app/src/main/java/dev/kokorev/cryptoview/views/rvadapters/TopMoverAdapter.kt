@@ -37,7 +37,7 @@ class TopMoverAdapter(
         when (holder) {
             is TopMoverItemViewHolder -> {
                 val gainerCoin = data[position]
-                holder.setData(gainerCoin, clickListener, position)
+                holder.setData(gainerCoin, clickListener)
             }
         }
     }

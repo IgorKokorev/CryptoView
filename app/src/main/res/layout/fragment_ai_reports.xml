@@ -30,10 +30,11 @@
                     android:id="@+id/coin_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6"
+                    android:layout_weight="1"
+                    android:maxLines="1"
                     tools:text="Coin Name"
-                    android:layout_gravity="start"
-                    android:textSize="@dimen/medium_text"
+                    android:layout_gravity="start|center_vertical"
+                    android:textSize="@dimen/biggest_text"
                     android:textStyle="bold"
                     android:textAlignment="viewStart" />
 
@@ -41,10 +42,12 @@
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:layout_gravity="end"
+                android:maxLines="1"
+                android:layout_gravity="end|center_vertical"
                 android:textAlignment="viewEnd"
-                android:textSize="@dimen/medium_text"
+                android:paddingStart="@dimen/medium_padding"
+                android:textSize="@dimen/biggest_text"
+                android:textStyle="bold"
                 tools:text="Date"
                 />
 

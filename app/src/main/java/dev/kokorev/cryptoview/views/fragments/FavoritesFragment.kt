@@ -51,7 +51,11 @@ class FavoritesFragment : Fragment() {
         setupDataFromViewModel()
         initRecycler()
     }
-
+    
+    override fun onResume() {
+        super.onResume()
+    }
+    
     private fun initRecycler() {
         savedAdapter = SavedAdapter(
             object : SavedAdapter.OnItemClickListener {
@@ -59,7 +63,8 @@ class FavoritesFragment : Fragment() {
                     (requireActivity() as MainActivity).launchCoinFragment(
                         savedCoin.coinPaprikaId,
                         savedCoin.symbol,
-                        savedCoin.name
+                        savedCoin.name,
+                        false
                     )
                 }
             }).apply {
