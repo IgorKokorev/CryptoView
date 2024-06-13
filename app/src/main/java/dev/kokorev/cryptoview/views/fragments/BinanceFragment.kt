@@ -443,13 +443,16 @@ class BinanceFragment : Fragment() {
         viewModel.findBinanceSymbolsByBaseAsset(symbol)
             .subscribe { list ->
                 if (list.isEmpty()) {
-                    MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
+                    val dialog = MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
                         .setTitle("Binance market info")
                         .setMessage("Coin ${symbol} is not listed on Binance.")
                         .setPositiveButton(R.string.ok) { _, _ ->
                             requireActivity().supportFragmentManager.popBackStack()
                         }
-                        .show()
+                    dialog.setOnDismissListener {
+                        requireActivity().supportFragmentManager.popBackStack()
+                    }
+                    dialog.show()
                 } else {
                     binanceSymbols = list
                     val indexOfFirstAsset =

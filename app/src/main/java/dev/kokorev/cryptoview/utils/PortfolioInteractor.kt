@@ -3,7 +3,6 @@ package dev.kokorev.cryptoview.utils
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
@@ -21,10 +20,11 @@ import dev.kokorev.cryptoview.views.fragments.toEditable
 import java.time.Instant
 import javax.inject.Inject
 
-class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
+class PortfolioInteractor(val autoDisposable: AutoDisposable) {
     @Inject
     lateinit var repository: Repository
 
+    private val view = App.instance.activityBinding.root
     private val context: Context = view.context
     val layoutInflater: LayoutInflater = context.getSystemService(LayoutInflater::class.java)
 
@@ -117,15 +117,11 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
         return
     }
 
-    
+    // handle change portfolio position including close position
     fun changePosition(portfolioPositionDB: PortfolioPositionDB) {
         repository.getCPTickerById(portfolioPositionDB.coinPaprikaId)
             .doOnSuccess { ticker ->
                 val price = ticker.price ?: 0.0
-                Log.d(
-                    this.javaClass.simpleName,
-                    "Changing position coin: ${portfolioPositionDB.symbol}, price: ${price}"
-                )
                 askUserQtyToChangePosition(portfolioPositionDB, price)
             }
             .doOnComplete {
@@ -139,6 +135,7 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
             .addTo(autoDisposable)
     }
 
+    // ask user how he wants to change position
     fun askUserQtyToChangePosition(
         position: PortfolioPositionDB,
         price: Double
@@ -184,6 +181,10 @@ class PortfolioInteractor(val view: View, val autoDisposable: AutoDisposable) {
                 dialog.cancel()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            .setNeutralButton("Close") { dialog, _ ->
+                closePosition(position, price)
                 dialog.cancel()
             }
             .show()

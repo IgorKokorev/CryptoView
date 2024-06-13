@@ -45,7 +45,7 @@ class PortfolioFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPortfolioBinding.inflate(layoutInflater)
-        portfolioInteractor = PortfolioInteractor(binding.root, autoDisposable)
+        portfolioInteractor = PortfolioInteractor(autoDisposable)
         return binding.root
     }
 

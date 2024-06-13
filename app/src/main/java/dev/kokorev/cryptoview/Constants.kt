@@ -28,6 +28,7 @@ object Constants {
     const val COIN_SYMBOL: String = "coin_symbol" // constants to use as key in bundles
     const val COIN_NAME: String = "coin_name"
     const val COIN_PAPRIKA_ID: String = "coin_paprika_id"
+    const val TO_OPEN_CHART: String = "to_open_chart"
 
     // Default timings
     const val CP_TICKERS_UPDATE_SECONDS: Long = 60 /* seconds */ * 1 /* minutes */ * 1 /* hours */ * 1 /* days */ // Update cp tickers db interval

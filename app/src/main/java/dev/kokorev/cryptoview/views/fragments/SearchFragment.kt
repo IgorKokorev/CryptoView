@@ -81,7 +81,8 @@ class SearchFragment : Fragment() {
                 (requireActivity() as MainActivity).launchCoinFragment(
                     coinPaprikaTickerDB.coinPaprikaId,
                     coinPaprikaTickerDB.symbol,
-                    coinPaprikaTickerDB.name
+                    coinPaprikaTickerDB.name,
+                    false
                 )
             }
         })

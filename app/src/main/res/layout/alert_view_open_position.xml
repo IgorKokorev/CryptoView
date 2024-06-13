@@ -32,42 +32,64 @@
         android:layout_height="1dp"
         app:layout_constraintTop_toBottomOf="@+id/alert_text" />
 
-    <TextView
-        android:id="@+id/symbol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/medium_padding"
-        android:textSize="@dimen/big_text"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/price"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alert_text"
-        tools:text="Symbol" />
 
-    <TextView
-        android:id="@+id/price"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/symbol_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/medium_padding"
-        android:textSize="@dimen/big_text"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/symbol"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/alert_text"
-        tools:text="Price" />
+        >
+
+        <TextView
+            android:id="@+id/symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/medium_padding"
+            android:textSize="@dimen/big_text"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:layout_weight="1"
+            tools:text="Symbol" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price:"
+            android:maxLines="1"
+            app:layout_constraintTop_toBottomOf="@+id/alert_text"
+            android:padding="@dimen/medium_padding"
+            app:layout_constraintStart_toEndOf="@+id/symbol"
+            />
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/medium_padding"
+            android:textSize="@dimen/big_text"
+            android:textStyle="bold"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/symbol"
+            app:layout_constraintTop_toBottomOf="@+id/alert_text"
+            tools:text="Price" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/input_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/symbol">
+        app:layout_constraintTop_toBottomOf="@+id/symbol_container">
 
         <EditText
             android:id="@+id/input"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="4"
+            android:layout_weight="1"
             android:hint="@string/qty_hint"
             android:inputType="numberDecimal|number|numberSigned"
             android:padding="@dimen/medium_padding"
@@ -76,13 +98,22 @@
             app:layout_constraintTop_toBottomOf="@+id/symbol" />
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Value:"
+            android:maxLines="1"
+            app:layout_constraintTop_toBottomOf="@+id/alert_text"
+            android:padding="@dimen/medium_padding"
+            app:layout_constraintStart_toEndOf="@+id/symbol"
+            />
+
+        <TextView
             android:id="@+id/input_value"
-            android:layout_weight="6"
             android:padding="@dimen/medium_padding"
             android:textSize="@dimen/big_text"
             android:textStyle="bold"
-            android:layout_width="0dp"
-            tools:text="0.00"
+            android:layout_width="wrap_content"
+            android:text="0.00"
             android:textAlignment="viewEnd"
             android:layout_height="wrap_content" />
 

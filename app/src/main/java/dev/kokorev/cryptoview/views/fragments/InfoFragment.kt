@@ -46,7 +46,7 @@ class InfoFragment : Fragment() {
         super.onCreate(savedInstanceState)
         autoDisposable.bindTo(lifecycle)
         binding = FragmentInfoBinding.inflate(layoutInflater)
-        portfolioInteractor = PortfolioInteractor(binding.root, autoDisposable)
+        portfolioInteractor = PortfolioInteractor(autoDisposable)
         
         linkToImage = mapOf(
             "announcement" to R.drawable.icon_announcement2,

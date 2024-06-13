@@ -14,6 +14,7 @@ import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.cryptoview.databinding.FragmentCoinBinding
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
+import dev.kokorev.cryptoview.views.MainActivity
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -34,6 +35,7 @@ class CoinFragment : Fragment() {
         viewModel.coinPaprikaId = arguments?.getString(Constants.COIN_PAPRIKA_ID) ?: ""
         viewModel.symbol = arguments?.getString(Constants.COIN_SYMBOL) ?: ""
         viewModel.name = arguments?.getString(Constants.COIN_NAME) ?: ""
+        val toOpenChart = arguments?.getBoolean(Constants.TO_OPEN_CHART) ?: false
 
         fragments = listOf(
             InfoFragment::class,
@@ -53,7 +55,12 @@ class CoinFragment : Fragment() {
             tab.icon = icons.get(position)
         }.attach()
         binding.coinPager.isSaveEnabled = false // To avoid exceptions on back pressed
-        binding.coinPager.setCurrentItem(1, true)
+        
+        if (toOpenChart) {
+            binding.coinPager.setCurrentItem(1, true)
+            (requireActivity() as MainActivity).launchBinanceFragment(viewModel.symbol)
+        }
+        
     }
 
     override fun onCreateView(

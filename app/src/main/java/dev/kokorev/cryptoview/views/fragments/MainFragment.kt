@@ -163,7 +163,8 @@ class MainFragment : Fragment() {
                 (requireActivity() as MainActivity).launchCoinFragment(
                     gainerCoin.coinPaprikaId,
                     gainerCoin.symbol,
-                    gainerCoin.name
+                    gainerCoin.name,
+                    false
                 )
             }
         }).apply {
@@ -249,15 +250,12 @@ class MainFragment : Fragment() {
     private fun setSentimentFromCache() {
         viewModel.getCachedTMSentiment()
             .doOnSuccess {
-                logd("setSentimentFromCache success")
                 setSentimentData(it)
             }
             .doOnComplete {
-                logd("setSentimentFromCache complete")
                 tmSentimentTime = Instant.now().minusSeconds(120 * 60 /* couple of hours back */)
             }
             .doOnError {
-                logd("setSentimentFromCache error")
                 tmSentimentTime = Instant.now().minusSeconds(120 * 60 /* couple of hours back */)
             }
             .onErrorComplete()

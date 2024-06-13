@@ -60,7 +60,8 @@ class RecentFragment : Fragment() {
                     (requireActivity() as MainActivity).launchCoinFragment(
                         savedCoin.coinPaprikaId,
                         savedCoin.symbol,
-                        savedCoin.name
+                        savedCoin.name,
+                        false
                     )
                 }
             }).apply {

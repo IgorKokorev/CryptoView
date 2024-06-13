@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge() // To check wth is this
         binding = ActivityMainBinding.inflate(layoutInflater)
+        App.instance.activityBinding = binding
         setContentView(binding.root)
         logd("testing simple logging")
         // Set portrait orientation while landscape layouts are not ready yet
@@ -101,8 +102,7 @@ class MainActivity : AppCompatActivity() {
             }
             
             if (coin != null) {
-                launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name)
-                launchBinanceFragment(coin.symbol)
+                launchCoinFragment(coin.coinPaprikaId, coin.symbol, coin.name, true)
             }
         }
     }
@@ -219,11 +219,12 @@ class MainActivity : AppCompatActivity() {
         replaceFragment(fragment, Constants.BINANCE_FRAGMENT_TAG)
     }
     
-    fun launchCoinFragment(coinPaprikaId: String, symbol: String, name: String) {
+    fun launchCoinFragment(coinPaprikaId: String, symbol: String, name: String, toOpenChart: Boolean = false) {
         val bundle = Bundle()
         bundle.putString(Constants.COIN_PAPRIKA_ID, coinPaprikaId)
         bundle.putString(Constants.COIN_SYMBOL, symbol)
         bundle.putString(Constants.COIN_NAME, name)
+        bundle.putBoolean(Constants.TO_OPEN_CHART, toOpenChart)
         val fragment = CoinFragment()
         fragment.arguments = bundle
         replaceFragment(fragment, Constants.COIN_FRAGMENT_TAG)
@@ -246,6 +247,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
+    // check if app has notification permission and if not - ask permission
     fun askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -262,6 +264,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // handle results of permission requests
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -285,14 +288,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    
+    // on app start schedule all the background tasks
     private fun startScheduledTasks() {
-        
         // start periodic portfolio evaluation task
         viewModel.alarmScheduler.schedule(AlarmScheduler.portfolioEvaluationData.apply { time = System.currentTimeMillis() })
         
+        // if user selected to be notified about portfolio state - schedule notification
         val toNotifyPortfolio: Boolean by preferencesBoolean(KEY_TO_NOTIFY_PORTFOLIO)
-        
         if (toNotifyPortfolio) {
             val portfolioNotificationTime: Int by preferencesInt(KEY_PORTFOLIO_NOTIFICATION_TIME)
             val notificationTime = getPortfolioNotificationMillis(portfolioNotificationTime)
@@ -300,10 +302,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
+    // on app start run background works
     private fun startWorks() {
         val workManager = WorkManager.getInstance(this)
         
-        // periodic work request to load CoinPaprika tickers and check Favorites and Portfolio state
+        // periodic work request to load CoinPaprika tickers and check Favorites
         val tickerLoaderWorkRequest =
             PeriodicWorkRequestBuilder<TickersLoaderWorker>(15, TimeUnit.MINUTES)
                 .addTag(Constants.TICKER_LOADER_TAG)

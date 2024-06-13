@@ -8,6 +8,7 @@ import com.google.firebase.analytics.analytics
 import dev.kokorev.binance_api.DaggerBinanceComponent
 import dev.kokorev.cmc_api.DaggerCmcComponent
 import dev.kokorev.coin_paprika_api.DaggerCoinPaprikaComponent
+import dev.kokorev.cryptoview.databinding.ActivityMainBinding
 import dev.kokorev.cryptoview.di.AppComponent
 import dev.kokorev.cryptoview.di.DaggerAppComponent
 import dev.kokorev.cryptoview.di.DbFacadeComponent
@@ -42,6 +43,7 @@ class App : Application() {
     @Inject lateinit var recentCoinDao: RecentCoinDao
     @Inject lateinit var messageDao: MessageDao
     
+    lateinit var activityBinding: ActivityMainBinding
     lateinit var analytics: FirebaseAnalytics
     
     // follow any change in notification permissions
