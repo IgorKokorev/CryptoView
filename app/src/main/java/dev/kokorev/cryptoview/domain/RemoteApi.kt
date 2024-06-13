@@ -10,12 +10,13 @@ import dev.kokorev.binance_api.entity.Binance24hrStatsType
 import dev.kokorev.binance_api.entity.BinanceKLineInterval
 import dev.kokorev.cmc_api.CmcApi
 import dev.kokorev.coin_paprika_api.CoinPaprikaApi
+import dev.kokorev.cryptoview.Constants
 import dev.kokorev.cryptoview.R
 import dev.kokorev.token_metrics_api.TokenMetricsApi
-import dev.kokorev.token_metrics_api.entity.AiAnswer
-import dev.kokorev.token_metrics_api.entity.AiQuestion
-import dev.kokorev.token_metrics_api.entity.AiReportData
-import dev.kokorev.token_metrics_api.entity.TMMarketMetricsData
+import dev.kokorev.token_metrics_api.entity.TMAiAnswer
+import dev.kokorev.token_metrics_api.entity.TMAiQuestion
+import dev.kokorev.token_metrics_api.entity.TMAiReport
+import dev.kokorev.token_metrics_api.entity.TMMarketMetrics
 import dev.kokorev.token_metrics_api.entity.TMPricePredictionData
 import dev.kokorev.token_metrics_api.entity.TMResponse
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -26,6 +27,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.rx3.rxMaybe
 import retrofit2.HttpException
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 // Interactor to communicate with remote apis
@@ -91,7 +94,7 @@ class RemoteApi(
     fun getCoinPaprikaOhlcvLatest(id: String) = coinPaprikaApi.getCoinOhlcvLatest(id).addProgressBar()
     
     // TokenMetrics API
-    fun getAIReport(symbol: String): Maybe<TMResponse<AiReportData>> {
+    fun getAIReport(symbol: String): Maybe<TMResponse<TMAiReport>> {
         return tokenMetricsApi.getAiReports(symbol = symbol)
             .onErrorReturn { e ->
                 TMResponse(
@@ -103,10 +106,10 @@ class RemoteApi(
             .addProgressBar()
     }
     
-    fun askTokenMetricsAi(aiQuestion: AiQuestion): Maybe<AiAnswer> {
-        return tokenMetricsApi.aiQuestion(aiQuestion)
+    fun askTokenMetricsAi(TMAiQuestion: TMAiQuestion): Maybe<TMAiAnswer> {
+        return tokenMetricsApi.aiQuestion(TMAiQuestion)
             .onErrorReturn { e ->
-                val emptyAnswer = AiAnswer().apply {
+                val emptyAnswer = TMAiAnswer().apply {
                     success = false
                     answer = exceptionToErrorText(e)
                 }
@@ -121,8 +124,14 @@ class RemoteApi(
         endDate: String? = null,
         limit: Int? = null,
         page: Int? = null,
-    ): Maybe<TMResponse<TMMarketMetricsData>> =
-        tokenMetricsApi.getMarketMetrics(startDate, endDate, limit, page).addProgressBar()
+    ): Maybe<TMResponse<TMMarketMetrics>> {
+        val start = if (startDate == null ) {
+            val ld = LocalDate.now().minusDays(Constants.DAYS_MARKET_METRICS)
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            ld.format(formatter)
+        } else startDate
+        return tokenMetricsApi.getMarketMetrics(start, endDate, limit, page).addProgressBar()
+    }
     
     fun getPricePrediction(
         tokenId: Int? = null,

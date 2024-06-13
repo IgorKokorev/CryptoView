@@ -300,21 +300,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <com.anychart.AnyChartView
         android:id="@+id/any_chart_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/market_data" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="16dp"
-        android:background="@color/base1"
-        app:layout_constraintBottom_toBottomOf="@+id/any_chart_view"
-        app:layout_constraintStart_toStartOf="@+id/any_chart_view"
-        app:layout_constraintEnd_toEndOf="@+id/any_chart_view" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

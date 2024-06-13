@@ -5,7 +5,12 @@ const val INTENT_ACTION: String = "notification_" // default action
 const val COIN_ACTION: String = "coin_"
 const val PORTFOLIO_ACTION: String = "portfolio_"
 
+val TM_SENTIMENT_TIME_SECONDS: Long = 67 * 60 /* 67 minutes */
+val TM_MARKET_METRICS_TIME_SECONDS: Long = 60 * 60 /* 1 hour */
+
 object Constants {
+    // for main fragment - how many days is fetched from market metrics endpoint
+    const val DAYS_MARKET_METRICS: Long = 50
     
     // For Binance Fragment
     const val BINANCE_FIRST_ASSET = "USDT"

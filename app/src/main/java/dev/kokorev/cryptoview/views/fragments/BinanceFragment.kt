@@ -214,7 +214,8 @@ class BinanceFragment : Fragment() {
                 val backgroundFill = SolidFill(backgroundColorString, 1)
                 stock = AnyChart.stock().apply {
                     background().fill(backgroundFill)
-                    padding(0, 50, 20, 0)
+                    padding(0, 50, 0, 0)
+                    credits(false)
                 }
                 table = Table.instantiate("x")
                 mapping = table.mapAs("{open: 'open', high: 'high', low: 'low', close: 'close', volume: 'volume'}")
@@ -446,8 +447,8 @@ class BinanceFragment : Fragment() {
                     val dialog = MaterialAlertDialogBuilder(binding.root.context, R.style.CVDialogStyle)
                         .setTitle("Binance market info")
                         .setMessage("Coin ${symbol} is not listed on Binance.")
-                        .setPositiveButton(R.string.ok) { _, _ ->
-                            requireActivity().supportFragmentManager.popBackStack()
+                        .setPositiveButton(R.string.ok) { dialog, _ ->
+                            dialog.cancel()
                         }
                     dialog.setOnDismissListener {
                         requireActivity().supportFragmentManager.popBackStack()

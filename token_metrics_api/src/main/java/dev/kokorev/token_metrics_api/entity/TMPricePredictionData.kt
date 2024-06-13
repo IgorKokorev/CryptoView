@@ -12,8 +12,6 @@ data class TMPricePredictionData (
 
 )
 
-
-
 data class Forecast (
     @SerializedName("forecast"       ) var forecast      : Double? = null,
     @SerializedName("forecast_lower" ) var forecastLower : Double? = null,

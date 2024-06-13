@@ -1,10 +1,10 @@
 package dev.kokorev.token_metrics_api
 
-import dev.kokorev.token_metrics_api.entity.AiAnswer
-import dev.kokorev.token_metrics_api.entity.AiQuestion
-import dev.kokorev.token_metrics_api.entity.AiReportData
+import dev.kokorev.token_metrics_api.entity.TMAiAnswer
+import dev.kokorev.token_metrics_api.entity.TMAiQuestion
+import dev.kokorev.token_metrics_api.entity.TMAiReport
 import dev.kokorev.token_metrics_api.entity.TMInvestorGrade
-import dev.kokorev.token_metrics_api.entity.TMMarketMetricsData
+import dev.kokorev.token_metrics_api.entity.TMMarketMetrics
 import dev.kokorev.token_metrics_api.entity.TMPricePredictionData
 import dev.kokorev.token_metrics_api.entity.TMResponse
 import dev.kokorev.token_metrics_api.entity.TMSentiment
@@ -22,12 +22,12 @@ interface TokenMetricsApi {
         @Query("symbol") symbol: String? = null,
         @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null,
-    ): Maybe<TMResponse<AiReportData>>
+    ): Maybe<TMResponse<TMAiReport>>
 
     @POST("tmai")
     fun aiQuestion(
-        @Body aiQuestion: AiQuestion
-    ) : Maybe<AiAnswer>
+        @Body TMAiQuestion: TMAiQuestion
+    ) : Maybe<TMAiAnswer>
 
     @GET("market-metrics")
     fun getMarketMetrics(
@@ -35,7 +35,7 @@ interface TokenMetricsApi {
         @Query("endDate") endDate: String? = null,
         @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null,
-    ): Maybe<TMResponse<TMMarketMetricsData>>
+    ): Maybe<TMResponse<TMMarketMetrics>>
 
     @GET("price-prediction")
     fun getPricePrediction(

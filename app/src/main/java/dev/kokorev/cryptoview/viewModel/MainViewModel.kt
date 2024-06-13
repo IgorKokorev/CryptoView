@@ -9,6 +9,7 @@ import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
 import dev.kokorev.cryptoview.utils.CacheManager
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
+import dev.kokorev.token_metrics_api.entity.TMMarketMetrics
 import dev.kokorev.token_metrics_api.entity.TMSentiment
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
@@ -42,7 +43,13 @@ class MainViewModel : ViewModel() {
         compositeDisposable.dispose()
     }
     
+    fun getMarketMetrics() = remoteApi.getMarketMetrics()
     fun getSentimentFromApi() = remoteApi.getSentiment()
     fun cacheTMSentiment(data: TMSentiment) = cacheManager.saveTMSentiment(data)
     fun getCachedTMSentiment(): Maybe<TMSentiment> = cacheManager.getTMSentiment()
+    fun cacheTMMarketMetrics(data: ArrayList<TMMarketMetrics>) {
+        cacheManager.saveTMMarketMetrics(data)
+    }
+    fun getCachedTMMarketMetrics(): Maybe<ArrayList<TMMarketMetrics>> = cacheManager.getTMMarketMetrics()
+    
 }
