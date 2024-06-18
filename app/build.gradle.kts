@@ -1,12 +1,13 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.kapt)
+//    alias(libs.plugins.kapt)
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "2.0.0"
     alias(libs.plugins.googleGmsGoogleServices)
     alias(libs.plugins.googleFirebaseCrashlytics)
     alias(libs.plugins.googleFirebaseFirebasePerf)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -114,17 +115,17 @@ dependencies {
     implementation(libs.firebase.perf)
     implementation(libs.firebase.vertexai)
     implementation(libs.firebase.analytics)
-    kapt(libs.glide.annotation.processor)
+    ksp(libs.glide.annotation.processor)
 
     // airbnb paris lets you change view style programmatically
     implementation(libs.airbnb.paris)
-    kapt(libs.airbnb.paris.processor)
+    ksp(libs.airbnb.paris.processor)
     
     // retrofit for error handling
     implementation(libs.retrofit)
 
     implementation(libs.dagger)
-    kapt(libs.daggerCompiler)
+    ksp(libs.daggerCompiler)
 
     implementation(libs.rxandroid)
 

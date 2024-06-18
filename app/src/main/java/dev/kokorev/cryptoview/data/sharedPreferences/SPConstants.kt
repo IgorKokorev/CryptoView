@@ -63,5 +63,7 @@ const val KEY_PORTFOLIO_EVALUATION_TIME = "portfolio_evaluation_time"
 // Last portfolio change calculation time
 const val KEY_PORTFOLIO_CHANGE_TIME = "portfolio_change_time"
 
+const val KEY_FIRST_LAUNCH_INSTANT = "first_launch_instant"
+
 const val KEY_INSTANT = "instant"
 

@@ -306,7 +306,7 @@
 
 
             <TextView
-                android:id="@+id/portfolio_header"
+                android:id="@+id/portfolio_valuation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -324,7 +324,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="@color/textColor"
-                app:layout_constraintTop_toBottomOf="@+id/portfolio_header" />
+                app:layout_constraintTop_toBottomOf="@+id/portfolio_valuation" />
 
             <LinearLayout
                 android:id="@+id/portfolio_checkbox_container"
@@ -333,7 +333,7 @@
                 android:gravity="center_vertical"
                 android:paddingTop="@dimen/small_padding"
                 android:paddingBottom="@dimen/small_padding"
-                app:layout_constraintTop_toBottomOf="@+id/portfolio_header">
+                app:layout_constraintTop_toBottomOf="@+id/portfolio_valuation">
 
                 <CheckBox
                     android:id="@+id/portfolio_checkbox"

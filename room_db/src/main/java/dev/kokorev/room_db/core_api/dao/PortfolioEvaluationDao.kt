@@ -19,7 +19,7 @@ interface PortfolioEvaluationDao {
     fun getLatest(dateFrom: LocalDate): Single<List<PortfolioEvaluationDB>>
 
     @Query("SELECT * FROM portfolio_evaluation ORDER BY date ASC")
-    fun getAllSingle(): Single<List<PortfolioEvaluationDB>>
+    fun getAllMaybe(): Maybe<List<PortfolioEvaluationDB>>
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPortfolioEvaluation(portfolioEvaluationDB: PortfolioEvaluationDB)
@@ -35,4 +35,7 @@ interface PortfolioEvaluationDao {
     
     @Query("SELECT * FROM portfolio_evaluation WHERE date = :date")
     fun getEvaluationByDate(date: LocalDate): Maybe<PortfolioEvaluationDB>
+    
+    @Query("SELECT COUNT(*) FROM portfolio_evaluation")
+    fun numberPortfolioEvaluations(): Maybe<Int>
 }

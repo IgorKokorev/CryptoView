@@ -17,4 +17,5 @@ data class PortfolioEvaluationDB(
     @ColumnInfo(name = "cumulative_change") var cumulativeChange: Double? = null,
     @ColumnInfo(name = "cumulative_percent_change") var cumulativePercentChange: Double? = null,
     @ColumnInfo(name = "positions") var positions: Int? = null,
+    @ColumnInfo(name = "pnl") var pnl: Double? = null,
 )

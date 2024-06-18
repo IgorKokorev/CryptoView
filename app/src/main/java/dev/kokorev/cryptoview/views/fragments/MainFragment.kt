@@ -31,6 +31,7 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
+import dev.kokorev.cryptoview.utils.getColorHex
 import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.views.MainActivity
 import dev.kokorev.cryptoview.views.rvadapters.TopMoverAdapter
@@ -104,6 +105,7 @@ class MainFragment : Fragment() {
         initRecycler()
         setIntervalListeners()
         setupSentimentsClickListeners()
+        setupDataFromViewModel()
         
         sortingBS.subscribe {
             sorting = it
@@ -170,11 +172,6 @@ class MainFragment : Fragment() {
         binding.sortingAth.setOnClickListener {
             sortingBS.onNext(MainPriceSorting.ATH)
         }
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        setupDataFromViewModel()
     }
     
     private fun initRecycler() {
@@ -427,9 +424,9 @@ class MainFragment : Fragment() {
             val degree = if (minMcap > 0) log10(minMcap).toInt() else 0
             val divisor = pow(10.0, degree.toDouble())
             val chartData: List<DataEntry> = nonNullData.map { Converter.tmMarketMetricsToDataEntry(it, divisor) }
-            val formatWithPrecision = NumbersUtils.formatWithPrecision(minMcap * 0.9 / divisor, 1).replace(',', '.')
-            logd("setupMcapChart min Y = ${formatWithPrecision}")
-            chart.yScale("{minimum:'$formatWithPrecision'}")
+            val minYaxis = NumbersUtils.formatWithPrecision(minMcap * 0.9 / divisor, 1).replace(',', '.')
+            logd("setupMcapChart min Y = ${minYaxis}")
+            chart.yScale("{minimum:'$minYaxis'}")
             
             val series = chart.column(chartData)
             
@@ -487,10 +484,6 @@ class MainFragment : Fragment() {
             .subscribe()
             .addTo(autoDisposable)
     }
-    
-    private fun getColorHex(colorResource: Int) =
-        Integer.toHexString(ContextCompat.getColor(binding.root.context, colorResource))
-            .substring(2)
     
     private fun findLosers(list: List<CoinPaprikaTickerDB>) =
         list

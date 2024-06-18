@@ -113,12 +113,12 @@ class InfoFragment : Fragment() {
                 // If position is found in Portfolio - change it
                 .doOnSuccess { portfolioCoinDB ->
                     Log.d(this.javaClass.simpleName, portfolioCoinDB.symbol)
-                    portfolioInteractor.changePosition(portfolioCoinDB)
+                    portfolioInteractor.startChangingPosition(portfolioCoinDB)
                 }
                 // if not found - open it
                 .doOnComplete {
                     Log.d(this.javaClass.simpleName, "Empty response")
-                    portfolioInteractor.openPosition(coin)
+                    portfolioInteractor.startOpeningPosition(coin)
                 }
                 .subscribe()
                 .addTo(autoDisposable)

@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.kapt)
+//    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
+    
 }
 
 android {
@@ -15,7 +17,14 @@ android {
         consumerProguardFiles("consumer-rules.pro")
 
         javaCompileOptions {
-            annotationProcessorOptions.arguments.putAll(mapOf("room.schemaLocation" to "$projectDir/schemas"))
+            annotationProcessorOptions {
+                arguments["room.schemaLocation"] = "$projectDir/schemas"
+            }
+//            annotationProcessorOptions.arguments.putAll(mapOf("room.schemaLocation" to "$projectDir/schemas"))
+        }
+        
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
 
@@ -48,10 +57,10 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.room.rxjava3)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
 
     implementation(libs.dagger)
-    kapt(libs.daggerCompiler)
+    ksp(libs.daggerCompiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

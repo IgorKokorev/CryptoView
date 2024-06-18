@@ -1,7 +1,6 @@
 package dev.kokorev.cryptoview.backgroundService
 
 import android.content.Context
-import android.util.Log
 import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
 import dev.kokorev.cryptoview.App
@@ -16,6 +15,7 @@ import dev.kokorev.cryptoview.data.sharedPreferences.preferencesBoolean
 import dev.kokorev.cryptoview.data.sharedPreferences.preferencesFloat
 import dev.kokorev.cryptoview.domain.RemoteApi
 import dev.kokorev.cryptoview.domain.Repository
+import dev.kokorev.cryptoview.logd
 import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.NotificationData
 import dev.kokorev.cryptoview.utils.NotificationService
@@ -26,7 +26,7 @@ import kotlin.math.abs
 // RxJava Worker that periodically calls CoinPaprika API to get and save all the tickers
 class TickersLoaderWorker(
     private val context: Context,
-    private val params: WorkerParameters
+    params: WorkerParameters
 ) : RxWorker(context, params) {
     @Inject
     lateinit var repository: Repository
@@ -48,7 +48,7 @@ class TickersLoaderWorker(
 
         val tickersSingle = remoteApi.getCoinPaprikaTickers()
             .map { list ->
-                Log.d(this.javaClass.simpleName, "Tickers are loaded from CoinPaprika")
+                logd("Tickers are loaded from CoinPaprika")
                 val tickers = list
                     .filter { ticker ->
                         val quote = ticker.quotes?.get("USD")
@@ -64,11 +64,7 @@ class TickersLoaderWorker(
                 tickers
             }
             .doOnError {
-                Log.d(
-                    this.javaClass.simpleName,
-                    "Error calling getCoinPaprikaTickers: " + it.localizedMessage,
-                    it
-                )
+                logd("Error calling getCoinPaprikaTickers: ", it)
             }
 
         if (toCheckFavorites) {
@@ -80,14 +76,14 @@ class TickersLoaderWorker(
                 favorites.map { db -> Converter.favoriteCoinDBToFavoriteCoin(db, filtered) }
             }
                 .doOnSuccess { list ->
-                    Log.d(this.javaClass.simpleName, "Checking Favorites")
+                    logd("Checking Favorites")
                     list.forEach { coin ->
                         val change = coin.percentChange ?: 0.0
-                        Log.d(this.javaClass.simpleName, "Coin ${coin.symbol} has changed by ${change}%")
+                        logd("Coin ${coin.symbol} has changed by ${change}%")
                         if (abs(change) >= favoriteChange &&
                             coin.timeNotified + Constants.SHOW_FAVORITE_CHANGE_TIME_MILLIS < System.currentTimeMillis()
                         ) {
-                            Log.d(this.javaClass.simpleName, "Sending notification")
+                            logd("Sending notification")
                             repository.setFavoriteTimeNotified(coin)
                             val data = NotificationData(
                                 title = context.getString(R.string.favorite_coin_price_change),

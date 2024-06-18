@@ -143,7 +143,7 @@ class Repository() {
     
     
     // Portfolio evaluations
-    fun getAllPortfolioEvaluationsSingle() = portfolioEvaluationDao.getAllSingle().addSettings()
+    fun getAllPortfolioEvaluationsMaybe() = portfolioEvaluationDao.getAllMaybe().addSettings()
     fun getLatestPortfolioEvaluations(dateFrom: LocalDate) = portfolioEvaluationDao.getLatest(dateFrom).addSettings()
     fun savePortfolioEvaluation(portfolioEvaluationDB: PortfolioEvaluationDB) {
         Executors.newSingleThreadExecutor().execute {
@@ -155,8 +155,8 @@ class Repository() {
             portfolioEvaluationDao.insertAll(list)
         }
     }
-    
     fun getPortfolioEvaluationByDate(date: LocalDate) = portfolioEvaluationDao.getEvaluationByDate(date).addSettings()
+    fun numberPortfolioEvaluations(): Maybe<Int> = portfolioEvaluationDao.numberPortfolioEvaluations()
     
     
     
@@ -254,6 +254,6 @@ class Repository() {
             }
             .onErrorComplete()
     }
-
-
+    
+    
 }

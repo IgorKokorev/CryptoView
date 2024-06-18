@@ -2,10 +2,15 @@ package com.coinpaprika.apiclient.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "portfolio_coin", indices = [Index(value = ["coin_paprika_id"], unique = true)])
+@Entity(
+    tableName = "portfolio_coin",
+    indices = [Index(value = ["coin_paprika_id"], unique = true)],
+//    ignoredColumns = ["percent_24"]
+)
 data class PortfolioPositionDB(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name = "coin_paprika_id") var coinPaprikaId: String,
@@ -17,4 +22,8 @@ data class PortfolioPositionDB(
     @ColumnInfo(name = "price_open") var priceOpen: Double = 0.0,
     @ColumnInfo(name = "time_last_evaluation") var timeLastEvaluation: Long = 0L,
     @ColumnInfo(name = "price_last_evaluation") var priceLastEvaluation: Double = 0.0,
-)
+) {
+    @Ignore
+    var percentChange24hr: Double = 0.0
+    
+}

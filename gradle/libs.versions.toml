@@ -1,6 +1,6 @@
 [versions]
 agp = "8.5.0"
-kotlin = "1.9.0"
+kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -49,6 +49,8 @@ firebasePerf = "21.0.1"
 googleFirebaseFirebasePerf = "1.4.2"
 firebaseVertexai = "16.0.0-beta01"
 firebaseAnalytics = "22.0.1"
+
+ksp_version = "2.0.0-1.0.22"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -123,4 +125,5 @@ parcelize = { id = "kotlin-parcelize", version.ref = "kotlin_parcelize_version" 
 googleGmsGoogleServices = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 googleFirebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
 googleFirebaseFirebasePerf = { id = "com.google.firebase.firebase-perf", version.ref = "googleFirebaseFirebasePerf" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp_version" }
 

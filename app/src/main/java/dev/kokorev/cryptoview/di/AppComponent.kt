@@ -18,6 +18,7 @@ import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.viewModel.SavedViewModel
 import dev.kokorev.cryptoview.viewModel.SearchViewModel
 import dev.kokorev.cryptoview.viewModel.SettingsViewModel
+import dev.kokorev.cryptoview.viewModel.PortfolioPerformanceViewModel
 import dev.kokorev.token_metrics_api.TokenMetricsProvider
 import javax.inject.Singleton
 
@@ -45,4 +46,5 @@ interface AppComponent {
     fun inject(portfolioInteractor: PortfolioInteractor)
     fun inject(portfolioEvaluationService: PortfolioEvaluationService)
     fun inject(portfolioNotificationReceiver: PortfolioNotificationReceiver)
+    fun inject(portfolioPerformanceViewModel: PortfolioPerformanceViewModel)
 }

@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat.getSystemService
+import dev.kokorev.cryptoview.KEY_ALARM_INTENT_EXTRA
 import dev.kokorev.cryptoview.logd
 import java.time.Instant
 
@@ -36,10 +37,11 @@ class AlarmScheduler(val context: Context) {
     }
     val alarmManager = getSystemService(context, AlarmManager::class.java)
     
-    fun createPendingIntent(alarmData: AlarmData): PendingIntent {
+    private fun createPendingIntent(alarmData: AlarmData, extraKey: Int? = null): PendingIntent {
         logd("createPendingIntent")
         val intent = Intent(context, alarmData.cls).apply {
             action = alarmData.action
+            if (extraKey != null) putExtra(KEY_ALARM_INTENT_EXTRA, extraKey)
         }
         
         val pendingIntent = when (alarmData.cls) {
@@ -75,7 +77,7 @@ class AlarmScheduler(val context: Context) {
         return pendingIntent
     }
     
-    fun schedule(alarmData: AlarmData) {
+    fun schedule(alarmData: AlarmData, extraKey: Int? = null) {
         logd("scheduleAlarm, action: ${alarmData.action}")
         
         if (alarmManager == null) {
@@ -88,7 +90,7 @@ class AlarmScheduler(val context: Context) {
             AlarmManager.RTC,
             alarmData.time,
             alarmData.period,
-            createPendingIntent(alarmData)
+            createPendingIntent(alarmData, extraKey)
         )
     }
     

@@ -33,7 +33,7 @@ class PortfolioInteractor(val autoDisposable: AutoDisposable) {
     }
 
     // open new position in portfolio on the coin
-    fun openPosition(coin: CoinDetailsEntity) {
+    fun startOpeningPosition(coin: CoinDetailsEntity) {
         // looking for coin price
         repository.getCPTickerById(coin.id)
             .doOnSuccess { ticker ->
@@ -118,7 +118,7 @@ class PortfolioInteractor(val autoDisposable: AutoDisposable) {
     }
 
     // handle change portfolio position including close position
-    fun changePosition(portfolioPositionDB: PortfolioPositionDB) {
+    fun startChangingPosition(portfolioPositionDB: PortfolioPositionDB) {
         repository.getCPTickerById(portfolioPositionDB.coinPaprikaId)
             .doOnSuccess { ticker ->
                 val price = ticker.price ?: 0.0
@@ -252,11 +252,11 @@ class PortfolioInteractor(val autoDisposable: AutoDisposable) {
             }
             .show()
         position.quantity = 0.0
-        performTransaction(position, price = price, qty = -oldQty)
+        performTransaction(position = position, price = price, qty = -oldQty, pnl = pnl)
     }
     
     
-    private fun performTransaction(position: PortfolioPositionDB, price: Double, qty: Double) {
+    private fun performTransaction(position: PortfolioPositionDB, price: Double, qty: Double, pnl: Double = 0.0) {
         // saving portfolio state
         if (position.quantity == 0.0) {
             repository.deletePortfolioPosition(position.id)
@@ -264,7 +264,7 @@ class PortfolioInteractor(val autoDisposable: AutoDisposable) {
             repository.savePortfolioPosition(position)
         }
         // saving inflow/outflow for today's portfolio valuation
-        saveInflowToPortfolioEvaluation(price * qty)
+        saveInflowToPortfolioEvaluation(dealValue = price * qty, pnl = pnl)
         // saving the transaction to db
         saveTransaction(position.coinPaprikaId, price, qty)
     }
@@ -279,16 +279,19 @@ class PortfolioInteractor(val autoDisposable: AutoDisposable) {
         repository.savePortfolioTransaction(transaction)
     }
     
-    private fun saveInflowToPortfolioEvaluation(dealValue: Double) {
+    private fun saveInflowToPortfolioEvaluation(dealValue: Double, pnl: Double = 0.0) {
         val today = Instant.now().toLocalDate()
 
         repository.getPortfolioEvaluationByDate(today)
             .doOnSuccess {  evaluation ->
+                // evaluation for the date already exists - update it
                 Log.d(this.javaClass.simpleName, "Portfolio evaluation found for today. Valuation: ${evaluation.valuation}, Inflow: ${evaluation.inflow}")
                 evaluation.inflow = (evaluation.inflow ?: 0.0) + dealValue
+                evaluation.pnl = (evaluation.pnl ?: 0.0) + pnl
                 repository.savePortfolioEvaluation(evaluation)
             }
             .doOnComplete {
+                // no evaluation for the date - create one
                 Log.d(this.javaClass.simpleName, "No portfolio evaluation found for today")
                 val portfolioEvaluation = PortfolioEvaluationDB(
                     date = today,
@@ -297,6 +300,7 @@ class PortfolioInteractor(val autoDisposable: AutoDisposable) {
                     change = null,
                     percentChange = null,
                     positions = null,
+                    pnl = pnl,
                 )
                 repository.savePortfolioEvaluation(portfolioEvaluation)
             }
