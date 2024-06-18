@@ -5,10 +5,15 @@ const val INTENT_ACTION: String = "notification_" // default action
 const val COIN_ACTION: String = "coin_"
 const val PORTFOLIO_ACTION: String = "portfolio_"
 
+// period for update from remote API
 val TM_SENTIMENT_TIME_SECONDS: Long = 67 * 60 /* 67 minutes */
 val TM_MARKET_METRICS_TIME_SECONDS: Long = 60 * 60 /* 1 hour */
 
+// key to put extras to alarm intent
+const val KEY_ALARM_INTENT_EXTRA: String = "alarm_intent_extra"
+
 object Constants {
+    
     // for main fragment - how many days is fetched from market metrics endpoint
     const val DAYS_MARKET_METRICS: Long = 50
     

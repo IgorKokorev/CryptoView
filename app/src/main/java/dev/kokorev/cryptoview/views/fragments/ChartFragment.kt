@@ -34,6 +34,7 @@ import dev.kokorev.cryptoview.databinding.FragmentChartBinding
 import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
+import dev.kokorev.cryptoview.utils.getColorHex
 import dev.kokorev.cryptoview.viewModel.CoinViewModel
 import dev.kokorev.cryptoview.views.MainActivity
 import java.time.LocalDate
@@ -81,9 +82,6 @@ class ChartFragment : Fragment() {
             (requireActivity() as MainActivity).launchBinanceFragment(viewModel.symbol)
         }
     }
-    
-    private fun getColorHex(colorResource: Int) = Integer.toHexString(ContextCompat.getColor(binding.root.context, colorResource))
-        .substring(2)
     
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

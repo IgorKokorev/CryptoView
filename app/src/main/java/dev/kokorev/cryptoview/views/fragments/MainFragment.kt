@@ -31,6 +31,7 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
+import dev.kokorev.cryptoview.utils.getColorHex
 import dev.kokorev.cryptoview.viewModel.MainViewModel
 import dev.kokorev.cryptoview.views.MainActivity
 import dev.kokorev.cryptoview.views.rvadapters.TopMoverAdapter
@@ -41,10 +42,12 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.rx3.rxSingle
+import java.lang.Math.pow
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
+import kotlin.math.log10
 
 
 /**
@@ -102,6 +105,7 @@ class MainFragment : Fragment() {
         initRecycler()
         setIntervalListeners()
         setupSentimentsClickListeners()
+        setupDataFromViewModel()
         
         sortingBS.subscribe {
             sorting = it
@@ -168,11 +172,6 @@ class MainFragment : Fragment() {
         binding.sortingAth.setOnClickListener {
             sortingBS.onNext(MainPriceSorting.ATH)
         }
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        setupDataFromViewModel()
     }
     
     private fun initRecycler() {
@@ -421,15 +420,17 @@ class MainFragment : Fragment() {
             logd("setupMcapChartData success")
             
             val nonNullData = data.filter { it.totalCryptoMcap != null }
-            val chartData: List<DataEntry> = nonNullData.map { Converter.tmMarketMetricsToDataEntry(it) }
             val minMcap = nonNullData.map { tmMarketMetrics -> tmMarketMetrics.totalCryptoMcap!! }.min()
-            val formatWithPrecision = NumbersUtils.formatWithPrecision(minMcap * 0.9 / 1e12, 1).replace(',', '.')
-            logd("setupMcapChart min Y = ${formatWithPrecision}")
-            chart.yScale("{minimum:'$formatWithPrecision'}")
+            val degree = if (minMcap > 0) log10(minMcap).toInt() else 0
+            val divisor = pow(10.0, degree.toDouble())
+            val chartData: List<DataEntry> = nonNullData.map { Converter.tmMarketMetricsToDataEntry(it, divisor) }
+            val minYaxis = NumbersUtils.formatWithPrecision(minMcap * 0.9 / divisor, 1).replace(',', '.')
+            logd("setupMcapChart min Y = ${minYaxis}")
+            chart.yScale("{minimum:'$minYaxis'}")
             
             val series = chart.column(chartData)
             
-            val colorAccentString = "#" + getColorHex(R.color.accent6)
+            val colorAccentString = "#" + getColorHex(R.color.accent4)
             val color = SolidFill(colorAccentString, 1)
             series.fill(color)
             series.stroke("{thickness:'0'}")
@@ -483,10 +484,6 @@ class MainFragment : Fragment() {
             .subscribe()
             .addTo(autoDisposable)
     }
-    
-    private fun getColorHex(colorResource: Int) =
-        Integer.toHexString(ContextCompat.getColor(binding.root.context, colorResource))
-            .substring(2)
     
     private fun findLosers(list: List<CoinPaprikaTickerDB>) =
         list

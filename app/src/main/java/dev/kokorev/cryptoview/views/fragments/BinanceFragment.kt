@@ -34,6 +34,7 @@ import dev.kokorev.cryptoview.utils.AutoDisposable
 import dev.kokorev.cryptoview.utils.Converter
 import dev.kokorev.cryptoview.utils.NumbersUtils
 import dev.kokorev.cryptoview.utils.addTo
+import dev.kokorev.cryptoview.utils.getColorHex
 import dev.kokorev.cryptoview.viewModel.BinanceViewModel
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -435,10 +436,6 @@ class BinanceFragment : Fragment() {
             it.setPlot()
         }
     }
-    
-    private fun getColorHex(colorResource: Int) =
-        Integer.toHexString(ContextCompat.getColor(binding.root.context, colorResource))
-            .substring(2)
     
     private fun findBinanceSymbols() {
         viewModel.findBinanceSymbolsByBaseAsset(symbol)

@@ -1,8 +1,9 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.kapt)
+//    alias(libs.plugins.kapt)
     kotlin("plugin.serialization") version "2.0.0"
+    alias(libs.plugins.ksp)
 
 }
 
@@ -47,7 +48,7 @@ dependencies {
 
 
     implementation(libs.dagger)
-    kapt(libs.daggerCompiler)
+    ksp(libs.daggerCompiler)
 
     implementation(libs.rxandroid)
 

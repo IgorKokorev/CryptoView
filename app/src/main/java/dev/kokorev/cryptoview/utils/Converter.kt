@@ -6,6 +6,7 @@ import com.anychart.chart.common.dataentry.HighLowDataEntry
 import com.coinpaprika.apiclient.entity.CoinDetailsEntity
 import com.coinpaprika.apiclient.entity.FavoriteCoinDB
 import com.coinpaprika.apiclient.entity.MoverEntity
+import com.coinpaprika.apiclient.entity.PortfolioEvaluationDB
 import com.coinpaprika.apiclient.entity.PortfolioPositionDB
 import com.coinpaprika.apiclient.entity.RecentCoinDB
 import com.coinpaprika.apiclient.entity.TickerEntity
@@ -13,7 +14,6 @@ import dev.kokorev.binance_api.entity.BinanceSymbolDTO
 import dev.kokorev.cryptoview.data.entity.FavoriteCoin
 import dev.kokorev.cryptoview.data.entity.GainerCoin
 import dev.kokorev.cryptoview.data.entity.RecentCoin
-import dev.kokorev.cryptoview.logd
 import dev.kokorev.cryptoview.views.fragments.MainPriceSorting
 import dev.kokorev.room_db.core_api.entity.BinanceSymbolDB
 import dev.kokorev.room_db.core_api.entity.CoinPaprikaTickerDB
@@ -229,13 +229,25 @@ object Converter {
         )
     }
     
-    fun tmMarketMetricsToDataEntry(tmMarketMetrics: TMMarketMetrics): DataEntry {
-        val dataEntry = DataEntry()
-        dataEntry.setValue("x", tmMarketMetrics.date)
-        dataEntry.setValue("value", (tmMarketMetrics.totalCryptoMcap ?: 0.0) / 1e12)
-        
-        logd("tmMarketMetricsToDataEntry dataEntry = ${dataEntry.generateJs()}")
-        return dataEntry
+    fun tmMarketMetricsToDataEntry(tmMarketMetrics: TMMarketMetrics, divisor: Double): DataEntry {
+        return DataEntry().apply {
+            setValue("x", tmMarketMetrics.date)
+            setValue("value", (tmMarketMetrics.totalCryptoMcap ?: 0.0) / divisor)
+        }
+    }
+    
+    fun portfolioEvaluationToValuationDataEntry(evaluation: PortfolioEvaluationDB): DataEntry {
+        return DataEntry().apply {
+            setValue("x", evaluation.date.toString())
+            setValue("value", evaluation.valuation)
+        }
+    }
+    
+    fun portfolioEvaluationToChangeDataEntry(evaluation: PortfolioEvaluationDB): DataEntry {
+        return DataEntry().apply {
+            setValue("x", evaluation.date.toString())
+            setValue("value", ((evaluation.cumulativePercentChange ?: 0.0) + 1.0) * 100.0)
+        }
     }
     
 }

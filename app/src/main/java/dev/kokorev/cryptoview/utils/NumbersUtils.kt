@@ -5,6 +5,7 @@ import android.icu.text.NumberFormat
 import android.icu.util.Calendar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import dev.kokorev.cryptoview.App
 import dev.kokorev.cryptoview.R
 import java.time.Instant
 import java.time.LocalDate
@@ -133,3 +134,9 @@ fun LocalDate.toInstant(): Instant {
     val localDateTime = this.atStartOfDay(ZoneId.of("UTC"))
     return localDateTime.toInstant()
 }
+
+fun min(a: Instant, b: Instant): Instant = if (a.isBefore(b)) a else b
+
+fun getColorHex(colorResource: Int) =
+    Integer.toHexString(ContextCompat.getColor(App.instance.applicationContext, colorResource))
+        .substring(2)

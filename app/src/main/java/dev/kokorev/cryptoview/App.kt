@@ -1,6 +1,7 @@
 package dev.kokorev.cryptoview
 
 import android.app.Application
+import android.os.Build
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -84,11 +85,18 @@ class App : Application() {
 }
 
 fun Any.logd(log: String) {
-    Log.d(this.javaClass.simpleName, log)
+    val methodName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        StackWalker.getInstance().walk { frames ->
+            frames
+                .skip(1)
+                .findFirst()
+                .map { it.methodName }.orElse("") }
+    } else ""
+    Log.d(this.javaClass.simpleName, "$methodName: $log")
 }
 
 fun Any.logd(log: String, throwable: Throwable) {
-    Log.d(this.javaClass.simpleName, log + "\nError: " + throwable.localizedMessage + "\nStackTrace:\n" + throwable.stackTraceToString())
+    this.logd(log + "\nError: " + throwable.localizedMessage + "\nStackTrace:\n" + throwable.stackTraceToString())
 }
 
 fun Disposable.addToComposite(compositeDisposable: CompositeDisposable) {

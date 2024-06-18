@@ -103,4 +103,23 @@
     <string name="copied_to_clipboard">Message copied to clipboard</string>
     <string name="portfolio_no_notify">I don\'t want to be notified about the state of my portfolio</string>
     <string name="portfolio_notify">I want to be notified about the state of the portfolio every day at %1$s</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="value_colon">Value:</string>
+    <string name="total_p_l">Total P/L:</string>
+    <string name="daily_p_l">Daily P/L:</string>
+    <string name="portfolio_performance">Performance</string>
+    <string name="portfolio_performance_evaluation">Portfolio performance evaluation</string>
+    <string name="last_valuation">Last valuation:</string>
+    <string name="unrealised_pnl">Unrealized P/L:</string>
+    <string name="realised_pnl">Realized P/L:</string>
+    <string name="num_positions">Number of positions:</string>
+    <string name="date">Date:</string>
+    <string name="as_of">As of</string>
+    <string name="total_inflow">Total inflow</string>
+    <string name="total_outflow">Total outflow</string>
+    <string name="effective_return">Effective return</string>
+    <string name="inception_date">Inception date</string>
+    <string name="annualized_return">Annualized return</string>
+    <string name="flow_balance">Flow balance</string>
+    <string name="valuation">Valuation:</string>
 </resources>
